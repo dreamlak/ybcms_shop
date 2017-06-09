@@ -1,0 +1,171 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>插件管理-{$typename[$type]}</h3>
+			<h5>系统{$typename[$type]}插件管理</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>系统插件自行安装卸载使用，插件添加在 /plugins 目录</li>
+		</ol>
+	</div>
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 插件列表</span> 
+			<span class="tit-info">(共{$total}条记录)</span>
+		</div>
+		{if $type=='shipping'}
+		<div class="panel-btn">
+			<a href="{:url('add_shipping',['type'=>$type])}" class="btn btn-default"><i class="fa fa-plus"></i> 添加物流</a>
+		</div>
+		{/if}
+		<div class="panel-body table-responsive ng-scope">
+			<table class="table table-hover">
+				<thead class="navbar-inner">
+					<tr>
+						<th>插件图标</th>
+						<th>插件名称</th>
+						<th>插件描述</th>
+						<th>插件代码</th>
+						<th>插件版本</th>
+						<th>插件作者</th>
+						<th>使用场景</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					{volist name="lists" id="v"}
+					<tr>
+						<td><img src="/plugins/{$v.type}/{$v.code}/{$v.icon}" alt="..." style="width:auto;height:30px;"></td>
+						<td>{$v.name}</td>
+						<td>
+							<span id="desc_span_{$v.code}" ondblclick="show_input('{$v.code}')" style="display:block;width:100%;height:100%">{$v.desc}</span>
+							<input onblur="change_desc('{$v.code}')" value="{$v.desc}" id="desc_{$v.code}" style="display:none;" type="text">
+						</td>
+						<td>{$v.code}</td>
+						<td>{$v.version}</td>
+						<td>{$v.author}</td>
+						<td>
+							{if $v['scene']==0}
+								<i class="fa fa-desktop" title="PC"></i>
+								<i class="fa fa-mobile" title="手机" style="font-size:18px;"></i>
+							{elseif $v['scene']==1}
+								<i class="fa fa-mobile" title="手机" style="font-size:18px;"></i>
+							{else}<i class="fa fa-desktop" title="PC"></i>{/if}
+						</td>
+						<td>
+							{if $v['status']==0}
+							<a onclick="installPlugin('{$v.type}','{$v.code}',1)" class="btn btn-default btn-xs"><i class="fa fa-gavel"></i> 安装</a>
+								{if $type=='shipping'}
+								<a href="javascript:" onclick="if(confirm('确定要删除吗?')) del_shipping('{$v['code']}');" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i> 删除</a>
+								{/if}
+							{else}
+								{if $type=='shipping'}
+								<a href="{:url('shipping_list',['type'=>$v['type'],'code'=>$v['code']])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> 配置</a>
+								<a href="{:url('shipping_print',['type'=>$v['type'],'code'=>$v['code']])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> 模板编辑</a>
+								<a href="javascript:" onclick="installPlugin('{$v.type}','{$v.code}',0)" class="btn btn-default btn-xs"><i class="fa fa-ban"></i> 卸载</a>
+								{else}
+								<a href="{:url('setting',['type'=>$v['type'],'code'=>$v['code']])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> 配置</a>
+								<a href="javascript:" onclick="installPlugin('{$v.type}','{$v.code}',0)" class="btn btn-default btn-xs"><i class="fa fa-ban"></i> 卸载</a>
+								{/if}
+							{/if}
+						</td>
+					</tr>
+					{/volist}
+				</tbody>
+			</table>
+		</div>
+		<div class="panel-footer">
+			{if $total>$listRows}
+			<ul class="pagination">
+				<li><a>{$total} 条记录</a></li>
+				<li><a>{$currentPage}/{$lastPage}</a></li>
+			</ul>
+			{/if}
+			{$pages}
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap','think','layer']);
+})
+// 删除物流
+function del_shipping(code){
+	var ll = layer.load('正在处理，请稍后...', 3);
+    $.ajax({
+        type : "POST",
+        url:"{:url('Admin/Plugins/del_shipping',['type'=>$type])}",
+        dataType: "json",
+        data : {code:code},
+        success: function(data){
+            layer.msg(data.msg,{icon:6},function(){
+                location.reload();
+            });
+            layer.close(ll);
+        }
+    });
+}
+
+//插件安装(卸载)
+function installPlugin(type,code,type2){
+    var url =Think.U('Admin/Plugins/install','type='+type+'&code='+code+'&install='+type2)
+    var ll = layer.load('正在处理，请稍后...', 3);
+    $.get(url,function(data){
+        if(data.status == 1){
+        	layer.msg(data.msg,{icon:6},function(){
+            	location.reload();
+            });
+        }else{
+        	layer.msg(data.msg,{icon:5});
+        }
+        layer.close(ll);
+        return false;
+    })
+}
+
+function change_desc(code){
+    var desc = $('#desc_'+code).val();
+    var type = '{$type}';
+    $.post("{:url('Admin/Plugins/shipping_desc')}",{code:code,desc:desc,type:type},function(data){
+        $('#desc_span_'+code).show();
+        $('#desc_'+code).hide();
+        if(data.status == 1){
+            $('#desc_span_'+code).text(desc);
+        }else{
+            layer.alert('修改失败', {icon: 2});  // alert('修改失败');
+        }
+    })
+}
+function show_input(code){
+    $('#desc_span_'+code).hide();
+    $('#desc_'+code).show();
+}
+</script>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+$(document).ready(function(){
+	var type='{$type}';
+	$('.submenu > li').each(function(){
+		var href=$(this).find('a').attr('href');
+		if(href.indexOf(type)>0){
+			$(this).addClass('active');
+		}else{
+			$(this).removeClass('active');
+		}
+	});
+});
+</script>
+{/block}

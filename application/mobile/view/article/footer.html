@@ -1,0 +1,17 @@
+<footer class="m-footer-bar" style="margin-top:15px;">
+    <div class="crumbs" id="footer_crumbs">
+        <div class="inner">{$getCatCrumbs}</div>
+    </div>
+    <div class="links">
+        <a href="{:url('Mobile/Guestbook/guestbookpost')}">游客反馈</a>|
+		<a href="{:get_caturl(88)}">常见问题</a>丨
+		<a href="{:get_caturl(94)}">版权声明</a>丨
+		<a href="{:get_caturl(93)}">联系我们</a>
+    </div>
+    <div class="hotline">
+    	服务热线:<a href="tel:{$config.site_400}">{$config.site_400}</a>(09:00-18:00)
+    </div>
+    <p class="copyright">
+    	{$config.copyright}
+    </p>
+</footer>

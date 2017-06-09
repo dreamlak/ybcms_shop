@@ -1,0 +1,118 @@
+{extend name="public/user_main" /}
+{block name="main"}
+<div class="panelBox">
+	<div class="panelTitle">提现申请</div>
+	<div class="withdrawals">
+		<form action="" method="post">
+		<table class="table_form">
+			<tr>
+				<th>提现金额：</th>
+				<td><input type="text" id="money" name="money"  class="form-control" placeholder="" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onKeyUp="this.value=this.value.replace(/[^\d.]/g,'')"/></td>
+				<td style="color:#999;">每次最少提现额度￥{$config['distribut_min']},你的账户余额￥{$user['mymoney']}</td>
+			</tr>
+			<tr>
+				<th>提现名称：</th>
+				<td><input type="text" id="bank_name" name="bank_name" class="form-control" placeholder=""/></td>
+				<td style="color:#999;">如:支付宝,微信,农业银行,工商银行等...</td>
+			</tr>
+			<tr>
+				<th>收款账号：</th>
+				<td><input type="text" id="account_bank" name="account_bank" class="form-control" placeholder=""/></td>
+				<td style="color:#999;">如:支付宝账号,微信账号,工商银行账号...</td>
+			</tr>
+			<tr>
+				<th>开户名：</th>
+				<td><input type="text" id="account_name" name="account_name" class="form-control" placeholder=""/></td>
+				<td style="color:#999;">如:开户人姓名</td>
+			</tr>
+			<tr>
+				<th>验证码：</th>
+				<td>
+					<div class="input-group ">
+             			<input type="text" name="verify_code" class="form-control" id="verify_code" placeholder="" style="width:80px;"/>
+			    		<span class="input-group-addon" onclick="verify()">
+			    			<img class="yzm_code" id="verify_code_img" width="100" height="30" src="{:captcha_src()}" />
+			    		</span>
+			    	</div>
+				</td>
+			</tr>
+			<tr>
+				<th></th>
+				<td colspan="2" style="color:red;">提交成功后，由管理员审核完成方可打款</td>
+			</tr>
+			<tr>
+				<th></th>
+				<td><input type="button" onClick="checkSubmit();" value="提交" class="btn" id="btn_midefy"></td>
+			</tr>
+		</table>
+		</form>
+	</div>
+	<div class="cash_num mt20">
+		<table width="100%" border="0" cellspacing="0" cellpadding="0" class="ctable">
+			<tr>
+				<th>编号</th>
+				<th>申请日期</th>                    
+				<th>金额</th>
+				<th>状态</th>
+			</tr>
+            {foreach name="list" item="v"} 
+			<tr>
+				<td>{$v['id']}</td>
+				<td>{$v['create_time']|date="Y-m-d",###}</td>
+				<td>{$v['money']}</td>                    
+				<td>
+                {if condition="$v[status] eq 0"}申请中{/if}
+                {if condition="$v[status] eq 1"}申请成功{/if}
+                {if condition="$v[status] eq 2"}申请失败{/if}                    
+                </td>
+			</tr>
+            {/foreach}               
+		</table>
+	</div>
+    {$show}
+</div>
+<!--评论提交-->
+<script type="text/javascript">
+// 表单验证提交
+function checkSubmit(){
+	var money = $.trim($('#money').val());
+	var bank_name = $.trim($('#bank_name').val());
+	var account_bank = $.trim($('#account_bank').val());
+	var account_name = $.trim($('#account_name').val());
+	var verify_code = $.trim($('#verify_code').val());
+	
+	if(money == ''){
+		layer.msg('提现金额必填', {icon: 2});
+		return false;
+	}
+	if(money < {$config['distribut_min']} || money > {$user['mymoney']}){
+		layer.alert("每次最少提现额度{$config['distribut_min']},你的账户余额{$user['mymoney']}", {icon: 2});
+		return false;
+	}
+			
+	if(bank_name == ''){
+		layer.msg('提现名称必填', {icon: 2});
+		return false;
+	}
+	if(account_bank == ''){
+		layer.msg('收款账号必填', {icon: 2});
+		return false;
+	}
+	if(account_name == ''){
+		layer.msg('开户名必填', {icon: 2});
+		return false;
+	}
+	if(verify_code == ''){
+		layer.msg('验证码必填', {icon: 2});
+		return false;
+	}
+	$('#distribut_form').submit();
+}
+
+// 验证码切换
+function verify(){
+   	$('#verify_code').val('');
+	$('#verify_code_img').attr('src','{:captcha_src()}?t='+Math.random());
+}
+</script>
+{/block}

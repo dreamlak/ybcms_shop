@@ -1,0 +1,118 @@
+{extend name="public/base_min" /}
+{block name="style"}
+<style type="text/css">
+.head-right *{font-size:12px;}
+</style>
+{/block}
+{block name="main"}
+<!--列表-->
+<div class="panel panel-list">
+	<div class="panel-heading">
+		<span class="tit-name"><i class="fa fa-folder-open-o"></i> 订单列表</span> 
+		<span class="tit-info">(共{:count($goodsList)}条记录)</span>
+		<div class="head-right">
+			<form action="" method="get" class="form-inline">
+				<select name="cat_id" id="cat_id" class="form-control" style="width:100px;">
+        			<option value="">所有分类</option>
+                 	{foreach name="categoryList" item="v" key="k"}
+					<option value="{$v['id']}" {if $v[id]==$cat_id}selected{/if}>{:str_pad('',($v[level] * 5),'-',STR_PAD_LEFT)} {$v['name']}</option>
+					{/foreach}
+	          	</select>
+	          	<select name="brand_id" id="brand_id" class="form-control" style="width:100px;">
+        			<option value="">所有品牌</option>
+                    {foreach name="brandList" item="v" key="k"}
+                       <option value="{$v['id']}" {if $v[id]==$brand_id}selected{/if}>{$v['name']}</option>
+					{/foreach}
+	          	</select>
+	          	<select name="intro" class="form-control" style="width:100px;">
+	                <option value="0">全部</option>
+                    <option value="is_new">新品</option>
+                    <option value="is_recommend">推荐</option>
+	            </select>
+	          	<input name="keywords" value="{$keywords}" type="text" class="form-control" placeholder="搜索词...">
+	          	<button type="submit" class="btn btn-default">搜索</button>
+			</form>
+		</div>
+	</div>
+	<div class="panel-btn">
+		<a onclick="select_goods()" class="btn btn-default"><i class="fa fa-check"></i> 确定选择</a>
+	</div>
+	<div class="panel-body table-responsive ng-scope">
+		<table class="table table-hover" id="goods_table">
+			<thead class="navbar-inner">
+				<tr>
+					<th>商品名称(规格)</th>
+					<th>价格</th>
+					<th style="width:60px;">库存</th>
+					<th id="buynum" style="display:none;width:60px;">购买数量</th>
+					<th style="width:60px;">操作</th>
+				</tr>
+			</thead>
+			<tbody>
+			{volist name="goodsList" id="v"}
+				{if $v['spec_goods']!=null}
+				{volist name="v['spec_goods']" id="spec_goods"}
+				<tr for="chk{$v.goods_id}">
+					<td title="{$v.goods_name}">{$v.goods_name|getSubstr=0,20}&nbsp;&nbsp;&nbsp;(&nbsp;{$spec_goods['key_name']}&nbsp;)</td>
+					<td>{$spec_goods['price']}</td>
+					<td>{$spec_goods['store_count']}</td>
+					<td style="display:none;">
+						<div class="custom-checkbox" style="display:none;">
+							<input type="checkbox" name="ids[]" id="chk{$v.goods_id}" class="inbox-check" value="{$v.goods_id}">
+							<label for="chk{$v.goods_id}"></label>
+						</div>
+						<input type="text" name="goods_id[{$v.goods_id}][{$spec_goods['key']}][goods_num]"  value="1" class="form-control" style="width:60px !important;text-align:center" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')"/>
+					</td>
+					<td>
+						<a class="btn" href="javascript:void(0);" onclick="javascript:$(this).parent().parent().remove();"><i class="fa fa-trash-o"></i>移除</a>
+					</td>
+				</tr>
+				{/volist}
+				{else}
+				<tr for="chk{$v.goods_id}">
+					<td title="{$v.goods_name}">{$v.goods_name|getSubstr=0,20}</td>
+					<td>{$v.shop_price}</td>
+					<td>{$v.store_count}</td>
+					<td style="display:none;">
+						<div class="custom-checkbox" style="display:none;">
+							<input type="checkbox" name="ids[]" id="chk{$v.goods_id}" class="inbox-check" value="{$v.goods_id}">
+							<label for="chk{$v.goods_id}"></label>
+						</div>
+						<input type="text" name="goods_id[{$v.goods_id}][key][goods_num]" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')" class="form-control" style="width:60px !important;text-align:center" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" value="1" class="input-sm"/>
+					</td>
+					<td>
+						<a class="btn" href="javascript:void(0);" onclick="javascript:$(this).parent().parent().remove();"><i class="fa fa-trash-o"></i>移除</a>
+					</td>
+				</tr>
+				{/if}
+			{/volist}
+			</tbody>
+		</table>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap','layer']);
+});
+function select_goods(){	  
+  	if($('input[name="ids[]"]:checked').length == 0){
+		layer.alert('请选择商品', {icon: 2});
+		return false;
+  	}
+  	//将没选中的复选框所在的  tr  remove  然后删除复选框
+    $('input[name="ids[]"]').each(function(){
+		if($(this).is(':checked') == false){
+		    $(this).parent().parent().parent().remove();
+	   	}
+		$(this).parent().parent().show();
+		$(this).siblings().show();
+		$('#buynum').show();
+	   	$(this).parent().remove();
+ 	});
+	var tabHtml = $('#goods_table').html();
+	javascript:window.parent.call_back(tabHtml.replace(/选择/,'购买数量'));
+}    
+</script>
+{/block}
+{block name="script"}
+{/block}

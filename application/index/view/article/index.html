@@ -1,0 +1,77 @@
+{extend name="public/base" /}
+{block name="css"}
+<link href="__STATIC__/css/news_css.css" rel="stylesheet" type="text/css" />
+{/block}
+{block name="main"}
+{include file="public/xmjd" /}
+<div class="news_list">
+	<div class="news_2px"></div>
+	<div class="news_list_right fr">
+		<div class="current"><span><i>当前位置</i>&gt{:get_Catbs($catid)}</span><h2>{$catname}</h2></div>
+		<div class="news_list_box">
+			<ul>
+				{volist name="lists" id="vo"}
+				<li>
+					<span><b>{:date('d',$vo['addtime'])}</b><i>{:date('Y-m',$vo['addtime'])}</i></span>
+					<h3>
+						<a href="{$vo['url']}" title="{$vo['title']}">{$vo['title']}</a>
+						<p>{$vo['description']|msubstr=0,49}<a href="{$vo['url']}">[详情]</a></p>
+					</h3>
+				</li>
+				{/volist}
+			</ul>
+		</div>
+		<div class="pages">
+			{if $total>$listRows}
+			<div class="pagination-row clearfix">
+				<ul class="pagination">
+					<li><a>{$total} 条记录</a></li>
+					<li><a>{$currentPage}/{$lastPage}</a></li>
+				</ul>
+				{$pages}
+			</div>
+			{/if}
+		</div>
+	</div>
+	<div class="news_list_left f1">
+		<div class="news_side">
+			<h2 class="catname">
+				{:get_cattopname($catid)}
+				<em>{:get_cattopname_en($catid)}</em>
+			</h2>
+			<ul>
+				{volist name="catlist" id="v"}
+				<li{if $v['catid']==$catid} class="news_on"{/if}><a href="{$v['url']}" title="{$v['catname']}">{$v['catname']}</a></li>
+				{/volist}
+			</ul>
+		</div>
+		<div class="news_serve">
+			<div class="news_serve_img"><img src="__STATIC__/images/serve.jpg" alt="" /></div>
+			<div class="tab_news_serve fl">
+				<div class="news_serve_tab ">
+					<ul>
+						<li id="zzjs_news_serve1" onmousemove="settab_zzjs('zzjs_news_serve',1,2)" class="on_zzjs"><a href="{:get_caturl(88)}" title="">常见问题</a></li>
+						<li id="zzjs_news_serve2" onmousemove="settab_zzjs('zzjs_news_serve',2,2)"><a href="{:get_caturl(90)}" title="">旅客须知</a></li>
+					</ul>
+				</div>
+				<div class="tab_news_serve_list" id="zzjs_news_serve_zzjs1">
+					<ul>
+						{ybcms:art catid="88" num="4" item="v" key="k"}
+						<li><a href="{$v.url}" title="{$v.title}">{$v.title}</a></li>
+						{/ybcms:art}
+					</ul>
+				</div>
+				<div class="tab_news_serve_list" id="zzjs_news_serve_zzjs2" style="display:none;">
+					<ul>
+						{ybcms:art catid="90" num="4" item="v" key="k"}
+						<li><a href="{$v.url}" title="{$v.title}">{$v.title}</a></li>
+						{/ybcms:art}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="cl"></div>
+</div>
+<div class="news_30px"></div>
+{/block}

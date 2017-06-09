@@ -1,0 +1,126 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>文章模型管理-编辑文章模型</h3>
+			<h5>文章模型添加与管理</h5>
+		</div>
+	</div>
+	<form action="" method="post" class="form-horizontal">
+    	<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>模型名称</label>
+		    <div class="col-sm-9 col-xs-12">
+         		<input type="text" name="title" id="title" placeholder="模型名称" class="form-control" value="{$info['title']}">
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>模型英文标识</label>
+		    <div class="col-sm-9 col-xs-12">
+         		<input type="text" name="name" id="name" placeholder="模型英文标识名称" class="form-control" value="{$info['name']}">
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">模型图标</label>
+		    <div class="col-sm-9 col-xs-12">
+		    	<div class="input-group">
+             		<input type="text" name="icon" id="icon" class="form-control" value="{$info['icon']}">
+             		<span class="input-group-addon"><i class=""></i></span>
+             		<span class="input-group-btn">
+                    	<button class="btn btn-default" type="button" onclick="showIconDialog(this);">选择图标</button>
+                	</span>
+            	</div>
+         		<span class="help-block"><i class="fa fa-home"></i>样式如：fa-home，不明白点“<a href="http://fontawesome.io/icons/" target="_blank">参考网站</a>”</span>
+           	</div>
+           	<script type="text/javascript">
+           	//选择图标
+			function showIconDialog(elm) {
+				var spview = $(elm).parent().prev();
+				var ipt = spview.prev();
+				if(!ipt.val()){
+					spview.css("display","none");
+				}
+				util.iconBrowser(function(ico){
+					ipt.val(ico);
+					spview.show();
+					spview.find("i").attr("class","");
+					spview.find("i").addClass("fa").addClass(ico);
+				});
+			}
+           	</script>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">文章模型状态</label>
+		    <div class="col-sm-9 col-xs-12">
+	            <label class="radio-inline"><input type="radio" name="status" value="1" {if $info['sort']==1}checked{/if}>启用</label>
+	            <label class="radio-inline"><input type="radio" name="status" value="0" {if $info['sort']==0}checked{/if}>禁用</label>
+            </div>
+		</div>
+    	<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
+		    <div class="col-sm-9 col-xs-12">
+                <input type="text" name="sort" id="sort" class="form-control" value="{$info['sort']}">
+		        <span class="help-block">数字越小，排名越靠前,如果为空，默认排序方式为创建时间</span>
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">默认栏目首页模板</label>
+		    <div class="col-sm-9 col-xs-12">
+         		<input type="text" name="indextpl" id="indextpl" class="form-control" value="{$info['indextpl']}">
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">默认列表页模板</label>
+		    <div class="col-sm-9 col-xs-12">
+         		<input type="text" name="listtpl" id="listtpl" class="form-control" value="{$info['listtpl']}">
+           	</div>
+		</div>
+		<div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">默认内容页模板</label>
+            <div class="col-sm-9 col-xs-12">
+         		<input type="text" name="showtpl" id="showtpl" class="form-control" value="{$info['showtpl']}">
+           	</div>
+        </div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+		    <div class="col-sm-9 col-xs-12">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary col-lg-1">
+		    </div>
+		</div>
+		<input type="hidden" name="modelid" value="{$info['modelid']}" />
+    </form>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['think','layer','bootstrap']);
+	//回车事件
+	document.onkeydown = function(e) {
+		var theEvent = window.event || e;
+		var code = theEvent.keyCode || theEvent.which;
+		if(code == 13){
+			$("#submitbtn").click();
+		}
+	}
+	//提交
+	$('#submitbtn').click(function(){
+		var fields = $('form').serializeArray();
+		var ll = layer.load('正在处理，请稍后...', 3);
+		$.post(Think.U('Admin/ArticleMod/edit'),fields,function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6,time:1000}, function(){
+					history.go(-1);
+					location.reload();
+				});
+	        } else {
+	        	layer.msg(data.msg, {icon:5});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+});
+</script>
+{/block}

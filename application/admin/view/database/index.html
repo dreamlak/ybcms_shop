@@ -1,0 +1,116 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+</style>
+{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>数据备份管理</h3>
+			<h5>系统数据备份与恢复管理</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>可能系统数据库备份、优化和修复操作</li>
+		</ol>
+	</div>
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 备份数据库</span> 
+			<span class="tit-info">(数据库备份管理 （数据库中共有{$tableNum}张表，共计{$total})</span>
+		</div>
+		<div class="panel-btn">
+			<a href="javascript:" url="{:url('backup')}" class="btn btn-default" id="gobackup"><i class="fa fa-save"></i> 备份数据库</a>
+		</div>
+		<div class="panel-body table-responsive ng-scope">
+			<table class="table table-hover">
+				<thead class="navbar-inner">
+					<tr>
+						<th style="width:30px;">
+							<div class="custom-checkbox">
+								<input type="checkbox" id="chkAll" class="inbox-check">
+								<label for="chkAll"></label>
+							</div>
+						</th>
+						<th>数据库表</th>
+						<th>记录条数</th>
+						<th>占用空间</th>
+						<th>编码</th>
+						<th>创建时间</th>
+						<th>说明</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+				{volist name="lists" id="v"}
+					<tr for="chk{$v.Name}">
+						<td>
+							<div class="custom-checkbox">
+								<input type="checkbox" name="backs[]" id="chk{$v.Name}" class="inbox-check" value="{$v.Name}">
+								<label for="chk{$v.Name}"></label>
+							</div>
+						</td>
+						<td>{$v.Name}</td>
+						<td>{$v.Rows}</td>
+						<td>{$v.Data_length|getRealSize}</td>
+						<td>{$v.Collation}</td>
+						<td>{$v.Create_time}</td>
+						<td>{$v.Comment}</td>
+						<td>
+							<a class="btn btn-default btn-xs" href="{:url('optimize',['tablename'=>$v['Name']])}">优化</a>
+	                      	<a class="btn btn-default btn-xs" href="{:url('repair',['tablename'=>$v['Name']])}" data-url="">修复</a>
+						</td>
+					</tr>
+				{/volist}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap','think','layer']);
+	
+	$('a#gobackup').click(function(){
+		var a = [];
+		$('input[name*=backs]').each(function(i,o){
+			if($(o).is(':checked')){
+				a.push($(o).val());
+			}
+		});
+		if(a.length==0){
+			layer.alert('请选择要备份的数据表', {icon: 2});  //alert('请选择要备份的数据表');
+			return;
+		}else{
+			$(this).addClass('disabled');
+			$(this).html('备份进行中...');
+			var ll = layer.load('正在处理，请稍后...', 3);
+			$.post(Think.U('Admin/Database/backup'),{tables:a},function(data){
+		        if(data.status==1) {
+		        	layer.alert(data.msg,{icon:6}, function(){
+		        		$(this).removeClass('disabled');
+						$(this).html('<i class="fa fa-save"></i> 备份数据库');
+						location.reload();
+					});
+		        }else{
+		        	layer.alert(data.msg, {icon:5});
+		        }
+		        layer.close(ll);
+		        return false;
+		    });
+		}
+	});
+})
+</script>
+{/block}

@@ -1,0 +1,145 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>会员提现申请</h3>
+			<h5>会员提现申请操作动向</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>请谨慎处理会员提现申请</li>
+		</ol>
+	</div>
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 会员提现申请列表</span> 
+			<span class="tit-info">(共{$total}条记录)</span>
+			<div class="head-right">
+				<form action="" method="get" class="form-inline">
+					<input type="text" name="starttime" id="starttime" value="{$ste}" placeholder="开始时间" class="form-control form_datetime">
+					<input type="text" name="endtime" id="endtime" value="{$ete}" placeholder="结束时间" class="form-control form_datetime">
+                    <script type="text/javascript">
+	        		require(['bootstrap-datetimepicker-zh-CN'],function(){
+		        		$(".form_datetime").datetimepicker({
+		        			language:'zh-CN',
+		        			format: 'yyyy-mm-dd',
+		        			autoclose: true,
+		        			startView:2,
+		        			minView:2,
+		        			todayHighlight:true
+		        		});
+	        		});
+	        		</script>
+		          	<input type="text" name="account_name" value="" placeholder="收款账号" class="form-control"/>
+		          	<input type="text" name="account_bank" value="" placeholder="收款账户名" class="form-control"/>
+		          	<button type="submit" class="btn btn-default">搜索</button>
+				</form>
+			</div>
+		</div>
+		<div class="panel-btn">
+			<a href="javascript:" url="{:url('withdrawalsdel')}" class="btn btn-default" data="ajax"><i class="fa fa-trash-o"></i> 批量删除会员</a>
+			<!--div class="btn-group">
+			  	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">处理设置 <span class="caret"></span></button>
+			  	<ul class="dropdown-menu" role="menu">
+				    <li><a href="javascript:" url="{:url('withdrawalsStatus',['status'=>2])}" data="ajax">提现通过</a></li>
+					<li><a href="javascript:" url="{:url('withdrawalsStatus',['status'=>-1])}" data="ajax">拒绝提现</a></li>
+			  	</ul>
+			</div-->
+		</div>
+		<div class="panel-body table-responsive ng-scope">
+			<table class="table table-hover">
+				<thead class="navbar-inner">
+					<tr>
+						<th style="width:30px;">
+							<div class="custom-checkbox">
+								<input type="checkbox" id="chkAll" class="inbox-check">
+								<label for="chkAll"></label>
+							</div>
+						</th>
+						<th>申请ID</th>
+						<th>用户</th>
+						<th>申请时间</th>
+						<th>申请金额</th>
+						<th>银行名称</th>
+						<th>银行账号</th>
+						<th>银行账户</th>
+						<th>状态</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					{volist name="lists" id="v"}
+					<tr for="chk{$v.id}">
+						<td>
+							<div class="custom-checkbox">
+								<input type="checkbox" name="ids[]" id="chk{$v.id}" class="inbox-check" value="{$v.id}">
+								<label for="chk{$v.id}"></label>
+							</div>
+						</td>
+						<td>{$v.id}</td>
+						<td>{:getUserName($v.userid)}({$v.userid})</td>
+						<td>{:date('Y-m-d H:i:s',$v['create_time'])}</td>
+						<td>{$v.money}</td>
+						<td>{$v.bank_name}</td>
+						<td>{$v.account_bank}</td>
+						<td>{$v.account_name}</td>
+						<td>{if $v['status']==0}申请中{elseif $v['status']==1}申请成功{else}申请失败{/if}</td>	
+						<td>
+							<a href="{:url('remittance',['withdrawals_id'=>$v['id']])}" class="btn blue"><i class="fa fa-file-text-o"></i>查看记录</a>
+							<a href="{:url('withdrawalsedit',['id'=>$v['id']])}" class="btn blue"><i class="fa fa-pencil-square-o"></i>编辑</a>
+                            {if in_array($v[status],array(0,2))}
+                            <a class="btn red"  href="javascript:void(0)" onclick="del('{$v[id]}')"><i class="fa fa-trash-o"></i>删除</a>
+                            {/if}
+						</td>
+					</tr>
+					{/volist}
+				</tbody>
+			</table>
+		</div>
+		<div class="panel-footer">
+			{if $total>$listRows}
+			<ul class="pagination">
+				<li><a>{$total} 条记录</a></li>
+				<li><a>{$currentPage}/{$lastPage}</a></li>
+			</ul>
+			{/if}
+			{$pages}
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap']);
+})
+// 删除操作
+function del(id){
+    if(!confirm('确定要删除吗?')){return false;}
+    require(['think','layer'], function(){
+		var ll = layer.load('正在处理，请稍后...', 3);
+		$.post(Think.U('Admin/Member/withdrawalsdel'),{id:id},function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6,time:1000}, function(){
+					location.reload();
+				});
+	        } else {
+	        	layer.msg(data.msg, {icon:5});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+}
+</script>
+{/block}
+{block name="script"}
+{/block}

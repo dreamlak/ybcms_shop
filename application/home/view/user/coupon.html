@@ -1,0 +1,42 @@
+{extend name="public/user_main" /}
+{block name="main"}
+<div class="panelBox">
+	<div class="coupon_title">
+		优惠券
+		<ul class="commenu">
+	        <li{if input('type')==''} class="on"{/if}><a href="{:url('Home/User/coupon')}">未使用</a></li>
+	        <li{if input('type')=='1'} class="on"{/if}><a href="{:url('Home/User/coupon',['type'=>1])}">已使用</a></li>
+	        <li{if input('type')=='2'} class="on"{/if}><a href="{:url('Home/User/coupon',['type'=>2])}">已过期</a></li>
+	    </ul>
+	</div>
+	<div class="coupon">
+		<table class="ctable">
+			<thead>
+			<tr>
+				<th>名称</th>
+				<th>编号</th>
+				<th>优惠金额</th>
+				<th>有效期</th>
+				<th>使用要求(订单金额)</th>
+			</tr>
+			</thead>
+			<tbody>
+			{volist name="coupon_list" id="coupon"}
+                <tr>
+                    <td>{$coupon.name}</td>
+                    <td>{$coupon.code|default='N'}</td>
+                    <td>{$coupon.money}</td>
+                    <td>{$coupon.use_end_time|date='Y-m-d H:s',###}</td>
+                    <td>{$coupon.condition}</td>
+                </tr>
+            {/volist}
+			</tbody>
+		</table>
+		<div>{$page}</div>
+	</div>
+</div>
+<!--评论提交-->
+<script type="text/javascript">
+	
+</script>
+{/block}

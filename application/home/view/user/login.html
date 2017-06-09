@@ -1,0 +1,167 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>登录-{$config['site_name']}</title>
+<meta http-equiv="keywords" content="{$config['site_key']}" />
+<meta name="description" content="{$config['site_desc']}" />
+<link rel="stylesheet" href="__P_CSS__/user/style.css" type="text/css">
+<script src="__P_JS__/jquery/jquery-1.11.1.min.js"></script>
+<script src="__P_JS__/layer/layer.js"></script>
+</head>
+<body>
+<div class="headers">
+	<div class="w1000 clearfix">
+		<div class="logo">
+			<span class="td"><a href="/"><img src="{$config['site_logo']}" alt="logo"></a></span>
+			<span class="td"><img src="__P_IMG__/user/split.png" /></span>
+			<span class="td text">{$config['site_name']}</span>
+		</div>
+	</div>
+</div>
+<div class="logo_main">
+	<div class="w1000 clearfix">
+		<div class="logo_form">
+			<div class="logo_tab">
+				<span>账户登录</span>
+				<span></span>
+			</div>
+			<div class="form">
+                <form id="formlogin" method="post" action="{:url('Home/User/do_login')}" method="post">
+                	<input type="hidden" name="referurl" id="referurl" value="{$referurl}">
+                    <div class="item item-fore1">
+                        <label for="username" class="login-label name-label"></label>
+                        <input id="username" type="text" class="itxt" name="username" tabindex="1" autocomplete="off" placeholder="邮箱/用户名/已验证手机">
+                        <span class="clear-btn"></span>
+                    </div>
+					<div class="item item-fore2" style="visibility: visible;">
+						<label class="login-label pwd-label" for="password"></label>
+						<input type="password" id="password" name="password" class="itxt itxt-error" tabindex="2" autocomplete="off" placeholder="密码">
+						<span class="clear-btn"></span>
+					</div>
+                    <div id="vcode" class="item item-vcode item-fore3">
+                        <input id="verify_code" type="text" class="itxt itxt02" name="verify_code" tabindex="3">
+                        <img id="verify_code_img" class="verify-code" src="{:captcha_src()}" onclick="verify()">
+                        <a href="javascript:void(0)" onclick="verify()">看不清换一张</a>
+                    </div>
+					<div class="item item-fore4">
+						<div class="safe">
+							<span>
+								<label style="float:left;">
+									<input class="ma-ri-5 fo-fa-ta" type="checkbox" id="remember_name" style="float:left;"/>记住用户名
+								</label>
+							</span>
+							<span class="right">
+								
+							</span>
+                     	</div>
+                    </div>
+                    <div class="item item-fore5">
+                        <div class="login-btn">
+                            <a href="javascript:;" class="btn-img btn-entry" onclick="checkSubmit()" tabindex="6">登&nbsp;&nbsp;&nbsp;&nbsp;录</a>
+                        </div>
+                    </div>
+                    <div class="item item-fore6">
+                    	<span><a href="{:url('User/forget_pwd')}" class="" >忘记密码</a></span>
+                    	<span style="float:right;">没有账号？&nbsp;&nbsp;<a href="{:url('Home/User/reg')}">立即注册</a></span>
+                    </div>
+                </form>
+            </div>
+            <div class="coagent">
+                {ybcms:sql sql="select * from __PREFIX__plugin where type='login' AND status = 1" item="v" key="k"}
+		            <a class="icon_type btn_{$v['code']} sns-login-link" href="{:url('LoginApi/login',['oauth'=>$v['code']])}">
+		            	<i class="btn_sns_icontype icon_default_{$v['code']}"></i>
+		            </a>
+		        {/ybcms:sql}
+            </div>
+		</div>
+	</div>
+	<div class="login-banner">
+		<div class="w1000 clearfix"><img src="__P_IMG__/user/login_bg.png"></div>
+	</div>
+</div>
+<div class="footer">
+    <p>Copyright © 2016-2025 {$config['site_name']}  版权所有 保留一切权利 备案号:{$config['site_icp']}</p>
+</div>
+<script>
+$(function(){
+	//回车事件
+	document.onkeydown = function(e) {
+		var theEvent = window.event || e;
+		var code = theEvent.keyCode || theEvent.which;
+		if(code == 13){
+			checkSubmit();
+		}
+	}
+	
+	$('#username,#password').keydown(function(){
+		if($(this).val()!=''){
+			$(this).siblings('span').show();
+		}else{
+			$(this).siblings('span').hide();
+		}
+	});
+	$('#username,#password').blur(function(){
+		if($(this).val()!=''){
+			$(this).siblings('span').show();
+		}else{
+			$(this).siblings('span').hide();
+		}
+	});
+	$(".clear-btn").click(function(){  
+	    $(this).siblings('input').val('');  
+	    $(this).hide();  
+	}); 
+});
+function verify(){
+   	$('#verify_code').val('');
+	$('#verify_code_img').attr('src','{:captcha_src()}?t='+Math.random());
+}
+function checkSubmit(){
+	var username = $.trim($('#username').val());
+	var password = $.trim($('#password').val());
+	var referurl = $('#referurl').val();
+	var verify_code = $.trim($('#verify_code').val());
+	if(username == ''){layer.msg('用户名不能为空', {icon: 2});return false;}
+	//if(!checkMobile(username) && !checkEmail(username)){layer.msg('账号格式不匹配', {icon: 2});return false;}
+	if(password == ''){layer.msg('密码不能为空', {icon: 2});return false;}
+	if(verify_code == ''){layer.msg('验证码不能为空', {icon: 2});return false;}
+	
+	$.ajax({
+		type : 'post',
+		url : '/index.php/Home/User/do_login/t/'+Math.random(),
+		data : {username:username,password:password,referurl:referurl,verify_code:verify_code},
+		dataType : 'json',
+		success : function(res){
+			if(res.status == 1){
+				window.location.href = res.url;
+			}else{
+				layer.msg(res.msg, {icon: 2})
+				verify();
+			}
+		},
+		error : function(XMLHttpRequest, textStatus, errorThrown) {
+			showErrorMsg('网络失败，请刷新页面后重试');
+		}
+	})
+	
+}
+function checkMobile(tel) {
+    var reg = /(^1[3|4|5|7|8][0-9]{9}$)/;
+    if (reg.test(tel)) {
+        return true;
+    }else{
+        return false;
+    };
+}
+function checkEmail(str){
+    var reg = /^[a-z0-9]([a-z0-9\\.]*[-_]{0,4}?[a-z0-9-_\\.]+)*@([a-z0-9]*[-_]?[a-z0-9]+)+([\.][\w_-]+){1,5}$/i;
+    if(reg.test(str)){
+        return true;
+    }else{
+        return false;
+    }
+}
+</script>
+</body>
+</html>

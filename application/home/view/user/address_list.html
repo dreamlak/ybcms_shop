@@ -1,0 +1,67 @@
+{extend name="public/user_main" /}
+{block name="main"}
+<div class="panelBox">
+	<div class="panelTitle">
+		收货地址
+		<a href="javascript:" onClick="address_edit({$list['id']})" class="btn btn-default">+添加地址</a>
+	</div>
+	<div class="address">
+		<table class="ctable">
+			<thead>
+            <tr>
+            	<th width="40"></th>
+                <th width="100">收货人</th>
+                <th>收货地址</th>
+                <th width="118">邮编</th>
+                <th width="172">手机/电话</th>
+                <th width="199">操作</th>
+            </tr>
+            </thead>
+            <tbody>
+            {volist name="lists" id="list"}
+                <tr>
+                	<td align="right">{if $list['is_default']==1}<i class="fa fa-check" style="color:red;"></i>{/if}</td>
+                    <td>{$list.consignee}</td>
+                    <td>
+                        <span>
+                        {$list['province']|get_id_areaName=0}
+                        {$list['city']|get_id_areaName=0}
+                        {$list['district']|get_id_areaName=0}
+                        {$list['twon']|get_id_areaName=0}
+                        {$list.address}
+                        </span>
+                    </td>
+                    <td>{$list.zipcode}</td>
+                    <td>{$list.mobile}</td>
+                    <td>
+                        <p><a class="btn btn-xs" href="javascript:address_edit({$list['id']})">编辑</a></p>
+                        <p><a class="btn btn-xs" href="{:url('Home/User/del_address',['id'=>$list['id']])}">删除</a></p>
+                        <p><a class="btn btn-xs" href="{:url('Home/User/set_default',['id'=>$list['id']])}">默认地址</a></p>
+                    </td>
+                </tr>
+            {/volist}
+            </tbody>
+		</table>
+	</div>
+</div>
+<!--评论提交-->
+<script type="text/javascript">
+/**
+ * 新增修改收货地址
+ * id 为零 则为新增, 否则是修改
+ */
+function address_edit(id){
+    if(id > 0){
+    	var url = Think.U('Home/User/edit_address','scene=1&call_back=call_back_fun&id='+id);
+    }else{
+    	var url = Think.U('Home/User/add_address','scene=1&call_back=call_back_fun');//新增地址
+    }
+    layer.open({type:2,title:'添加收货地址',shadeClose:true,shade:0.8,area:['880px','580px'],content:url});
+}
+// 添加修改收货地址回调函数
+function call_back_fun(v){
+    layer.closeAll(); //关闭窗口
+    location.href = location.href;
+}
+</script>
+{/block}

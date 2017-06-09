@@ -1,0 +1,8 @@
+{foreach name="account_log" item="item" key="k"}
+<li class="Funds_li" {if $k == count($account_log)} style="border:0"{/if}>
+	<span class="icon {if $k == 0}on{/if}"></span>
+    <span>金额:<em>{$item.mymoney}</em>,积分:<em>{$item.mypoints}</em></span>
+    <span>{$item.addtime|date='Y-m-d H:i:s',###}</span>
+    <span>{$item.desc}</span>
+</li>
+{/foreach}

@@ -1,0 +1,381 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+ul,li{list-style-type:none;}
+.infos{heigth:35px;line-height:35px;color:#888;margin:20px 10px 0;font-size:16px;font-family:微软雅黑}
+
+.slideTxtBox{margin:10px;border:1px solid #E7E7EB}
+.slideTxtBox .hd{height:38px;line-height:38px;border-bottom:1px solid #E7E7EB;position:relative}
+.slideTxtBox .hd ul{float:left;position:absolute;left:0px;top:0px}
+.slideTxtBox .hd ul li{float:left;padding:0 20px;cursor:pointer;color:#8d8d8d;font-size:16px;font-family:微软雅黑}
+.slideTxtBox .hd ul li label{cursor:pointer;font-size:16px;font-weight:normal;}
+.slideTxtBox .hd ul li i{font-size:22px;margin-right:8px}
+.slideTxtBox .hd ul li.on{color:#222}
+.slideTxtBox .bd{zoom:1}
+.slideTxtBox .bd .conts .textreplay{border:0;font-size:16px;font-family:微软雅黑;color:#222;padding:15px;border:0}
+.slideTxtBox .bd .conts .textbuttom{height:38px;line-height:38px;border-top:1px solid #E7E7EB;font-size:14px;font-family:微软雅黑;padding:0 10px;position:relative}
+.slideTxtBox .bd .conts .textbuttom .tr{float:right;color:#8d8d8d}
+.slideTxtBox .bd .conts .textbuttom .tl{float:left;color:#8d8d8d}
+.slideTxtBox .bd .conts .textbuttom .tl i{font-size:24px;cursor:pointer;margin-top:8px}
+.slideTxtBox .bd .conts .textbuttom .tl:hover{color:#222}
+.slideTxtBox .bd .conts2 .showtw{min-height:242px;padding:20px}
+.slideTxtBox .bd .conts2 .addtw{border:2px dotted #d9dadc;display:block;width:360px;height:194px;overflow:hidden;text-align:center;vertical-align:middle;line-height:normal}
+.slideTxtBox .bd .conts2 .addtw:hover{border-color:#b3b3b3}
+.slideTxtBox .bd .conts2 .addtw a{display:block;font-size:14px;font-family:微软雅黑;text-decoration:none;color:#d8d8d8;padding:68px}
+.slideTxtBox .bd .conts2 .addtw i{font-size:50px;display:block}
+.slideTxtBox .bd .conts2 .addtw a:hover{color:#666}
+
+.buttom{margin:30px 10px 0}
+.buttom .button{width:100px}
+
+.emotion_wrp{display:none;position:absolute;width:430px;top:40px;left:-1px}
+.emotion_wrp .hook{position:absolute;left:12px;top:0}
+.emotion_wrp .hook .hook_dec{position:absolute;left:0px;width:0px;height:0px;border-style:solid;border-width:8px;display:block}
+.emotion_wrp .hook .hook_top{top:-16px;border-color:transparent transparent #c0bfc5}
+.emotion_wrp .hook .hook_btm{top:-15px;border-color:transparent transparent #f6f6f6}
+.emotion_wrp .emotions{border-collapse:collapse;border:0}
+.emotion_wrp .emotions td{width:27px;height:27px;font-size:0;text-align:center;background:#fff;border-color:#d3d3d3}
+.emotion_wrp .emotions td:hover{background:#dedede}
+.emotion_wrp .emotions td img{display:block;cursor:pointer;width:24px;height:24px}
+
+.boxlist{margin-top:5px}
+.boxlist li{width:250px;height:auto;color:#666;padding:10px;position:relative;background:#fff;overflow:hidden}
+.boxlist li{border:1px solid #b8b8b8;vertical-align: middle;border-radius:5px;-moz-border-radius:5px;-webkit-border-radius:5px}
+.boxlist li h3{font-size:12px;margin:0 0 5px 0;padding:0}
+.boxlist li p,.boxlist li div{font-size:12px;font-weight:normal;line-height:20px}
+.boxlist li #twzy{height:83px;overflow:hidden}
+.boxlist li #twtp{position:relative;height:136px;padding:10 0px}
+.boxlist li #twtp img{width:250px;height:136px;display:block}
+.boxlist li #twtp span{position:absolute;bottom:10px;height:24px;line-height:24px;background:#656565;color:#fff;width:230px;padding:0 10px;filter:alpha(opacity=50);opacity:0.5}
+.boxlist li #item{height:50px;border-top:1px #b8b8b8 solid}
+.boxlist li #item img{width:50px;height:50px;display:block}
+.boxlist li #item td{padding:5px;position:relative}
+.boxlist li #twgl .deldets{float:right;width:18px;height:25px;margin:0 0 0 10px;color:#666;font-size:16px;}
+
+.imgartbox{position:fixed;top:92px;bottom:0;right:0;z-index:999;width:800px;padding-left:20px;overflow:hidden;background:#fff;border:1px #ddd solid;}
+.imgartbox .close{position:absolute;left:0;top:0;bottom:0;width:20px;text-align:center;display:table-cell;vertical-align:middle;font-weight:normal;background:#f5f5f5;color:#ddd;filter:alpha(opacity=100);opacity:1;}
+.imgartbox .close i{position:absolute;top:49%;left:-2px;}
+.imgartbox .close:hover{background:#ddd;color:#fff;}
+</style>
+{/block}
+{block name="main"}
+<script type="text/javascript" src="__JS__jquery/jquery.SuperSlide.2.1.1.source.js"></script>
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>微信关键词回复-添加关键词</h3>
+			<h5>微信关键词匹配回复管理</h5>
+		</div>
+	</div>
+	<form name="myform" id="myform" action="" method="post" >
+	<div class="input-group clearfix" style="margin:10px;">
+		<span class="input-group-addon"><span style="width:100px;display:block;">关&nbsp;&nbsp;&nbsp;键&nbsp;&nbsp;&nbsp;词：</span></span>
+        <input type="text" value="" name="keyword" id="keyword" placeholder="关键词内容" class="form-control" />
+	</div>
+    <div class="input-group clearfix" style="margin:10px;">
+		<span class="input-group-addon"><span style="width:100px;display:block;">关键词状态：</span></span>
+        <select name="status" id="status" class="form-control">
+        	<option value="1">启用</option>
+        	<option value="0">禁用</option>
+        </select>
+    </div>
+    <div class="input-group clearfix" style="margin:10px;">
+		<span class="input-group-addon"><span style="width:100px;display:block;">匹&nbsp;配&nbsp;类&nbsp;型：</span></span>
+        <select name="matchtype" id="matchtype" class="form-control">
+        	<option value="1">完全匹配</option>
+        	<option value="0">模糊匹配</option>
+        </select>
+    </div>
+	<div class="slideTxtBox">
+		<div class="hd">
+			<input name="types" id="types" type="hidden" value="text" />
+			<ul id="typeck">
+				<li class="on" data-type="text">
+					<label><i class="fa fa-pencil"></i>文字</label>
+				</li>
+				<li data-type="mpnews">
+					<label><i class="fa fa-newspaper-o"></i>图文</label>
+				</li>
+			</ul>
+		</div>
+		<div class="bd">
+			<div class="conts">
+				<textarea name="words" id="words" style="width:100%;height:200px" class="textreplay" maxlength="600"></textarea>
+				<div class="textbuttom">
+					<span class="tl"><i class="fa fa-smile-o"></i></span>
+					<span class="tr">还可以输入<em id="c_len">600</em>字</span>
+					<div class="emotion_wrp">
+						<span class="hook">
+							<span class="hook_dec hook_top"></span>
+							<span class="hook_dec hook_btm"></span>
+						</span>
+						<table class="emotions" style="width:100%" cellpadding="0" cellspacing="0" border="1">
+							<tr>
+								<td><img src="__IMG__face_img/0.gif" alt="" title="微笑"/></td>
+								<td><img src="__IMG__face_img/1.gif" alt="" title="撇嘴"/></td>
+								<td><img src="__IMG__face_img/2.gif" alt="" title="色"/></td>
+								<td><img src="__IMG__face_img/3.gif" alt="" title="发呆"/></td>
+								<td><img src="__IMG__face_img/4.gif" alt="" title="得意"/></td>
+								<td><img src="__IMG__face_img/5.gif" alt="" title="流泪"/></td>
+								<td><img src="__IMG__face_img/6.gif" alt="" title="害羞"/></td>
+								<td><img src="__IMG__face_img/7.gif" alt="" title="闭嘴"/></td>
+								<td><img src="__IMG__face_img/8.gif" alt="" title="睡"/></td>
+								<td><img src="__IMG__face_img/9.gif" alt="" title="大哭"/></td>
+								<td><img src="__IMG__face_img/10.gif" alt="" title="尴尬"/></td>
+								<td><img src="__IMG__face_img/11.gif" alt="" title="发怒"/></td>
+								<td><img src="__IMG__face_img/12.gif" alt="" title="调皮"/></td>
+								<td><img src="__IMG__face_img/13.gif" alt="" title="呲牙"/></td>
+								<td><img src="__IMG__face_img/14.gif" alt="" title="惊讶"/></td>
+							</tr>
+							<tr>
+								<td><img src="__IMG__face_img/15.gif" alt="" title="难过"/></td>
+								<td><img src="__IMG__face_img/16.gif" alt="" title="酷"/></td>
+								<td><img src="__IMG__face_img/17.gif" alt="" title="冷汗"/></td>
+								<td><img src="__IMG__face_img/18.gif" alt="" title="抓狂"/></td>
+								<td><img src="__IMG__face_img/19.gif" alt="" title="吐"/></td>
+								<td><img src="__IMG__face_img/20.gif" alt="" title="偷笑"/></td>
+								<td><img src="__IMG__face_img/21.gif" alt="" title="可爱"/></td>
+								<td><img src="__IMG__face_img/22.gif" alt="" title="白眼"/></td>
+								<td><img src="__IMG__face_img/23.gif" alt="" title="傲慢"/></td>
+								<td><img src="__IMG__face_img/24.gif" alt="" title="饥饿"/></td>
+								<td><img src="__IMG__face_img/25.gif" alt="" title="困"/></td>
+								<td><img src="__IMG__face_img/26.gif" alt="" title="惊恐"/></td>
+								<td><img src="__IMG__face_img/27.gif" alt="" title="流汗"/></td>
+								<td><img src="__IMG__face_img/28.gif" alt="" title="憨笑"/></td>
+								<td><img src="__IMG__face_img/29.gif" alt="" title="大兵"/></td>
+							</tr>
+							<tr>
+								<td><img src="__IMG__face_img/30.gif" alt="" title="奋斗"/></td>
+								<td><img src="__IMG__face_img/31.gif" alt="" title="咒骂"/></td>
+								<td><img src="__IMG__face_img/32.gif" alt="" title="疑问"/></td>
+								<td><img src="__IMG__face_img/33.gif" alt="" title="嘘"/></td>
+								<td><img src="__IMG__face_img/34.gif" alt="" title="晕"/></td>
+								<td><img src="__IMG__face_img/35.gif" alt="" title="折磨"/></td>
+								<td><img src="__IMG__face_img/36.gif" alt="" title="衰"/></td>
+								<td><img src="__IMG__face_img/37.gif" alt="" title="骷髅"/></td>
+								<td><img src="__IMG__face_img/38.gif" alt="" title="敲打"/></td>
+								<td><img src="__IMG__face_img/39.gif" alt="" title="再见"/></td>
+								<td><img src="__IMG__face_img/40.gif" alt="" title="擦汗"/></td>
+								<td><img src="__IMG__face_img/41.gif" alt="" title="抠鼻"/></td>
+								<td><img src="__IMG__face_img/42.gif" alt="" title="鼓掌"/></td>
+								<td><img src="__IMG__face_img/43.gif" alt="" title="糗大了"/></td>
+								<td><img src="__IMG__face_img/44.gif" alt="" title="坏笑"/></td>
+							</tr>
+							<tr>
+								<td><img src="__IMG__face_img/45.gif" alt="" title="左哼哼"/></td>
+								<td><img src="__IMG__face_img/46.gif" alt="" title="右哼哼"/></td>
+								<td><img src="__IMG__face_img/47.gif" alt="" title="哈欠"/></td>
+								<td><img src="__IMG__face_img/48.gif" alt="" title="鄙视"/></td>
+								<td><img src="__IMG__face_img/49.gif" alt="" title="委屈"/></td>
+								<td><img src="__IMG__face_img/50.gif" alt="" title="快哭了"/></td>
+								<td><img src="__IMG__face_img/51.gif" alt="" title="阴险"/></td>
+								<td><img src="__IMG__face_img/52.gif" alt="" title="亲亲"/></td>
+								<td><img src="__IMG__face_img/53.gif" alt="" title="吓"/></td>
+								<td><img src="__IMG__face_img/54.gif" alt="" title="可怜"/></td>
+								<td><img src="__IMG__face_img/55.gif" alt="" title="菜刀"/></td>
+								<td><img src="__IMG__face_img/56.gif" alt="" title="西瓜"/></td>
+								<td><img src="__IMG__face_img/57.gif" alt="" title="啤酒"/></td>
+								<td><img src="__IMG__face_img/58.gif" alt="" title="篮球"/></td>
+								<td><img src="__IMG__face_img/59.gif" alt="" title="乒乓"/></td>
+							</tr>
+							<tr>
+								<td><img src="__IMG__face_img/60.gif" alt="" title="咖啡"/></td>
+								<td><img src="__IMG__face_img/61.gif" alt="" title="饭"/></td>
+								<td><img src="__IMG__face_img/62.gif" alt="" title="猪头"/></td>
+								<td><img src="__IMG__face_img/63.gif" alt="" title="玫瑰"/></td>
+								<td><img src="__IMG__face_img/64.gif" alt="" title="凋谢"/></td>
+								<td><img src="__IMG__face_img/65.gif" alt="" title="示爱"/></td>
+								<td><img src="__IMG__face_img/66.gif" alt="" title="爱心"/></td>
+								<td><img src="__IMG__face_img/67.gif" alt="" title="心碎"/></td>
+								<td><img src="__IMG__face_img/68.gif" alt="" title="蛋糕"/></td>
+								<td><img src="__IMG__face_img/69.gif" alt="" title="闪电"/></td>
+								<td><img src="__IMG__face_img/70.gif" alt="" title="炸弹"/></td>
+								<td><img src="__IMG__face_img/71.gif" alt="" title="刀"/></td>
+								<td><img src="__IMG__face_img/72.gif" alt="" title="足球"/></td>
+								<td><img src="__IMG__face_img/73.gif" alt="" title="瓢虫"/></td>
+								<td><img src="__IMG__face_img/74.gif" alt="" title="便便"/></td>
+							</tr>
+							<tr>
+								<td><img src="__IMG__face_img/75.gif" alt="" title="月亮"/></td>
+								<td><img src="__IMG__face_img/76.gif" alt="" title="太阳"/></td>
+								<td><img src="__IMG__face_img/77.gif" alt="" title="礼物"/></td>
+								<td><img src="__IMG__face_img/78.gif" alt="" title="拥抱"/></td>
+								<td><img src="__IMG__face_img/79.gif" alt="" title="强" /></td>
+								<td><img src="__IMG__face_img/80.gif" alt="" title="弱"/></td>
+								<td><img src="__IMG__face_img/81.gif" alt="" title="握手"/></td>
+								<td><img src="__IMG__face_img/82.gif" alt="" title="胜利"/></td>
+								<td><img src="__IMG__face_img/83.gif" alt="" title="抱拳"/></td>
+								<td><img src="__IMG__face_img/84.gif" alt="" title="勾引"/></td>
+								<td><img src="__IMG__face_img/85.gif" alt="" title="拳头"/></td>
+								<td><img src="__IMG__face_img/86.gif" alt="" title="差劲"/></td>
+								<td><img src="__IMG__face_img/87.gif" alt="" title="爱你"/></td>
+								<td><img src="__IMG__face_img/88.gif" alt="" title="NO"/></td>
+								<td><img src="__IMG__face_img/89.gif" alt="" title="OK"/></td>
+							</tr>
+							<tr>
+								<td><img src="__IMG__face_img/90.gif" alt="" title="爱情"/></td>
+								<td><img src="__IMG__face_img/91.gif" alt="" title="飞吻"/></td>
+								<td><img src="__IMG__face_img/92.gif" alt="" title="跳跳"/></td>
+								<td><img src="__IMG__face_img/93.gif" alt="" title="发抖"/></td>
+								<td><img src="__IMG__face_img/94.gif" alt="" title="怄火"/></td>
+								<td><img src="__IMG__face_img/95.gif" alt="" title="转圈"/></td>
+								<td><img src="__IMG__face_img/96.gif" alt="" title="磕头"/></td>
+								<td><img src="__IMG__face_img/97.gif" alt="" title="回头"/></td>
+								<td><img src="__IMG__face_img/98.gif" alt="" title="跳绳"/></td>
+								<td><img src="__IMG__face_img/99.gif" alt="" title="挥手"/></td>
+								<td><img src="__IMG__face_img/100.gif" alt="" title="激动"/></td>
+								<td><img src="__IMG__face_img/101.gif" alt="" title="街舞"/></td>
+								<td><img src="__IMG__face_img/102.gif" alt="" title="献吻"/></td>
+								<td><img src="__IMG__face_img/103.gif" alt="" title="左太极"/></td>
+								<td><img src="__IMG__face_img/104.gif" alt="" title="右太极"/></td>
+							</tr>
+						</table>
+					</div>
+				</div>
+			</div>
+			<div class="conts2">
+				<input name="artid" id="artid" type="hidden" value="" />
+				<div class="showtw" id="showimgtext">
+					<span class="addtw">
+						<a href="javascript:" onclick="openimgart()"><i class="yb-opt-add"></i>添加图文</a>
+					</span>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript">jQuery(".slideTxtBox").slide({trigger:"click",delayTime:0});</script>
+	</div>
+	<div class="buttom"><input type="button" id="submitbtn" class="btn btn-primary" value=" 提交 "></div>
+	</form>
+</div>
+<div class="imgartbox" style="width: 0px; padding-left: 0px;">
+	<div class="close" onclick="openimgart()"><i class="yb-arrow-sg-right"></i></div>
+	<iframe frameborder="0" width="100%" height="100%" id="imgart_iframe" src="{:url('admin/Wechatmediaart/artselect')}"></iframe>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	//提交
+	$('#submitbtn').click(function(){
+		require(['think','layer'],function(){
+			var fields = $('form').serializeArray();
+			var ll = layer.load('正在处理，请稍后...', 3);
+			$.post(Think.U('Admin/Wechatreply/add'),fields,function(data){
+		        if(data.status==1) {
+		        	layer.msg(data.msg,{icon:6}, function(){
+		        		history.go(-1);
+						location.reload();
+					});
+		        } else {
+		        	layer.msg(data.msg, {icon:5});
+		        }
+		        layer.close(ll);
+		        return false;
+		    });
+	   });
+	});
+	
+	//类型
+ 	$("#typeck > li").on("click",function(){
+		$('#types').val($(this).attr('data-type'));
+	});
+	
+	var textlen = getStrLength($("#words").val());
+	$("#c_len").html(600-textlen);
+});
+
+$(document).ready(function(){
+	var maxCount = 600;  // 最高字数，这个值可以自己配置
+	$(".textreplay").on('keyup', function() {
+		var textlen = getStrLength(this.value);
+		$("#c_len").html(maxCount-textlen);
+	});
+});
+// 中文字符判断
+function getStrLength(str) { 
+    var textlen = str.length;
+    var reLens = 0; 
+    for (var i = 0; i < textlen; i++) {        
+        if (str.charCodeAt(i) < 27 || str.charCodeAt(i) > 126) { 
+            // 全角    
+            reLens += 3; 
+        } else { 
+            reLens++; 
+        } 
+    } 
+    return reLens;    
+}
+(function($) {
+    $.fn.insertContent = function(myValue, t) {
+		var $t = $(this)[0];
+		if (document.selection) { //ie
+			this.focus();
+			var sel = document.selection.createRange();
+			sel.text = myValue;
+			this.focus();
+			sel.moveStart('character', -l);
+			var wee = sel.text.length;
+			if (arguments.length == 2) {
+				var l = $t.value.length;
+				sel.moveEnd("character", wee + t);
+				t <= 0 ? sel.moveStart("character", wee - 2 * t - myValue.length) : sel.moveStart("character", wee - t - myValue.length);
+				sel.select();
+			}
+		} else if ($t.selectionStart || $t.selectionStart == '0') {
+			var startPos = $t.selectionStart;
+			var endPos = $t.selectionEnd;
+			var scrollTop = $t.scrollTop;
+			$t.value = $t.value.substring(0, startPos) + myValue + $t.value.substring(endPos, $t.value.length);
+			this.focus();
+			$t.selectionStart = startPos + myValue.length;
+			$t.selectionEnd = startPos + myValue.length;
+			$t.scrollTop = scrollTop;
+			if (arguments.length == 2) {
+				$t.setSelectionRange(startPos - t, $t.selectionEnd + t);
+				this.focus();
+			}
+		}
+		else {
+			this.value += myValue;
+			this.focus();
+		}       
+    };
+})(jQuery);
+
+$(function(){
+	$(".emotions td").click(function(){
+		var title = $(this).find('img').attr('title');
+		
+		var maxCount = 600;
+		var textlen = getStrLength(title);
+		$("#c_len").html(maxCount-textlen);
+		$(".textreplay").insertContent('/'+title);
+	});
+	
+});
+$(function(){
+	$(document).bind("click",function(e){
+		var target = $(e.target);
+		if(target.closest(".fa-smile-o").length == 0){
+			$(".emotion_wrp").hide();
+		}else{
+			$(".emotion_wrp").toggle();
+		}
+	});
+});
+function removetw(){
+	var srt="<span class=\"addtw\"><a href=\"javascript:\" onclick=\"openimgart()\"><i class=\"yb-opt-add\"></i>添加图文</a></span>";
+	$("#showimgtext").html(srt);
+	$("#artid").val('');
+}
+
+function openimgart(){
+	var imgartw=$('.imgartbox').width();
+	if(imgartw>0){
+		$(".imgartbox").animate({width:'0'});
+		$(".imgartbox").animate({paddingLeft:'0'});
+	}else{
+		$(".imgartbox").animate({width:'800px'});
+		$(".imgartbox").animate({paddingLeft:'20px'});
+	}
+}
+</script>
+{/block}

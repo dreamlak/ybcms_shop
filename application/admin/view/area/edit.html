@@ -1,0 +1,113 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>地区管理-编辑地区</h3>
+			<h5>全国地区管理与编辑</h5>
+		</div>
+	</div>
+	<form action="" method="post" class="form-horizontal">
+    	<input type="hidden" name="id"  value="{$info['id']}" />
+    	<div class="form-group">
+            <label class="col-xs-12 col-sm-3 col-md-2 control-label">所属地区</label>
+            <div class="col-sm-9 col-xs-12">
+                <input type="hidden" name="pid" id="pid" value="{$info['pid']}" />
+                {$pidname}
+            </div>
+        </div>
+        <div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>地区代码</label>
+		    <div class="col-sm-9 col-xs-12">
+         		<input type="text" name="code" id="code" class="form-control" value="{$info['code']}">
+         		<span class="help-block">该地区的行政城市/地区代码</span>
+           	</div>
+		</div>
+    	<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>地区名称</label>
+		    <div class="col-sm-9 col-xs-12">
+         		<input type="text" name="name" id="name" class="form-control" value="{$info['name']}">
+           	</div>
+		</div>
+        <div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区名称缩写</label>
+		    <div class="col-sm-9 col-xs-12">
+         		<input type="text" name="sname" id="sname" class="form-control" value="{$info['sname']}">
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区名称首字母</label>
+		    <div class="col-sm-9 col-xs-12">
+         		<input type="text" name="initial" id="initial" class="form-control" value="{$info['initial']}">
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区经度</label>
+		    <div class="col-sm-9 col-xs-12">
+         		<input type="text" name="lng" id="lng" class="form-control" value="{$info['lng']}">
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">地区纬度</label>
+		    <div class="col-sm-9 col-xs-12">
+         		<input type="text" name="lat" id="lat" class="form-control" value="{$info['lat']}">
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">菜单状态</label>
+		    <div class="col-sm-9 col-xs-12">
+	            <label for="status1" class="radio-inline"><input type="radio" name="status" value="1" id="status1" {if $info['status']==1}checked{/if}>启用</label>
+	            <label for="status0" class="radio-inline"><input type="radio" name="status" value="0" id="status0" {if $info['status']==0}checked{/if}>禁用</label>
+            </div>
+		</div>
+    	<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
+		    <div class="col-sm-9 col-xs-12">
+                <input type="text" name="sort" id="sort" class="form-control" value="{$info['sort']}">
+		        <span class="help-block">数字越小，排名越靠前,如果为空，默认排序方式为创建时间</span>
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+		    <div class="col-sm-9 col-xs-12">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary col-lg-1">
+		    </div>
+		</div>
+		<input type="hidden" name="level" id="level" value="{$info['level']}" />
+    </form>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['think','layer','bootstrap']);
+	//回车事件
+	document.onkeydown = function(e) {
+		var theEvent = window.event || e;
+		var code = theEvent.keyCode || theEvent.which;
+		if(code == 13){
+			$("#submitbtn").click();
+		}
+	}
+	//提交
+	$('#submitbtn').click(function(){
+		var fields = $('form').serializeArray();
+		var ll = layer.load('正在处理，请稍后...', 3);
+		$.post(Think.U('Admin/Area/edit'),fields,function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6,time:1000}, function(){
+					var id=$('#pid').val();
+	        		var level=$('#level').val()-1;
+					location.href = Think.U('Admin/Area/lists','id='+id+'&level='+level);
+				});
+	        } else {
+	        	layer.msg(data.msg, {icon:5});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+});
+</script>
+{/block}

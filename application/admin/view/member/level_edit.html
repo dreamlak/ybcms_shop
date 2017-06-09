@@ -1,0 +1,87 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>会员等级管理-等级编辑</h3>
+			<h5>会员等级参数配置管理</h5>
+		</div>
+	</div>
+	<form action="" method="post" class="form-horizontal">
+		<input type="hidden" name="id" value="{$info.id}" />
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>等级名称</label>
+		    <div class="col-xs-8">
+		    	<input type="text" value="{$info.name}" name="name" id="name" class="form-control">
+         		<span class="help-block"></span>
+           	</div>
+		</div>
+		<div class="form-group article">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>消费额度</label>
+		    <div class="col-xs-8">
+		    	<input type="number" value="{$info.amount}" name="amount" id="amount" class="form-control">
+         		<span class="help-block">设置会员等级所需要的消费额度,单位：元</span>
+           	</div>
+		</div>
+        <div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>折扣率</label>
+		    <div class="col-xs-8">
+         		<input type="number" value="{$info.discount}" name="discount" id="discount" class="form-control">
+         		<span class="help-block">折扣率单位为百分比，如输入90，表示该会员等级的用户可以以商品原价的90%购买</span>
+           	</div>
+		</div>
+        <div class="form-group">
+		    <label class="col-xs-2 control-label">等级描述</label>
+            <div class="col-xs-8" id="email_input">
+            	<textarea name="describe" id="describe" class="form-control">{$info.describe}</textarea>
+            	<span class="help-block"></span>
+		    </div>
+		</div>
+    	<div class="form-group">
+		    <label class="col-xs-2 control-label">状态</label>
+            <div class="col-xs-8" id="email_input">
+            	<label class="radio-inline"><input value="0" type="radio" name="status" {if $info['status']==0}checked{/if}>禁用</label>
+            	<label class="radio-inline"><input value="1" type="radio" name="status" {if $info['status']==1}checked{/if}>正常</label>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"></label>
+		    <div class="col-xs-8">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary">
+		    </div>
+		</div>
+    </form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['think','layer']);
+	//回车事件
+	document.onkeydown = function(e) {
+		var theEvent = window.event || e;
+		var code = theEvent.keyCode || theEvent.which;
+		if(code == 13){
+			$("#submitbtn").click();
+		}
+	}
+	//提交
+	$('#submitbtn').click(function(){
+		var fields = $('form').serializeArray();
+		var ll = layer.load('正在处理，请稍后...', 3);
+		$.post(Think.U('Admin/Member/level_edit'),fields,function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6}, function(){
+					history.go(-1);
+					location.reload();
+				});
+	        } else {
+	        	layer.msg(data.msg, {icon:5});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+});
+</script>
+{/block}

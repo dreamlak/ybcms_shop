@@ -1,0 +1,338 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>注册-{$config['site_name']}</title>
+<meta http-equiv="keywords" content="{$config['site_key']}" />
+<meta name="description" content="{$config['site_desc']}" />
+<link rel="stylesheet" href="__P_CSS__/user/style.css" type="text/css">
+<link href="__P_CSS__/font-awesome/font-awesome.min.css" rel="stylesheet">
+<script src="__P_JS__/jquery/jquery-1.11.1.min.js"></script>
+<script src="__P_JS__/layer/layer.js"></script>
+</head>
+<body>
+<div class="headers">
+	<div class="w1000 clearfix">
+		<div class="logo">
+			<span class="td"><a href="/"><img src="{$config['site_logo']}" alt="logo"></a></span>
+			<span class="td"><img src="__P_IMG__/user/split.png" /></span>
+			<span class="td text">{$config['site_name']}</span>
+		</div>
+		<div class="go_login">已有账号？ <a href="{:url('Home/User/login')}">请登录</a></div>
+	</div>
+</div>
+<div class="regBox">
+	<div class="w450">
+		<div class="regForm">
+		<form action="" method="post" onsubmit=" return check_submit(this)" id="reg_form" name="reg_form" autocomplete="off">
+			<div class="form_itemBox">
+				<div class="form_item">
+					<label>手　机　号</label>
+					<input type="text" id="username" name="username" class="field" autocomplete="off" maxlength="11" placeholder="建议使用常用手机" data-tip="<i class='fa fa-info-circle'></i> 请输入正确的手机号码">
+					<i class='status fa fa-check-circle'></i>
+				</div>
+				<div class="input-tip ut"></div>
+			</div>
+			{if $regis_sms_enable==1}
+			<div class="form_itemBox">
+				<div class="form_item form_item_phonecode">
+					<label>手机验证码</label>
+					<input type="text" id="tel_verify_code" name="tel_verify_code" class="field phonecode" autocomplete="off" maxlength="4" placeholder="请输入手机验证码">
+					<button id="getPhoneCode" class="btn_phonecode" type="button" onclick="send_sms_reg_code()">获取验证码</button>
+					<i class="status"></i>
+				</div>
+				<div class="input-tip"></div>
+			</div>
+			{/if}
+			<div class="form_itemBox">
+				<div class="form_item">
+					<label>登 录 密 码</label>
+					<input type="password" id="password" name="password" class="field" autocomplete="off" maxlength="20" placeholder="建议至少使用两种字符组合" data-tip="<i class='fa fa-info-circle'></i> 建议使用字母、数字和符号两种及以上的组合，6-20个字符">
+					<i class="status fa fa-check-circle"></i>
+				</div>
+				<div class="input-tip"></div>
+			</div>
+			<div class="form_itemBox">
+				<div class="form_item">
+					<label>确 认 密 码</label>
+					<input type="password" id="password2" name="password2" class="field" autocomplete="off" maxlength="20" placeholder="请再次输入密码" data-tip="<i class='fa fa-info-circle'></i> 请再次输入密码">
+					<i class="status fa fa-check-circle"></i>
+				</div>
+				<div class="input-tip"></div>
+			</div>
+			<div class="form_itemBox">
+				<div class="form_item form_item_authcode">
+					<label>验　证　码</label>
+					<input type="text" id="verify_code" name="verify_code" class="field form_authcode" autocomplete="off" maxlength="4" placeholder="请输入验证码" data-tip="<i class='fa fa-info-circle'></i> 看不清？点击图片更换验证码">
+					<img class="img_code" title="换一换" id="imgAuthCode" src="{:captcha_src()}" onclick="verify()">
+					<i class="status"></i>
+				</div>
+				<div class="input-tip"></div>
+			</div>
+			<div class="form_agreen">
+				<input type="checkbox" name="agree" id="agree" checked="" value="1" aria-required="true">阅读并同意
+				<a href="javascript:;" id="protocol">《帐号注册协议和隐私政策》</a>
+				<div class="input-tip"></div>
+			</div>
+			<button type="button" class="btn-register" id="dosubmit">立即注册</button>
+		</div>
+	</form>
+	</div>
+</div>
+<div class="footer">
+    <p>Copyright © 2016-2025 {$config['site_name']}  版权所有 保留一切权利 备案号:{$config['site_icp']}</p>
+</div>
+<script type="text/javascript" src="__P_JS__/checkform.js"></script>
+<script>
+//验证码 
+function verify(){
+   	$('#verify_code').val('');
+	$('#imgAuthCode').attr('src','{:captcha_src()}?t='+Math.random());
+}
+flag = false;
+$(document).ready(function(){
+    //提示
+    var placeholder='';
+    $('.form_itemBox input').focus(function(){
+    	var msg=$(this).attr('data-tip');
+    	placeholder=$(this).attr('placeholder');
+    	$(this).parent().siblings('.input-tip').html(msg);
+    	$(this).attr('placeholder','');
+    });
+    $('.form_itemBox input').blur(function(){
+    	$(this).parent().siblings('.input-tip').html('');
+    	$(this).attr('placeholder',placeholder);
+    	
+    	var id=$(this).attr('id');
+    	var val=$(this).val();
+    	
+    	if(id=='password'){
+    		if(val.length < 6){
+    			$('#'+id).siblings('.status').hide();
+		    	$('#password').parent().addClass('form-item-error');
+		    	$('#password').parent().siblings('.input-tip').html('<span class="error"><i class="fa fa-minus-circle"></i> 密码长度不能低于六位！</span>');
+		    	flag = false;
+    		}else{
+    			$('#'+id).siblings('.status').show();
+		    	$('#password').parent().removeClass('form-item-error');
+		    	$('#password').parent().siblings('.input-tip').html('');
+		    	flag = true;
+		    }
+    	}else if(id=='password2'){
+    		if($('#password').val()==''){
+    			$('#'+id).siblings('.status').hide();
+    			$('#password2').parent().addClass('form-item-error');
+		    	$('#password2').parent().siblings('.input-tip').html('<span class="error"><i class="fa fa-minus-circle"></i> 确认密码不能为空！</span>');
+		    	flag=false;
+    		}else if($('#password').val() !== val){
+		    	$('#'+id).siblings('.status').hide();
+		    	$('#password2').parent().addClass('form-item-error');
+		    	$('#password2').parent().siblings('.input-tip').html('<span class="error"><i class="fa fa-minus-circle"></i> 两次输入密码不一致！</span>');
+		    	flag = false;
+    		}else{
+    			$('#'+id).siblings('.status').show();
+		    	$('#password2').parent().removeClass('form-item-error');
+		    	$('#password2').parent().siblings('.input-tip').html('');
+		    	flag = true;
+		    }
+    	}else{
+			if(val == ''){
+				$('#'+id).siblings('.status').hide();
+		    	$('#'+id).parent().addClass('form-item-error');
+		    	$('#'+id).parent().siblings('.input-tip').html('<span class="error"><i class="fa fa-minus-circle"></i> 该内容不能为空！</span>');
+		    	flag = false;
+			}else{
+				$('#'+id).siblings('.status').show();
+		    	$('#'+id).parent().removeClass('form-item-error');
+		    	$('#'+id).parent().siblings('.input-tip').html('');
+		    	flag = true;
+		    }
+	   	}
+    });
+    //手机存在验证
+    $("input[name='username']").blur(function () {
+    	var obj=$(this);
+        var username = obj.val();
+        if(checkMobile(username)) {
+            $.ajax({
+                type : "GET",
+                url:"/index.php/Home/Api/issetMobileOrEmail",
+                data :{username:username},// 你的formid 搜索表单 序列化提交
+                success: function(data){
+                    if(data=='1'){ //已存在
+                        flag = false;
+                        obj.parent().addClass('form-item-error');
+                        obj.siblings('.status').hide();
+                        obj.parent().siblings('.input-tip').html('<span class="error"><i class="fa fa-minus-circle"></i> 该手机号已存在！</span>');
+                    }else{
+                        flag = true;
+                        obj.parent().removeClass('form-item-error');
+                        obj.siblings('.status').show();
+                        obj.parent().siblings('.input-tip').html('');
+                    }
+                }
+            });
+        }else{
+            flag = false;
+            obj.parent().siblings('.ut').html('<span class="error"><i class="fa fa-minus-circle"></i> 请输入正确的手机号码！</span>');
+            obj.parent().addClass('form-item-error');
+            obj.siblings('.status').hide();
+        }
+    });
+    //提交
+	$('#dosubmit').click(function(){
+		if(!check_submit($('#reg_form'))) return false;
+		
+		var fields = $('form').serializeArray();
+		var ll = layer.load('正在处理，请稍后...', 3);
+		var url="{:url('Home/User/reg')}";
+		$.post(url,fields,function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6,time:1000}, function(){
+					location.href = data.url;
+				});
+	        } else {
+	        	layer.msg(data.msg, {icon:5});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+});
+//提交验证
+function check_submit(obj){
+    var username = $(obj).find('input[name="username"]').val();
+    var password1 = $(obj).find('input[name="password"]').val();
+    var password2 = $(obj).find('input[name="password2"]').val();
+    var verify_code = $(obj).find('input[name="verify_code"]').val();
+    var agree = $(obj).find('input[type="checkbox"]:checked').val();
+    //$('.form_item').removeClass('form-item-error');
+    
+    if(username == ''){
+    	$('#username').parent().addClass('form-item-error');
+    	$('#username').parent().siblings('.input-tip').html('<span class="error"><i class="fa fa-minus-circle"></i> 手机号不能为空！</span>');
+    	flag=false;
+    }/*else{
+    	$('#username').parent().removeClass('form-item-error');
+    	$('#username').parent().siblings('.input-tip').html('');
+    }*/
+    {if $regis_sms_enable==1}
+    var tel_verify_code = $(obj).find('input[name="tel_verify_code"]').val();
+    if(tel_verify_code == ''){
+    	$('#tel_verify_code').parent().addClass('form-item-error');
+    	$('#tel_verify_code').parent().siblings('.input-tip').html('<span class="error"><i class="fa fa-minus-circle"></i> 手机验证码不能为空！</span>');
+    	flag=false;
+    }else{
+    	$('#tel_verify_code').parent().removeClass('form-item-error');
+    	$('#tel_verify_code').parent().siblings('.input-tip').html('');
+    }
+    {/if}
+    if(password1 == ''){
+    	$('#password').parent().addClass('form-item-error');
+    	$('#password').parent().siblings('.input-tip').html('<span class="error"><i class="fa fa-minus-circle"></i> 密码不能为空！</span>');
+    	flag=false;
+    }else{
+    	$('#password').parent().removeClass('form-item-error');
+    	$('#password').parent().siblings('.input-tip').html('');
+    }
+    if(password2 == ''){
+    	$('#password2').parent().addClass('form-item-error');
+    	$('#password2').parent().siblings('.input-tip').html('<span class="error"><i class="fa fa-minus-circle"></i> 确认密码不能为空！</span>');
+    	flag=false;
+    }else if(password1 !== password2){
+    	$('#password2').parent().addClass('form-item-error');
+    	$('#password2').parent().siblings('.input-tip').html('<span class="error"><i class="fa fa-minus-circle"></i> 两次输入密码不一致！</span>');
+    	flag=false;
+    }else{
+    	$('#password2').parent().removeClass('form-item-error');
+    	$('#password2').parent().siblings('.input-tip').html('');
+    }
+    if(password1.length < 6){
+    	$('#password').parent().addClass('form-item-error');
+    	$('#password').parent().siblings('.input-tip').html('<span class="error"><i class="fa fa-minus-circle"></i> 密码长度不能低于六位！</span>');
+    	flag=false;
+    }else{
+    	$('#password').parent().removeClass('form-item-error');
+    	$('#password').parent().siblings('.input-tip').html('');
+    }
+    if(verify_code == ''){
+    	$('#verify_code').parent().addClass('form-item-error');
+    	$('#verify_code').parent().siblings('.input-tip').html('<span class="error"><i class="fa fa-minus-circle"></i> 请输入验证码！</span>');
+    	flag=false;
+    }else{
+    	$('#verify_code').parent().removeClass('form-item-error');
+    	$('#verify_code').parent().siblings('.input-tip').html('');
+    }
+    if(agree!=1){
+    	$('#agree').parent().addClass('form-item-error');
+    	$('#agree').siblings('.input-tip').html('<span class="error"><i class="fa fa-minus-circle"></i> 您没有同意注册协议！</span>');
+    	flag=false;
+    }else{
+    	$('#agree').parent().removeClass('form-item-error');
+    	$('#agree').siblings('.input-tip').html('');
+    }
+    if(!flag){
+    	return false;
+    }
+
+    return true;
+}
+// 发送手机短信
+function send_sms_reg_code(){
+    var mobile = $('input[name="username"]').val();
+    var verify_code = $('input[name="verify_code"]').val();
+    if(!checkMobile(mobile)){
+        layer.alert('请输入正确的手机号码', {icon: 2});// alert('请输入正确的手机号码');
+        return;
+    }
+    if(verify_code == ''){
+        layer.alert('请输入验证码', {icon: 2});//alert('请输入正确的手机号码');
+        return;
+    }
+    var url = "/index.php/Home/Api/send_validate_code/scene/1/type/mobile/mobile/"+mobile+'/verify_code/'+verify_code;
+    $.get(url,function(res){
+        if(res.status == 1){
+			$('#getPhoneCode').attr("disabled","disabled");
+			intAs = {$sms_time_out}; // 手机短信超时时间
+            jsInnerTimeout('getPhoneCode',intAs);
+            layer.alert(res.msg, {icon: 1});
+		}else{
+            layer.alert(res.msg, {icon: 2});
+        }
+    })
+}
+$('#getPhoneCode').removeAttr("disabled");
+//倒计时函数
+function jsInnerTimeout(id,intAs){
+    var codeObj=$("#"+id);
+    //var intAs = parseInt(codeObj.attr("IntervalTime"));
+    intAs--;
+    if(intAs<=-1){
+        codeObj.removeAttr("disabled");
+        codeObj.text("发送");
+        return true;
+    }
+    codeObj.text(intAs+'秒');
+    setTimeout("jsInnerTimeout('"+id+"',"+intAs+")",1000);
+};
+//清除缓存
+function fnSaveForm(){  
+   	window.external.AutoCompleteSaveForm(reg_form);  
+    reg_form.input_one.value="";  
+    reg_form.input_two.value="";  
+}
+
+$('#protocol').click(function(){
+	var url = "{:url(('Home/User/regprotocol'))}";
+    layer.open({
+        type: 2,
+        title: '《帐号注册协议和隐私政策》',
+        shadeClose: true,
+        shade: 0.5,
+        area: ['60%','70%'],
+        content: url, 
+    });
+});
+</script>
+</body>
+</html>

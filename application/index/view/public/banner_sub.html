@@ -1,0 +1,11 @@
+<!--banner-->
+<?php
+$catimg=get_catimg($catid);
+if($catimg==''){
+	$catimg='__STATIC__/images/banner_news.jpg';
+}
+?>
+<div class="news_banner" style="background-image:url('{$catimg}');">
+	<!--img src="__STATIC__/images/banner_news.jpg" alt="" /-->
+</div>
+<!--banner end-->

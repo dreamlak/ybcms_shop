@@ -1,0 +1,51 @@
+﻿{extend name="public/base" /}
+{block name="main"}
+<div class="w1000 jgszbox" style="margin-top:0">
+	<div class="ld_title">人才招聘</div>
+	<div class="jobshow">
+		<div class="job-top">
+			<h3 class="job-name">{$info.name}</h3>
+			<div class="job-watch-info clearfix">
+				<div class="add-time f-left">更新时间：{:date('Y-m-d H:i:s',$info.addtime)}</div>
+				<div class="watch f-left">浏览<span><em class="times click">{$info.hot}</em></span>次</div>
+				<div class="resumes-man f-left"><span>{$info.applynum}</span>人投递简历</div>
+			</div>
+			<div class="welfare-box clearfix">
+				{volist name="deals" id="v"}
+				<div class="welfare-block f-left">{$v}</div>
+				{/volist}
+			</div>
+			<div style="padding:15px 0 0">
+				<i class="fa fa-phone fa-2x" style="color:red;"></i>
+				<em style="color:#ff9900;font-size:20px;font-family:'Arial Unicode MS'">{$info.tel}</em>
+			</div>
+			<!-- 过期图标申请-->
+			<div class="app-job-item clearfix">
+				<div class="apply-btn f-left">
+					<a href="{:url('jobspost',['id'=>$info.id,'catid'=>input('catid')])}" class="app-button app_jobs" style="display: block;line-height:34px;text-align: center;" jobs_id="10528">申请职位</a>
+				</div>
+			</div>
+		</div>
+		<div class="job-block">
+			<h3 class="c-left-title">职位信息</h3>
+			<div class="job-info-detail clearfix">
+				<div class="job-id-item f-left">工资待遇：<span>{$info.remuneration} </span></div>
+				<div class="job-id-item f-left">职位性质：{$jobtype[$info.jobtype]}</div>
+				<div class="job-id-item f-left">年龄要求：{$info.agerange}</div>
+				<div class="job-id-item f-left">招聘人数：{$info.jobpep}人</div>
+				<div class="job-id-item f-left">职位名称：{$info.name}</div>
+				<div class="job-id-item f-left">性别要求：{$info.sexrange}</div>
+				<div class="job-id-item f-left">工作地区：{$info.workarea}</div>
+				<div class="job-id-item f-left">学历要求：{$info.education}</div>
+				<div class="job-id-item f-left">工作经验：{$info.experience}</div>
+			</div>
+		</div>
+		<div class="job-block">
+			<h3 class="c-left-title">职位描述</h3>
+			<div class="job-info-content clearfix">
+				{$info.content|nl2p}
+			</div>
+		</div>
+	</div>
+</div>
+{/block}

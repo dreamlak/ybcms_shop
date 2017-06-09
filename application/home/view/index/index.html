@@ -1,0 +1,258 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>首页-{$config['site_name']}</title>
+<meta http-equiv="keywords" content="{$config['site_key']}" />
+<meta name="description" content="{$config['site_desc']}" />
+</head> 
+<body>
+<!--------头部开始-------------->
+{include file="public/header" /}
+<!--------头部结束-------------->
+<!-- 首页轮播图片 轮播js 广告-->
+<script src="__STATIC__/js/slider.js"></script>
+<script type="text/javascript">
+// 首页轮播图片 轮播js 广告
+$(function() {
+	var bannerSlider = new Slider($('#banner_tabs'), { 
+		time: 5000,
+		delay: 400,
+		event: 'hover',
+		auto: true,
+		mode: 'fade',
+		controller: $('#bannerCtrl'),
+		activeControllerCls: 'active'
+	});
+	$('#banner_tabs .flex-prev').click(function() {
+		bannerSlider.prev()
+	});
+	$('#banner_tabs .flex-next').click(function() {
+		bannerSlider.next()
+	});
+})
+</script>
+<!-- 首页轮播图片 轮播js 广告 end-->
+<!--------banner-开始-------------->
+<div class="nav-banner">
+    <div id="banner_tabs" class="flexslider">
+        <ul class="slides">                
+        	{ybcms:adv pid ="15" num="5" item="v" name="首页Banner幻灯"}
+            <li>
+                <a href="{$v.url}" {if condition="$v['target'] eq 1"}target="_blank"{/if}>                       
+                <img src="{$v.images}" width="980" height="400"  title="{$v.name}" style="{$v.style}"/>
+                </a>
+            </li>
+			{/ybcms:adv}          
+        </ul>
+        <ol id="bannerCtrl" class="flex-control-nav flex-control-paging">
+	    	{ybcms:adv pid ="15" num="5" item="v" key="k"}
+        	<li><a>{$k}</a></li>
+        	{/ybcms:adv}    
+        </ol>
+	</div>	
+</div>
+<!--------banner-结束-------------->
+
+<!--------热卖-首发-新闻-公告-开始-------------->
+<div class="layout">
+	<div class="bs-le">
+    	<div class="first">
+        	<ul>                 
+            {ybcms:sql sql="select * from `__PREFIX__goods` where is_new = 1 and is_hot = 1 and is_recommend = 1 and is_on_sale = 1 order by sort desc limit 4" item="v" key="k"}
+        		<li class="sellers" title="{$v.goods_name}">
+                	<div class="best">
+                    	<div class="best-about">
+                        	<div class="best_img" style="margin-top:50px; height:220px;">
+                            	<a href="{:url('/Home/Goods/goodsInfo',['id'=>$v.goods_id])}" title="{$v.goods_name}"><img src="{$v.goods_id|goods_thum_images=180,180}" style="width:180px; height:180px;"/></a>
+                            </div>
+                            <div class="best_name">
+                            	<a href="{:url('/Home/Goods/goodsInfo',['id'=>$v.goods_id])}" title="{$v.goods_name}">
+                                <span>{$v.goods_name|getSubstr=0,12}</span>
+                                </a>
+                            </div>
+                            <div class="best_Introduction">
+                            	<div class="intr-t">{$v.goods_remark|getSubstr=0,30}</div>
+                            	<div class="intr-b">买的更多更优惠</div>
+                            </div>
+                            <div class="price">
+                            	<span>¥</span><em>{$v.shop_price}</em>
+                            </div>
+                            <div class="imm-button">
+                            	<a href="{:url('/Home/Goods/goodsInfo',['id'=>$v.goods_id])}"><span>立即抢购</span></a>
+                            </div>
+                            <div class="tag">
+                            {if $v['is_new']==1}
+                            	<img src="__STATIC__/images/1382542488099.png" alt="热卖" />
+                            {else}
+                            	<img src="__STATIC__/images/1382593860805.png" alt="热卖" />
+                            {/if}    
+                            </div>
+                        </div>
+                    </div>
+                </li>
+        	{/ybcms:sql}
+        	</ul>
+        </div>
+    </div>
+	<div class="bs-ri">
+    	<div class="ris-adve"><!--公告上方广告位-->
+            {ybcms:adv pid ="16" num="1" item="v" name="公告上"}
+            <a href="{$v.url}" {if condition="$v['target'] eq 1"}target="_blank"{/if}>
+        		<img src="{$v.images}" title="{$v.name}" style="{$v.style}"/>
+            </a>
+			{/ybcms:adv}
+        </div>
+    	<div class="ris-notice">
+        	<div class="notice_t">
+            	<ul>
+            		<li id="not_col"><a href="">公告</a></li>
+            		<li id="not_new"><a href="">新闻</a></li>
+            	</ul>
+            </div>
+        	<div class="notice_b">
+            	<ul class="nob1">
+                    {ybcms:sql sql="select * from `__PREFIX__article`  where catid = 4 order by artid desc limit 4" item="v" key="k"}
+            		<li><a href="{:url('Home/Article/detail',['artid'=>$v.artid])}" title="{$v.title}">{$v.title|getSubstr=0,18}</a></li>
+                    {/ybcms:sql}    
+            	</ul>
+                <ul class="nob2">
+                    {ybcms:sql sql="select * from `__PREFIX__article`  where catid = 3 order by artid desc limit 4" item="v" key="k"}
+            		<li><a href="{:url('Home/Article/detail',['artid'=>$v.artid])}" title="{$v.title}">{$v.title|getSubstr=0,18}</a></li>
+                    {/ybcms:sql} 
+                 </ul>
+            </div> 
+         </div>
+         <!--公告下方广告位-->
+    	 <div class="ris-as"> 
+            {ybcms:adv pid ="17" num="1" item="v" name="公告下"}
+         	<p><a href="{$v.url}" {if condition="$v['target'] eq 1"}target="_blank"{/if}>
+         		<img src="{$v.images}" width="278" height="132" title="{$v.name}" style="{$v.style}"/>
+         	</a></p>                
+            {/ybcms:adv}
+        </div>
+	</div>	
+</div>
+<!--------热卖-首发-新闻-公告-结束-------------->
+
+	
+<!--------中部banner-开始-------------->
+<div class="layout">
+	<div class="cen-banne">
+        {ybcms:adv pid ="18" num="1" item="v" name="中部banner"}
+        <a href="{$v.url}" {if condition="$v['target'] eq 1"}target="_blank"{/if}>
+	        <img src="{$v.images}" width="1200" height="160"  title="{$v.name}" style="{$v.style}"/>
+        </a>    
+        {/ybcms:adv}
+    </div>
+</div>
+<!--------中部banner-结束-------------->
+
+<!--------楼层-开始-------------->
+{ybcms:sql sql="SELECT * FROM `__PREFIX__goods_category` WHERE is_show = 1 and is_hot = 1 and `level` = 1 ORDER BY sort_order LIMIT 7" key="key" item='val'}
+<?php 
+    $cat_id_arr = getCatGrandson($val['id']); // 找到某个大类下面的所有子分类id
+    $cat_id_str = implode(',',$cat_id_arr);
+    //dump($cat_id_str);
+?>
+<div class="layout layer">
+	<div class="ground-flool">
+    	<div class="flool-t">
+        	<h2>{$key+1}. <a href="{:url('Home/Goods/goodsList',['id'=>$val.id])}" title="{$val.name}">{$val.name}</a></h2>                
+            {ybcms:sql sql="select * from `__PREFIX__goods_category` where is_show = 1 and parent_id = $val[id]" key="key2" item='val2'}
+            <em><a href="{:url('Home/Goods/goodsList',['id'=>$val2.id])}" title="{$val2.name}">{$val2.name}</a></em>
+            {/ybcms:sql}                
+            <ul></ul>
+        </div>
+    	<div class="flool-b layer" style="width:100%;">
+        	<ul class="flool-cle clearfix">
+        		<li class="sellers sell_ons">
+                	<div class="best">
+                    	{ybcms:sql sql="select * from `__PREFIX__goods` where cat_id in($cat_id_str) and is_on_sale = 1 order by sort desc limit 1" key="k" item='v'}
+                    	<div class="best-about" title="{$v.goods_name}">
+                        	<div class="best_img best_img2">
+                            	<a href="{:url('/Home/Goods/goodsInfo',['id'=>$v.goods_id])}" title="{$v.goods_name}"><img src="{$v.goods_id|goods_thum_images=222,222}" /></a>
+                            </div>
+                            <div class="best_name">
+                            	<a href="{:url('/Home/Goods/goodsInfo',['id'=>$v.goods_id])}" title="{$v.goods_name}"><span>{$v.goods_name|getSubstr=0,18}</span></a>
+                            </div>
+                            <div class="best_Introduction">
+                            	<div class="intr-t">{$v.keywords}</div>
+                            	<div class="intr-b">{$v.goods_remark|getSubstr=0,51}</div>
+                            </div>
+                            <div class="price"><span>¥</span><em>{$v.shop_price}</em></div>
+                            <div class="imm-button">
+                            	<a href="{:url('/Home/Goods/goodsInfo',['id'=>$v.goods_id])}"><span>立即抢购</span></a>
+                            </div>
+                            <div class="tag"><img src="__STATIC__/images/1382542488099.png" alt="热卖" /></div>
+                        </div>
+                        {/ybcms:sql}
+                    </div>
+                </li>
+                {ybcms:sql sql="select * from `__PREFIX__goods` where  cat_id in($cat_id_str) and is_on_sale = 1 order by sort desc limit 1,6" key="k" item='v'}
+                <li class="sellers sellers2 sell_ons" title="{$v.goods_name}">
+                    <div class="best">
+                        <div class="best-about">
+                            <div class="best_img best_img2 best_img3">
+                                <a href="{:url('/Home/Goods/goodsInfo',['id'=>$v.goods_id])}" title="{$v.goods_name}"><img src="{$v.goods_id|goods_thum_images=222,222}" /></a>
+                            </div>
+                            <div class="intr-t intr-t3">{$v.goods_name|getSubstr=0,18}</div>
+                            <div class="price prices"><span>¥</span><em>{$v.shop_price}</em></div>
+                            <div class="tag"></div>
+                        </div>
+                    </div>
+                </li>
+		       	{/ybcms:sql}          
+             </ul>
+        </div>
+    </div>
+</div>
+{/ybcms:sql}    
+<!--------楼层-结束-------------->
+ 
+
+<!--------底部banner-开始-------------->
+<div class="layout layer">
+	<div class="cen-banne">
+        {ybcms:adv pid ="19" num="1" item="v" name="底部banner"}          
+        <a href="{$v.url}" {if condition="$v['target'] eq 1"}target="_blank"{/if}>
+	        <img src="{$v.images}" width="1200" height="160" title="{$v.name}" style="{$v.style}"/>
+        </a>    
+        {/ybcms:adv}            
+    </div>
+</div>
+<!--------底部banner-结束-------------->
+
+<!--------footer-开始-------------->
+{include file="public/footer"}
+<!--------footer-结束-------------->
+
+<script>	
+$(document).ready(function(){
+  	/* 新闻和公告的 js 切换*/
+  	$(".nob2").css("display", "none");			
+  	$("#not_col").hover(function(){
+		$(".nob1").css("display", "block");
+		$(".nob2").css("display", "none");
+		$(this).css('background-color','#FFF');
+		$("#not_new").css('background-color','#fcf7f7');
+  	});
+   	/* 新闻和公告的 js 切换*/
+  	$("#not_new").hover(function(){
+		$(".nob2").css("display", "block")
+		$(".nob1").css("display", "none");
+		$(this).css('background-color','#FFF');
+		$("#not_col").css('background-color','#fcf7f7');
+  	})
+});		
+</script>	 
+<script src="__PUBLIC__/js/jqueryUrlGet.js"></script><!--获取get参数插件-->
+<script> 
+set_first_leader(); //设置推荐人 
+// 如果是手机浏览器跳到手机
+if(isMobileBrowser()){
+   location.href="{:url('Mobile/Index/index')}";
+}
+</script>
+</body>
+</html>

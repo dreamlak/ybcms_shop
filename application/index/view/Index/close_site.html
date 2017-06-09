@@ -1,0 +1,23 @@
+{__NOLAYOUT__}<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>网站提示</title>
+<style type="text/css">
+	*{margin:0;padding:0;}
+    body{background:#fff;font-family:"Microsoft Yahei","Helvetica Neue",Helvetica,Arial,sans-serif;color:#333;font-size:16px;}
+    .system-message{padding:20px 10px;display:table;margin:10% auto 0;min-width:300px;border:1px #ddd solid;border-radius:10px;}
+    .system-message .msgimg{text-align:center;padding-bottom:30px;}
+    .system-message .msginfo{line-height:28px;font-size:18px;}
+</style>
+</head>
+<body>
+<div class="system-message info">
+	<div class="msgimg"><img src="/static/images/public/info.png" width="70"></div>
+	<div class="msginfo">
+		{$config['site_close_tip']|nl2p}
+	</div>
+</div>
+</body>
+</html>
+

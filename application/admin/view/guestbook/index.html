@@ -1,0 +1,108 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>留信管理</h3>
+			<h5>系统站内留信管理</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>留信列表管理，处理留信信息内容。</li>
+		</ol>
+	</div>
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 留言管理</span> 
+			<span class="tit-info">(共{$total}条记录)</span>
+			<div class="head-right">
+				<form action="" method="get" class="form-inline">
+					<input type="text" name="title" value="{:input('title')}" placeholder="标题" class="form-control"/>
+					<input type="text" name="name" value="{:input('name')}" placeholder="用户" class="form-control"/>
+		          	<select name="status" id="status" class="form-control">
+        				<option value="" selected="">全部状态</option>
+                       	<option value="0" {if input('status')=='0'}selected{/if}>审核中</option>
+                       	<option value="1" {if input('status')=='1'}selected{/if}>已查阅</option>
+                       	<option value="2" {if input('status')=='2'}selected{/if}>已回复</option>
+                       	<option value="3" {if input('status')=='3'}selected{/if}>被拒绝</option>
+                    </select>
+		          	<button type="submit" class="btn btn-default">搜索</button>
+				</form>
+			</div>
+		</div>
+		<div class="panel-btn">
+			<a href="javascript:" url="{:url('del')}" class="btn btn-default" data="ajax"><i class="fa fa-trash-o"></i> 删除留言</a>
+		</div>
+		<div class="panel-body table-responsive ng-scope">
+			<table class="table table-hover">
+				<thead class="navbar-inner">
+					<tr>
+						<th style="width:30px;">
+							<div class="custom-checkbox">
+								<input type="checkbox" id="chkAll" class="inbox-check">
+								<label for="chkAll"></label>
+							</div>
+						</th>
+						<th>留言主题</th>
+						<th>留言人</th>
+						<th>留言人电话</th>
+						<th>留言状态</th>
+						<th>留言时间</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					{volist name="lists" id="v"}
+					<tr for="chk{$v.id}">
+						<td>
+							<div class="custom-checkbox">
+								<input type="checkbox" name="ids[]" id="chk{$v.id}" class="inbox-check" value="{$v.id}">
+								<label for="chk{$v.id}"></label>
+							</div>
+						</td>
+						<td>{$v.title}</td>
+						<td>{$v.name}</td>
+						<td>{$v.tel}</td>
+						<td>
+							{if $v['status']==0}审核中
+							{elseif $v['status']==1}已查阅
+							{elseif $v['status']==2}已处理
+							{else}拒绝{/if}
+						</td>
+						<td>{:date('Y-m-d H:i:s',$v['addtime'])}</td>
+						<td>
+							<a href="{:url('disposal',['id'=>$v['id']])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> 留言处理</a>
+						</td>
+					</tr>
+					{/volist}
+				</tbody>
+			</table>
+		</div>
+		<div class="panel-footer">
+			{if $total>$listRows}
+			<ul class="pagination">
+				<li><a>{$total} 条记录</a></li>
+				<li><a>{$currentPage}/{$lastPage}</a></li>
+			</ul>
+			{/if}
+			{$pages}
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap']);
+})
+</script>
+{/block}
+{block name="script"}
+{/block}

@@ -1,0 +1,103 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+.form-control em{display:inline-block;font-style:normal;font-size:12px;border:1px #eee solid;border-radius:4px;padding:2px 5px;margin:2px;color:#999;cursor:pointer;}
+.form-control em:hover{background:#ddd;}
+</style>
+{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>优惠券分类管理-发放优惠券</h3>
+			<h5>商品抢购管理</h5>
+		</div>
+	</div>
+	<form action="" method="post" id="addEditshipping" class="form-horizontal">
+        <input type="hidden" name="id" value="{$info.id}">
+        <input type="hidden" name="type" value="{$info.type}">
+	    <div class="form-group">
+		    <label class="col-xs-2 control-label">类型名称</label>
+            <div class="col-xs-7">
+            	<input type="text" value="{$info.name}" name="name" id="name" disabled class="form-control" placeholder="填写类型名称" />
+            	<span class="help-block">不能更改</span> 
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">优惠券面额</label>
+		    <div class="col-xs-7">
+		    	<div class="input-group ">
+		    		<input type="text" value="{$info.money}" name="money" id="money" disabled placeholder="填写优惠券面额" class="form-control">
+		    		<span class="input-group-addon">元</span>
+		    	</div>
+		    	<span class="help-block">不能更改</span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">优惠券号前缀</label>
+		    <div class="col-xs-7">
+		    	<input type="text" value="YB" name="prefix" id="prefix" placeholder="填写优惠券号前缀" class="form-control" >
+		    	<span class="help-block">优惠券号动码前缀符号，如<b>YB</b>100001</span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>优惠券号起始数</label>
+		    <div class="col-xs-7">
+		    	<input type="number" value="{:intval($startCode)}" name="start_code" id="start_code" placeholder="填写优惠券号起始数" class="form-control" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')">
+		    	<span class="help-block">优惠券号动码从几开始 <font color="red">(只能填写数字)</font></span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>发放数量</label>
+		    <div class="col-xs-7">
+		    	<div class="input-group ">
+		    		<input type="number" value="0" name="num" id="num" placeholder="填写发放数量" class="form-control" onpaste="this.value=this.value.replace(/[^\d.]/g,'')" onkeyup="this.value=this.value.replace(/[^\d.]/g,'')">
+		    		<span class="input-group-addon">张</span>
+		    	</div>
+		    	<span class="help-block">需要发放的优惠券数量</span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"></label>
+		    <div class="col-xs-7">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary">
+		    </div>
+		</div>
+    </form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap','think','layer']);
+	
+	//提交
+	$('#submitbtn').click(function(){
+	   	if($.trim($('#start_code').val()) == ''){
+	   		layer.msg('优惠券号起始数不能为空！', {icon:5});
+	   		return false;
+	   	}
+	   	if(parseInt($('#num').val())>0){
+	   		layer.msg('发放数量不能为空！', {icon:5});
+	   		return false;
+	   	}
+	   	
+		var fields = $('form').serializeArray();
+		var ll = layer.load('正在处理，请稍后...', 3);
+		$.post(Think.U('Admin/Coupon/make_coupon'),fields,function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6}, function(){
+					history.go(-1);
+					location.reload();
+				});
+	        }else{
+	        	layer.msg(data.msg, {icon:5});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+});
+</script>
+{/block}
+{block name="script"}
+{/block}

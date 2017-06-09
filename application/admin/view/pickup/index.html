@@ -1,0 +1,105 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>自提点管理</h3>
+			<h5>商城自动提货点管理</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>对商城网站设置自动提货点管理。</li>
+		</ol>
+	</div>
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 自提点列表</span> 
+			<span class="tit-info">(共{$total}条记录)</span>
+		</div>
+		<div class="panel-btn">
+			<a href="{:url('addeditPickup')}" class="btn btn-default"><i class="fa fa-plus"></i> 添加自提点</a>
+			<a href="javascript:" url="{:url('del')}" class="btn btn-default" data="ajax"><i class="fa fa-trash-o"></i> 删除自提点</a>
+		</div>
+		<div class="panel-body table-responsive ng-scope">
+			<table class="table table-hover">
+				<thead class="navbar-inner">
+					<tr>
+						<th style="width:30px;">
+							<div class="custom-checkbox">
+								<input type="checkbox" id="chkAll" class="inbox-check">
+								<label for="chkAll"></label>
+							</div>
+						</th>
+						<th class="text-center">ID</th>
+						<th>自提点名称</th>
+						<th>自提点地址</th>
+						<th>自提点电话</th>
+						<th>自提点联系人</th>
+						<th>省</th>
+						<th>市</th>
+						<th>县</th>
+						<th>供应商</th>
+						<th>状态</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					{volist name="lists" id="v"}
+					<tr for="chk{$v.pickup_id}">
+						<td>
+							<div class="custom-checkbox">
+								<input type="checkbox" name="ids[]" id="chk{$v.pickup_id}" class="inbox-check" value="{$v.pickup_id}">
+								<label for="chk{$v.pickup_id}"></label>
+							</div>
+						</td>
+						<td class="text-center">{$v.pickup_id}</td>
+						<td><input type="text" value="{$v.pickup_name}" onchange="changeTableVal('pick_up','pickup_id','{$v.pickup_id}','pickup_name',this)" class="form-control" style="display:inline-block;width:130px;"/></td>
+						<td>{$v.pickup_address}</td>
+						<td>{$v.pickup_phone}</td>
+						<td>{$v.pickup_contact}</td>
+						<td>{$v.province_id|get_id_areaName}</td>
+						<td>{$v.city_id|get_id_areaName}</td>
+						<td>{$v.district_id|get_id_areaName}</td>
+						<td>{$v.suppliersid|getSuppliers}</td>
+						<td>
+							{if $v['status']==1}
+                            <span class="yes" onClick="changeTableVal('pick_up','pickup_id','{$v.pickup_id}','status',this)" ><i class="fa fa-check-circle"></i>是</span>
+                            {else/}
+                            <span class="no" onClick="changeTableVal('pick_up','pickup_id','{$v.pickup_id}','status',this)" ><i class="fa fa-ban"></i>否</span>
+                            {/if}
+						</td>
+						<td>
+							<a href="{:url('addeditPickup',['pickup_id'=>$v['pickup_id']])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> 编辑</a>
+						</td>
+					</tr>
+					{/volist}
+				</tbody>
+			</table>
+		</div>
+		{if $total>$listRows}
+		<div class="panel-footer">
+			<ul class="pagination">
+				<li><a>{$total} 条记录</a></li>
+				<li><a>{$currentPage}/{$lastPage}</a></li>
+			</ul>
+			{$pages}
+		</div>
+		{/if}
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap']);
+})
+</script>
+{/block}
+{block name="script"}{/block}

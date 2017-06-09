@@ -1,0 +1,183 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>用户中心-{$config['site_name']}</title>
+<meta http-equiv="keywords" content="{$config['site_key']}" />
+<meta name="description" content="{$config['site_desc']}" />
+<link rel="stylesheet" href="__P_CSS__/user/style.css" type="text/css">
+<link href="__P_CSS__/font-awesome/font-awesome.min.css" rel="stylesheet">
+<script src="__P_JS__/jquery/jquery-1.11.1.min.js"></script>
+<script src="__P_JS__/layer/layer.js"></script>
+{include file="public/think" /}
+</head>
+<body>
+<div class="headers">
+	<div class="w1000 clearfix">
+		<div class="logo">
+			<span class="td"><a href="/"><img src="{$config['site_logo']}" alt="logo"></a></span>
+			<span class="td"><img src="__P_IMG__/user/split.png" /></span>
+			<span class="td text">{$config['site_name']}</span>
+		</div>
+	</div>
+</div>
+<div class="forget_pwd">
+	<div class="w640">
+		<div class="steps_nav clearfix">
+			<p class="step_1 on"><i></i><s>1</s><b>填写账户名</b></p>
+			<p class="step_2 on"><i></i><s>2</s><b>验证身份</b></p>
+			<p class="step_3"><i></i><s>3</s><b>设置新密码</b></p>
+			<p class="step_4"><i></i><s>4</s><b>完成</b></p>
+		</div>
+		<div class="pwdForm clearfix">
+			<form id="forget_pwd" action="" method="post">
+				<input type="hidden" id="username" value="{$userinfo.username}"> 
+				<ul class="pub_ul">
+					<li>
+						<span class="title">验证方式：</span>
+						<div class="con">
+							<select id="verify-type-selector">
+								<option value="mobile" data-u="{$userinfo.tel}" {if $userinfo['type']=='mobile'}selected{/if}>手机验证</option> 
+								<option value="email" data-u="{$userinfo.email}" {if $userinfo['type']=='email'}selected{/if}>邮箱验证</option>
+							</select>
+						</div> 
+					</li>
+					<li id="mobileshow" {if $userinfo['type']!='mobile'}style="display:none;"{/if}>
+						<span class="title">接收手机号：</span>
+						<div class="con verify-group">
+							<span class="s-01">{$userinfo.tel|hiddenStr}</span>
+						</div>
+					</li>
+					<li id="emailshow" {if $userinfo['type']!='email'}style="display:none;"{/if}>
+						<span class="title">接收邮箱：</span>
+						<div class="con verify-group">
+							<span class="s-01">{$userinfo.email|hiddenStr=3}</span>
+						</div>
+					</li>
+					<li>
+						<span class="title">验证码：</span>
+						<div class="con verify-group">
+							<input type="text" class="msg-code ie-01 verify-ctrl" name="ckcode" id="ckcode" maxlength="10" value="">
+							<input type="button" class="get-msg-code" id="sendSms" onclick="sendcode(this)" value="获取验证码">
+							<span class="v-tips verify-tips" data-tips-for="ckcode">
+								<i class="fa"></i><span class="txt"></span>
+							</span>
+						</div>
+					</li>
+					<li>
+						<button id="fx_next" type="button" class="btn_120 verify-ctrl" onclick="setpwd()">下一步</button>
+					</li>
+				</ul>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="footer">
+    <p>Copyright © 2016-2025 {$config['site_name']}  版权所有 保留一切权利 备案号:{$config['site_icp']}</p>
+</div>
+
+<script>
+$(function(){
+	$('#verify-type-selector').change(function(){
+		var values=$(this).val();
+		var us=$(this).find("option:selected").attr('data-u');
+		$('#username').val(us);
+		if(values=='mobile'){
+			$('#mobileshow').show();
+			$('#emailshow').hide();
+		}else{
+			$('#mobileshow').hide();
+			$('#emailshow').show();
+		}
+	});
+});
+function sendcode(o){
+ 	$.ajax({
+		url:Think.U('Home/Api/send_validate_code','scene=2&t='+Math.random()),
+		type:'get',
+		dataType:'json',
+		data:{type:$('#verify-type-selector').val(),send:$('#username').val()},
+		success:function(res){
+			if(res.status==1){
+				layer.alert(res.msg, {icon: 1});
+				timer(o);
+			}else{
+				layer.alert(res.msg, {icon: 2});
+			}
+		}
+	})
+}
+
+var wait=120;
+function timer(o) { 
+	$('span[data-tips-for="ckcode"]').find('i').removeClass('fa-check-circle');
+	$('span[data-tips-for="ckcode"]').find('i').addClass('fa-minus-circle');
+	$('span[data-tips-for="ckcode"]').find('.txt').empty();
+    if (wait == 0) {  
+        o.removeAttribute("disabled");            
+        o.value="获取验证码";  
+        wait = 120;  
+    } else {  
+        o.setAttribute("disabled", true);  
+        o.value="重新发送(" + wait + ")";  
+        wait--;  
+        setTimeout(function() {  
+          timer(o)  
+        }, 1000)  
+    }  
+}
+//验证验证码
+var is_check = false;
+function checkcode(){
+	var ckcode = $('#ckcode').val();
+	$('span[data-tips-for="ckcode"]').css('display','inline');
+	$('span[data-tips-for="ckcode"]').find('i').removeClass('fa-check-circle');
+	$('span[data-tips-for="ckcode"]').find('i').addClass('fa-minus-circle');
+	if(ckcode == ''){
+		$('span[data-tips-for="ckcode"]').find('.txt').empty().html('验证码不能为空');
+		return;
+	}
+	if(ckcode.length != 4){
+		$('span[data-tips-for="ckcode"]').find('.txt').empty().html('验证码不正确');
+		return;
+	}
+	
+	$.ajax({
+		url:Think.U('Home/Api/check_validate_code','t='+Math.random()),
+		type:'post',
+		dataType:'json',
+		data:{type:$('#verify-type-selector').val(),code:ckcode,send:$('#username').val(),scene:2},
+		success:function(res){
+			if(res.status==1){
+				is_check = true;
+				$('span[data-tips-for="ckcode"]').css('display','inline');
+				$('span[data-tips-for="ckcode"]').find('i').removeClass('fa-minus-circle');
+				$('span[data-tips-for="ckcode"]').find('i').addClass('fa-check-circle');
+				$('span[data-tips-for="ckcode"]').find('.txt').empty();
+				window.location.href=Think.U('Home/User/set_pwd','t='+Math.random());
+			}else{
+				$('span[data-tips-for="ckcode"]').find('.txt').empty().html(res.msg);
+				return false;				
+			}
+		}
+	})
+}
+//下一步
+function setpwd(){
+	var ckcode = $('#ckcode').val();
+	$('span[data-tips-for="ckcode"]').css('display','inline');
+	$('span[data-tips-for="ckcode"]').find('i').removeClass('fa-check-circle');
+	$('span[data-tips-for="ckcode"]').find('i').addClass('fa-minus-circle');
+	if(ckcode == ''){
+		$('span[data-tips-for="ckcode"]').find('.txt').empty().html('验证码不能为空');
+		return;
+	}
+	if(ckcode.length != 4){
+		$('span[data-tips-for="ckcode"]').find('.txt').empty().html('验证码不正确');
+		return;
+	}
+	checkcode();
+}
+</script>
+</body>
+</html>	

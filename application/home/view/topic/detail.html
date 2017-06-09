@@ -1,0 +1,37 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>专题详情-{$config['site_name']}</title>
+<meta http-equiv="keywords" content="{$config['site_key']}" />
+<meta name="description" content="{$config['site_desc']}" />
+<link rel="stylesheet" href="__STATIC__/css/promoteList.css" type="text/css">
+</head>
+<style>
+.mbb_mian{width:100%; position:relative; z-index:3;text-align:center;}
+</style>
+<body>
+<!--------头部开始-------------->
+{include file="public/header" /}
+<div class="layout ov-hi">
+    <div class="mbb_mian" style="margin-top:{$topic.topic_margin_top}px;padding:0px;">
+		<iframe width="100%" height="100%" frameborder="0"  hspace="0" vspace="0"  scrolling="no" style="display: inline;" onload="this.height=0;var fdh=(this.Document?this.Document.body.scrollHeight:this.contentDocument.body.offsetHeight);this.height=(fdh&gt;700?fdh+200:700)" src="{:url('Home/Topic/info',['topic_id'=>$topic['topic_id']])}"></iframe>	
+	</div>
+</div>
+<!--------底部banner-开始-------------->
+<div class="layout layer">
+   	<div class="cen-banne">
+            {ybcms:adv  pid="19" num="1" item="v" name="底部banner">            
+   	        <a href="{$v['url']}"<if condition="$v['target'] eq 1">target="_blank"</if>>
+       	        <img src="{$v['images']}" width="1200" height="160"  title="{$v[name]}" style="{$v[style]}"/>
+            </a>    
+            {/ybcms:adv}            
+       </div>
+</div>
+<script type="text/javascript"></script>
+<!--------底部banner-结束-------------->
+<!--------footer-开始-------------->
+{include file="public/footer" /}
+<!--------footer-结束-------------->
+</body>
+</html>

@@ -1,0 +1,137 @@
+﻿{extend name="public/base" /}
+{block name="css"}
+<link rel="stylesheet" type="text/css" href="__STATIC__/css/news_css.css" />
+<script type="text/javascript" src="http://api.map.baidu.com/api?v=2.0&ak=zCMMNPjx4PBLM0M95cUNPCrL"></script>
+{/block}
+{block name="main"}
+{include file="public/xmjd" /}
+<div class="news_list">
+	<div class="news_2px"></div>
+	<div class="news_list_right fr">
+		<div class="current"><span><i>当前位置</i>&gt{:get_Catbs($catid)}</span><h2>{$catname}</h2></div>
+		<div class="news_content">
+			<h1>{$info.title}</h1>
+			<h3><span>浏览</span><span>{$info.hot}</span></h3>
+			<div class="mapbox" style="padding:15px 0;position:relative;">
+				<div style="width:770px;height:550px;border:#ccc solid 1px;font-size:12px" id="map"></div>
+			  	<script type="text/javascript">
+			    //创建和初始化地图函数：
+			    function initMap(){
+			      createMap();//创建地图
+			      setMapEvent();//设置地图事件
+			      addMapControl();//向地图添加控件
+			      addMapOverlay();//向地图添加覆盖物
+			    }
+			    function createMap(){ 
+			      map = new BMap.Map("map"); 
+			      map.centerAndZoom(new BMap.Point(109.249714,26.458896),14);
+			    }
+			    function setMapEvent(){
+			      map.enableScrollWheelZoom();
+			      map.enableKeyboard();
+			      map.enableDragging();
+			      map.enableDoubleClickZoom()
+			    }
+			    function addClickHandler(target,window){
+			      target.addEventListener("click",function(){
+			        target.openInfoWindow(window);
+			      });
+			    }
+			    function addMapOverlay(){
+			      var markers = [
+			        {content:"",title:"贵州锦屏龙池多彩田园农文旅产业发展",imageOffset: {width:0,height:-46},position:{lat:26.46226,lng:109.240839}}
+			      ];
+			      for(var index = 0; index < markers.length; index++ ){
+			        var point = new BMap.Point(markers[index].position.lng,markers[index].position.lat);
+			        var marker = new BMap.Marker(point,{icon:new BMap.Icon("http://api.map.baidu.com/lbsapi/createmap/images/icon.png",new BMap.Size(20,25),{
+			          imageOffset: new BMap.Size(markers[index].imageOffset.width,markers[index].imageOffset.height)
+			        })});
+			        var label = new BMap.Label(markers[index].title,{offset: new BMap.Size(25,5)});
+			        var opts = {
+			          width: 200,
+			          title: markers[index].title,
+			          enableMessage: false
+			        };
+			        var infoWindow = new BMap.InfoWindow(markers[index].content,opts);
+			        marker.setLabel(label);
+			        addClickHandler(marker,infoWindow);
+			        map.addOverlay(marker);
+			      };
+			    }
+			    //向地图添加控件
+			    function addMapControl(){
+			      var scaleControl = new BMap.ScaleControl({anchor:BMAP_ANCHOR_BOTTOM_LEFT});
+			      scaleControl.setUnit(BMAP_UNIT_METRIC);
+			      map.addControl(scaleControl);
+			      var navControl = new BMap.NavigationControl({anchor:BMAP_ANCHOR_TOP_LEFT,type:0});
+			      map.addControl(navControl);
+			      var overviewControl = new BMap.OverviewMapControl({anchor:BMAP_ANCHOR_BOTTOM_RIGHT,isOpen:true});
+			      map.addControl(overviewControl);
+			    }
+			    var map;
+			      initMap();
+			  	</script>
+			</div>
+			<div class="news_content_box">
+				<div style="padding:0;">
+					{$info.content}
+				</div>
+				<div class="share">
+					分享到：<div class="bdsharebuttonbox">
+						<a href="#" class="bds_more" data-cmd="more"></a>
+						<a href="#" class="bds_tqq" data-cmd="tqq" title="分享到腾讯微博"></a>
+						<a href="#" class="bds_qzone" data-cmd="qzone" title="分享到QQ空间"></a>
+						<a href="#" class="bds_tsina" data-cmd="tsina" title="分享到新浪微博"></a>
+						<a href="#" class="bds_renren" data-cmd="renren" title="分享到人人网"></a>
+						<a href="#" class="bds_weixin" data-cmd="weixin" title="分享到微信"></a>
+					</div>
+					<script>window._bd_share_config={"common":{"bdSnsKey":{},"bdText":"","bdMini":"2","bdMiniList":false,"bdPic":"","bdStyle":"1","bdSize":"24"},"share":{}};with(document)0[(getElementsByTagName('head')[0]||body).appendChild(createElement('script')).src='http://bdimg.share.baidu.com/static/api/js/share.js?v=89860593.js?cdnversion='+~(-new Date()/36e5)];</script>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="news_list_left f1">
+		<div class="news_side">
+			<h2 class="catname">
+				{:get_cattopname($catid)}
+				<em>{:get_cattopname_en($catid)}</em>
+			</h2>
+			<ul>
+				{volist name="catlist" id="v"}
+				<li{if $v['catid']==$catid} class="news_on"{/if}><a href="{$v['url']}" title="{$v['catname']}">{$v['catname']}</a></li>
+				{/volist}
+			</ul>
+		</div>
+		<div class="news_serve">
+			<div class="news_serve_img"><img src="__STATIC__/images/serve.jpg" alt="" /></div>
+			<div class="tab_news_serve fl">
+				<div class="news_serve_tab ">
+					<ul>
+						<li id="zzjs_news_serve1" onmousemove="settab_zzjs('zzjs_news_serve',1,2)" class="on_zzjs"><a href="{:get_caturl(88)}" title="">常见问题</a></li>
+						<li id="zzjs_news_serve2" onmousemove="settab_zzjs('zzjs_news_serve',2,2)"><a href="{:get_caturl(90)}" title="">旅客须知</a></li>
+					</ul>
+				</div>
+				<div class="tab_news_serve_list" id="zzjs_news_serve_zzjs1">
+					<ul>
+						{ybcms:art catid="88" num="4" item="v" key="k"}
+						<li><a href="{$v.url}" title="{$v.title}">{$v.title}</a></li>
+						{/ybcms:art}
+					</ul>
+				</div>
+				<div class="tab_news_serve_list" id="zzjs_news_serve_zzjs2" style="display:none;">
+					<ul>
+						{ybcms:art catid="90" num="4" item="v" key="k"}
+						<li><a href="{$v.url}" title="{$v.title}">{$v.title}</a></li>
+						{/ybcms:art}
+					</ul>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="cl"></div>
+</div>
+<div class="news_30px"></div>
+<link type="text/css" rel="stylesheet" href="__P_JS__/colorbox/colorbox.css">
+<script type="text/javascript" src="__P_JS__/colorbox/jquery.colorbox-min.js"></script>
+<script>$(".img_group").colorbox({rel:'img_group'})</script>
+{/block}

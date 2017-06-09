@@ -1,0 +1,105 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+.form-control em{display:inline-block;font-style:normal;font-size:12px;border:1px #eee solid;border-radius:4px;padding:2px 5px;margin:2px;color:#999;cursor:pointer;}
+.form-control em:hover{background:#ddd;}
+</style>
+{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>插件管理-{$typename[$type]}-{$plugin.name}配置</h3>
+			<h5>系统{$typename[$type]}插件管理</h5>
+		</div>
+	</div>
+	<form action="" method="post" class="form-horizontal">
+		<input type="hidden" name="id" value="{:isset($setting['shipping_area_id'])?$setting['shipping_area_id']:''}">
+		<input type="hidden" name="default" value="1">
+		<input type="hidden" name="code" value="{:input('code')}">
+		{if input('edit')==1}
+		<input type="hidden" name="edit" value="{:input('edit')}">
+		{/if}
+        <div class="form-group">
+		    <label class="col-xs-3 control-label">配送区域名称</label>
+            <div class="col-xs-7">
+            	<input type="text" value="{:isset($setting['shipping_area_name'])?$setting.shipping_area_name:''}" name="shipping_area_name" class="form-control">
+            	<span class="help-block">配送区域名称</span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-3 control-label">
+		    	首重<select name="config[first_weight]">
+                    {for start="500" end="8000" step="500" name="v"}
+                    	{if isset($setting['config']['first_weight'])}
+                        <option value="{$v}" {if $setting['config']['first_weight']==$v}selected={/if}>{$v}</option>
+                        {else}
+                        <option value="{$v}">{$v}</option>
+                        {/if}
+                    {/for}
+                </select> 克以内费用
+		    </label>
+            <div class="col-xs-7">
+            	<input type="text" value="{:isset($setting['config']['money'])?$setting.config.money:''}" name="config[money]" class="form-control">
+            	<span class="help-block">单位：元</span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-3 control-label">
+		    	续重每<select name="config[second_weight]">
+                    {for start="500" end="8000" step="500" name="v"}
+                    	{if isset($setting['config']['second_weight'])}
+                        <option value="{$v}" {if $setting['config']['second_weight']==$v}selected={/if}>{$v}</option>
+                        {else}
+                        <option value="{$v}">{$v}</option>
+                        {/if}
+                    {/for}
+                </select>克或其零数的费用
+		    </label>
+            <div class="col-xs-7">
+            	<input type="text" value="{:isset($setting['config']['add_money'])?$setting.config.add_money:''}" name="config[add_money]" class="form-control">
+            	<span class="help-block">单位：元</span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-3 control-label"></label>
+		    <div class="col-xs-7">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary">
+		    </div>
+		</div>
+    </form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap','think','layer']);
+	//回车事件
+	/*document.onkeydown = function(e) {
+		var theEvent = window.event || e;
+		var code = theEvent.keyCode || theEvent.which;
+		if(code == 13){
+			$("#submitbtn").click();
+		}
+	}*/
+	//提交
+	$('#submitbtn').click(function(){
+		var fields = $('form').serializeArray();
+		var ll = layer.load('正在处理，请稍后...', 3);
+		$.post(Think.U('Admin/Plugins/shipping_list_edit'),fields,function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6}, function(){
+	        		history.go(-1);
+					location.reload();
+				});
+	        } else {
+	        	layer.msg(data.msg, {icon:5});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+});
+</script>
+{/block}
+{block name="script"}
+{/block}

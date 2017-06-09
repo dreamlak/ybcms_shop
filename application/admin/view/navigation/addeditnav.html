@@ -1,0 +1,79 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>前台导航管理-添加编辑</h3>
+			<h5>网站前台导航管理</h5>
+		</div>
+	</div>
+	<form action="" method="post" class="form-horizontal">
+		<input type="hidden" name="id" value="{$info.id}" />
+        <div class="form-group article">
+		    <label class="col-xs-2 control-label"><span style="color:red">*</span>导航名称</label>
+		    <div class="col-xs-8">
+         		<input type="text" name="name" id="name" class="form-control" value="{$info.name}">
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"><span style="color:red">*</span>链接</label>
+		    <div class="col-xs-8">
+                <div class="input-group ">
+					<input type="text" name="url" id="url" class="form-control" value="{$info.url}">
+					<span class="input-group-btn">
+						<button type="button" class="btn btn-default" id="selecturl">添加URL</button>
+					</span>
+  				</div>
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">排序</label>
+		    <div class="col-xs-8">
+                <input type="text" name="sort" id="sort" class="form-control" value="{$info.sort}">
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"></label>
+		    <div class="col-xs-8">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary col-lg-1">
+		    </div>
+		</div>
+    </form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap','think','layer']);
+	//提交
+	$('#submitbtn').click(function(){
+		var fields = $('form').serializeArray();
+		var ll = layer.load('正在处理，请稍后...', 3);
+		$.post(Think.U('Admin/Navigation/addeditnav'),fields,function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6}, function(){
+	        		history.go(-1);
+					location.reload();
+				});
+	        } else {
+	        	layer.msg(data.msg, {icon:5});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+	//添加URL
+	$('#selecturl').click(function(){
+	    var url = Think.U('Admin/Navigation/selecturl');
+	    layer.open({
+	        type: 2,
+	        title: '添加URL',
+	        shadeClose: true,
+	        shade: 0.5,
+	        area: ['60%','70%'],
+	        content: url, 
+	    });
+	});
+});
+</script>
+{/block}

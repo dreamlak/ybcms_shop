@@ -1,0 +1,125 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+.form-control em{display:inline-block;font-style:normal;font-size:12px;border:1px #eee solid;border-radius:4px;padding:2px 5px;margin:2px;color:#999;cursor:pointer;}
+.form-control em:hover{background:#ddd;}
+span.form-control{border:0;}
+</style>
+{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>退换货详情</h3>
+			<h5>用户提交退换货详情</h5>
+		</div>
+	</div>
+	<form action="" method="post" id="addEditshipping" class="form-horizontal">
+
+        <div class="form-group">
+		    <label class="col-xs-2 control-label">订单编号</label>
+            <div class="col-xs-7">
+            	<span class="form-control"><a href="{:url('detail',['order_id'=>$return_goods['order_id']])}">{$return_goods.order_sn}</a></span>
+		   		<span class="help-block"></span> 
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">用户</label>
+            <div class="col-xs-7">
+            	<span class="form-control">{$user.nickname}</span>
+		   		<span class="help-block"></span> 
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">申请日期</label>
+            <div class="col-xs-7">
+            	<span class="form-control">{$return_goods.addtime|date="Y-m-d H:i",###}</span>
+		   		<span class="help-block"></span> 
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">商品名称</label>
+            <div class="col-xs-7">
+            	<span class="form-control"><a href="{:url('Home/Goods/goodsInfo',['id'=>$return_goods['goods_id']])}" target="_blank">{$goods['goods_name']}</a></span>
+		   		<span class="help-block"></span> 
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">退换货</label>
+            <div class="col-xs-7 form-inline">
+            	<select  name="type"  class="form-control">
+               		<option value="0" {if $return_goods['type']==0}selected{/if}>退货</option>
+               		<option value="1" {if $return_goods['type']==1}selected{/if}>换货</option>
+          		</select>
+          		<a class="btn btn-default"  href="{:url('Admin/member/account_edit',['id'=>$return_goods['user_id'],'user_money'=>$goods['shop_price'],'desc'=>'退货退款到余额'])}">退款到用户余额</a>
+            	<span class="help-block"></span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">退货描述</label>
+            <div class="col-xs-7">
+            	<textarea name="reason" id="reason" style="width:400px;height:120px;" placeholder="退货描述" class="form-control" id="subject_desc">{$return_goods['reason']}</textarea>
+            	<span class="help-block"></span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">用户上传照片</label>
+            <div class="col-xs-7">
+        		{volist name="return_goods[imgs]" id="item"}  
+           		<a href="{$item}" target="_blank"><img src="{$item}" width="85" height="85" /></a>&nbsp;&nbsp;&nbsp;                            
+       			{/volist}
+		   		<span class="help-block"></span> 
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">状态</label>
+            <div class="col-xs-7">
+            	<select name="status" class="form-control" style="width:400px;">
+	               <option value="0" {if $return_goods['status']==0}selected{/if}>未处理</option>
+	               <option value="1" {if $return_goods['status']==1}selected{/if}>处理中</option>
+	               <option value="2" {if $return_goods['status']==2}selected{/if}>已完成</option>                                             
+	          	</select>
+		   		<span class="help-block"></span> 
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">处理备注</label>
+            <div class="col-xs-7">
+            	<textarea name="remark" id="remark" style="width:400px; height:120px;" placeholder="退货描述" class="form-control" id="subject_desc">{$return_goods['remark']}</textarea>
+		   		<span class="help-block"></span> 
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"></label>
+		    <div class="col-xs-7">
+		    	<input type="hidden" name="id" value="{$id}">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary">
+		    </div>
+		</div>
+    </form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap','think','layer']);
+	//提交
+	$('#submitbtn').click(function(){
+		var fields = $('form').serializeArray();
+		var ll = layer.load('正在处理，请稍后...', 3);
+		$.post(Think.U('Admin/Order/return_info'),fields,function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6}, function(){
+					location.href=data.url;
+				});
+	        }else{
+	        	layer.msg(data.msg, {icon:5});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+});
+</script>
+{/block}
+{block name="script"}
+{/block}

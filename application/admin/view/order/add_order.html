@@ -1,0 +1,225 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+.form-control em{display:inline-block;font-style:normal;font-size:12px;border:1px #eee solid;border-radius:4px;padding:2px 5px;margin:2px;color:#999;cursor:pointer;}
+.form-control em:hover{background:#ddd;}
+</style>
+{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>添加订单</h3>
+			<h5>管理员在后台添加一个新订单</h5>
+		</div>
+	</div>
+	<form action="" method="post" id="addEditshipping" class="form-horizontal">
+
+        <div class="form-group">
+		    <label class="col-xs-2 control-label">用户名</label>
+            <div class="col-xs-7 form-inline">
+            	<input type="text" name="user_name" id="user_name" class="form-control" placeholder="用户/手机/邮箱搜索" />
+            	<select name="user_id" id="user_id" class="form-control">
+             		<option value="0">匿名用户</option>
+         		</select>
+         		<a href="javascript:void(0);" onclick="search_user();" class="btn btn-default" ><i class="fa fa-search"></i>搜索</a>
+            	<span class="help-block">用户名搜索后，请填写搜索结果全名</span> 
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">收货人</label>
+            <div class="col-xs-7">
+            	<input type="text" value="" name="consignee" id="consignee" placeholder="收货人名字" class="form-control">
+            	<span class="help-block"></span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">手机</label>
+            <div class="col-xs-7">
+            	<input type="text" value="" name="mobile" id="mobile" placeholder="收货人联系电话" class="form-control">
+            	<span class="help-block"></span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">地址</label>
+            <div class="col-xs-7 form-inline">
+            	<script type="text/javascript" src="/static/js/city/city.js"></script>
+            	<select onchange="getCity(this)" id="province" name="province" class="form-control">
+	               	<option value="0">选择省份</option>
+	               	{volist name="province" id="vo"}
+	                <option value="{$vo.id}">{$vo.name}</option>
+	               	{/volist}
+	           	</select>
+	           	<select onchange="getArea(this)" id="city" name="city" class="form-control">
+	                <option value="0">选择城市</option>
+	            </select>
+	            <select id="district" name="district" class="form-control">
+	                <option value="0">选择区域</option>
+	            </select>
+	            <input type="text" name="address" id="address" value="" class="form-control" placeholder="详细地址"/>
+            	<span class="help-block"></span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">配送物流</label>
+            <div class="col-xs-7">
+            	<select id="shipping" name="shipping" class="form-control" >
+	             	{volist name="shipping_list" id="shipping"}
+                 	<option value="{$shipping.code}" >{$shipping.name}</option>
+	             	{/volist}
+	         	</select>
+            	<span class="help-block"></span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">支付方式</label>
+            <div class="col-xs-7">
+            	<select id="payment" name="payment" class="form-control" >
+	             	{volist name="payment_list" id="payment"}
+                 	<option value="{$payment.code}" >{$payment.name}</option>
+	             	{/volist}
+	         	</select>
+            	<span class="help-block"></span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">发票抬头</label>
+            <div class="col-xs-7">
+            	<input type="text" name="invoice_title" value="" class="form-control" placeholder="发票抬头"/>
+            	<span class="help-block"></span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">添加商品</label>
+            <div class="col-xs-7">
+            	<a href="javascript:void(0);" onclick="selectGoods()" class="btn btn-default" ><i class="fa fa-search"></i>添加商品</a>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">商品列表</label>
+            <div class="col-xs-7" id="goods_td">
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">管理员备注</label>
+		    <div class="col-xs-7">
+		    	<textarea class="form-control" name="admin_note" id="admin_note" placeholder="管理员备注">管理员添加的订单</textarea>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"></label>
+		    <div class="col-xs-7">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary">
+		    </div>
+		</div>
+    </form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap','think','layer']);
+	//提交
+	$('#submitbtn').click(function(){
+	   	if($.trim($('#consignee').val()) == ''){
+	   		layer.msg('发货人不能为空！', {icon:5});
+	   		return false;
+	   	}
+	   	if($.trim($('#province').val()) == ''){
+	   		layer.msg('省不能为空！', {icon:5});
+	   		return false;
+	   	}
+	   	if($.trim($('#city').val()) == ''){
+	   		layer.msg('市不能为空！', {icon:5});
+	   		return false;
+	   	}
+	   	if($.trim($('#district').val()) == ''){
+	   		layer.msg('县不能为空！', {icon:5});
+	   		return false;
+	   	}
+	   	if($.trim($('#address').val()) == ''){
+	   		layer.msg('地址不能为空！', {icon:5});
+	   		return false;
+	   	}
+	   	if($.trim($('#mobile').val()) == ''){
+	   		layer.msg('手机号不能为空！', {icon:5});
+	   		return false;
+	   	}
+	   	if($("input[name^='goods_id']").length ==0){
+		   	layer.msg('订单中至少要有一个商品',{icon: 5});
+		   	return false;
+	  	}
+      	
+		var fields = $('form').serializeArray();
+		var ll = layer.load('正在处理，请稍后...', 3);
+		$.post(Think.U('Admin/Order/add_order'),fields,function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6}, function(){
+					location.href=data.url;
+				});
+	        }else{
+	        	layer.msg(data.msg, {icon:5},function(){
+	        		location.href=data.url;
+	        	});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+	
+	$('#user_id').change(function(){
+		$('#user_name').val();
+		var user_id=$(this).val();
+		var user_text=$(this).find("option:selected").text();
+		$('#user_name').val(user_text);
+	});
+});
+//搜索用户 
+function search_user(){
+	var user_name = $('#user_name').val();
+	if($.trim(user_name)=='')return false;
+	$.post(Think.U('Admin/Member/ajaxSearchUser'),{search_key:user_name},function(data){
+		if(!data){
+			$('#user_name').val('');
+		}
+		data = data + '<option value="0">匿名用户</option>';
+		$('#user_id').html(data);
+		$('#user_name').val($("#user_id ").find("option:selected").text());
+	});
+}
+// 选择商品
+function selectGoods(){
+    var url = "{:url('search_goods')}";
+    layer.open({
+        type: 2,
+        title: '选择商品',
+        shadeClose: true,
+        shade: 0.8,
+        area: ['70%','60%'],
+        content: url, 
+    });
+}
+
+// 选择商品返回
+function call_back(table_html){ 
+	$('#goods_td').empty().append('<table id="new_table" class="table table-bordered">'+table_html+'</table>');
+	//过滤选择重复商品
+	$('input[name*="spec"]').each(function(i,o){
+		if($(o).val()){
+			var name='goods_id['+$(o).attr('rel')+']['+$(o).val()+'][goods_num]';
+			$('input[name="'+name+'"]').parent().parent().parent().remove();
+		}
+	});
+	layer.closeAll('iframe');
+}
+
+function delRow(obj){
+	$(obj).parent().parent().parent().remove();
+	var length = $("#goos_table tr").length;
+	if(length == 0){
+		$('#goods_td').empty();
+	}
+}
+</script>
+{/block}
+{block name="script"}
+{/block}

@@ -1,0 +1,114 @@
+@charset "gb2312";
+/* CSS Document */
+/* heading
+--------------------------------------------------------------------*/
+h1,h2,h3{font-weight:normal;}
+h1 strong,
+h1 em,
+h2 strong,
+h2 em,
+h3 strong,
+h3 em,
+h4 strong,
+h4 em,
+h5 strong,
+h5 em,
+h6 strong,
+h6 em { font-weight: inherit; _font-weight: expression(this.parentNode.currentStyle.fontWeight); *font-weight: expression(this.parentNode.currentStyle.fontWeight);}
+p {	text-align: justify; text-justify: distribute;}
+/* anchor
+--------------------------------------------------------------------*/
+a:link { text-decoration: none;}
+a:visited {	text-decoration: none;}
+a:hover { color:#b90404; }
+/* table
+--------------------------------------------------------------------*/
+table {	border-collapse: collapse; border-spacing: 0;}
+html,
+body,
+hr,
+div,
+p,
+pre,
+address,
+blockquote,
+ul,
+ol,
+dl,
+dt,
+dd,
+form,
+fieldset,
+td,
+tr {display: block;	margin: 0; padding: 0;}
+
+/* heading
+--------------------------------------------------------------------*/
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+	margin: 0;
+}
+
+/* font 
+--------------------------------------------------------------------*/
+body { font-size:12px;}
+address,
+em { font-style: normal;}
+
+/* list --------------------------------------------------------------------*/
+dl,
+ol,
+ul { list-style-type: none;}
+
+/* img --------------------------------------------------------------------*/
+img { border: none;	vertical-align: bottom;	margin:0px;}
+/* form--------------------------------------------------------------------*/
+input,
+select,
+textarea,
+button { font-size: inherit; line-height: inherit; cursor: pointer;}
+
+/* table
+--------------------------------------------------------------------*/
+
+table,
+thead,
+tbody,
+tfoot,
+tr,
+th,
+td,
+caption,
+col,
+colgroup { text-align: inherit; line-height: inherit; font-size: 100%;}
+table { display: table; }
+thead { display: table-header-group;}
+tbody { display: table-row-group;}
+tfoot {	display: table-footer-group;}
+tr { display: table-row;}
+th,
+td { display: table-cell; font-family: "ËÎÌו";}
+caption { display: table-caption;}
+col { display: table-column;}
+colgroup { display: table-column-group;}
+ul li span { float:right;}
+/* clearfix-------------------------------------------------------------------*/
+.clearfix:after { content: "."; display: block; height: 0; clear: both; visibility: hidden;}
+.clearfix {display: inline-block;}
+
+/* Hides from IE-mac \*/
+* html .clearfix { height:1%;}
+.clearfix { display:block;}
+/* End hide from IE-mac */
+/* End hide from IE-mac */
+.fl{float:left; display:inline;}
+.fr{float:right;display:inline;}
+.cl{clear:both;}
+
+
+
+

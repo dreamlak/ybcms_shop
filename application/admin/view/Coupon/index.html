@@ -1,0 +1,155 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+.head-right *{font-size:12px;}
+</style>
+{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>优惠券分类管理</h3>
+			<h5>商城优惠券发放管理</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>优惠券管理，对优惠券管理及发放</li>
+		</ol>
+	</div>
+	
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 优惠券分类列表</span> 
+			<span class="tit-info">(共{$total}条记录)</span>
+			<div class="head-right">
+				<form action="" method="get" class="form-inline" id="search_form">
+					<select name="type" class="form-control">
+						<option value="">全部分类</option>
+						{foreach $coupon_type as $k=>$v}
+						<option value="{$k}" {if input('type')===$k}selected{/if}>{$v}</option>
+						{/foreach}
+					</select>
+		          	<input value="{:input('name')}" type="text" class="form-control" name="name" placeholder="关键词...">
+		          	<button type="submit" class="btn btn-default">搜索</button>
+				</form>
+			</div>
+		</div>
+		<div class="panel-btn">
+			<a href="{:url('coupon_addedit')}" class="btn btn-default"><i class="fa fa-plus"></i> 添加优惠券类</a>
+			<a href="javascript:" url="{:url('del_coupon')}" class="btn btn-default" data="ajax"><i class="fa fa-trash-o"></i> 批量删除</a>
+		</div>
+		<div class="panel-body table-responsive ng-scope">
+			<table class="table table-hover">
+				<thead class="navbar-inner">
+					<tr>
+						<th style="width:30px;">
+							<div class="custom-checkbox">
+								<input type="checkbox" id="chkAll" class="inbox-check">
+								<label for="chkAll"></label>
+							</div>
+						</th>
+						<th>优惠券名称</th>
+						<th style="width:80px;"class="text-center">优惠券类型</th>
+						<th style="width:80px;"class="text-center">面额</th>
+						<th style="width:100px;" class="text-center">使用需满金额</th>
+						<th style="width:80px;" class="text-center">发放总量</th>
+						<th style="width:80px;" class="text-center">已发放数</th>
+						<th style="width:80px;" class="text-center">已使用</th>
+						<th style="width:130px;" class="text-center">使用截止日期</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					{volist name="lists" id="vo"}
+					<tr for="chk{$vo.id}">
+						<td>
+							<div class="custom-checkbox">
+								<input type="checkbox" name="ids[]" id="chk{$vo.id}" class="inbox-check" value="{$vo.id}">
+								<label for="chk{$vo.id}"></label>
+							</div>
+						</td>
+						<td>{$vo.name}</td>
+						<td class="text-center">{$coupons[$vo['type']]}</td>
+						<td class="text-center">{$vo.money}</td>
+						<td class="text-center">{$vo.condition}</td>
+						<td class="text-center">{$vo.createnum}</td>
+						<td class="text-center">{$vo.send_num}</td>
+						<td class="text-center">{$vo.use_num}</td>
+						<td class="text-center">{$vo.use_end_time|date='Y-m-d',###}</td>
+						<td>
+							{if $vo[type]==4}
+								<a href="{:url('make_coupon',['id'=>$vo['id'],'type'=>$vo['type']])}" class="btn btn-default btn-xs"><i class="fa fa-send"></i> 发放</a>
+							{elseif $vo[type]==1}
+								<a onclick="selectGoods({$vo.id})" id="send_user" class="btn btn-default btn-xs"><i class="fa fa-send-o"></i> 发放</a>
+							{else}
+								<a class="btn btn-xs" style="background-color:#ccc;border-color:#ccc;color:#fff;box-shadow:none"><i class="fa fa-ban"></i> 禁发</a>
+							{/if}
+							<a href="{:url('coupon_list',['id'=>$vo['id']])}" class="btn btn-default btn-xs"><i class="fa fa-search"></i> 查看</a>
+							<a href="{:url('coupon_addedit',['id'=>$vo['id']])}" class="btn btn-default btn-xs"><i class="fa fa-pencil-square-o"></i> 编辑</a>
+							<a href="javascript:" onclick="del({$vo['id']})" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i> 删除</a>
+						</td>
+					</tr>
+					{/volist}
+				</tbody>
+			</table>
+		</div>
+		{if $total>$listRows}
+		<div class="panel-footer">
+			<ul class="pagination">
+				<li><a>{$total} 条记录</a></li>
+				<li><a>{$currentPage}/{$lastPage}</a></li>
+			</ul>
+			{$pages}
+		</div>
+		{/if}
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap']);
+});
+//删除操作
+function del(id){
+	require(['think','layer'],function(){
+		layer.confirm('确定要删除吗?',{icon:3,title:'提示'},function(index){
+		  	$.ajax({
+				url:Think.U('Admin/Coupon/del_coupon','id='+id),
+				success: function(v){	
+	                if(v.status==1){
+	                	layer.close(index);
+	                	location.reload();
+	                }else{
+	                	layer.msg(v.msg, {icon: 2,time: 1000});
+	                }
+				}
+			});
+	       return false;
+		});
+    });
+}
+// 选择商品
+function selectGoods(id){
+	require(['think','layer'],function(){
+	    var url = Think.U('Admin/Coupon/get_user_send','cid='+id);
+	    layer.open({
+	        type: 2,
+	        title: '选择商品',
+	        shadeClose: true,
+	        shade: 0.8,
+	        area: ['70%','80%'],
+	        content: url, 
+	    });
+  	})
+}
+</script>
+{/block}
+{block name="script"}
+{/block}

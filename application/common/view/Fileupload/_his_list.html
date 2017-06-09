@@ -1,0 +1,14 @@
+<li id="files_{$v.id}" url="{$v.url}">
+	<p class="imgWrap">
+		{if $v['type']=='images'}
+		<img src="{$v.url}" class="img-responsive" />
+		{elseif $v['type']=='file'}
+		<i class="fa fa-file-text-o"></i>
+		{elseif $v['type']=='video'}
+		<i class="fa fa-video-camera"></i>
+		{elseif $v['type']=='audio'}
+		<i class="fa fa-music"></i>
+		{/if}
+	</p>
+	<p class="success"></p>
+</li>

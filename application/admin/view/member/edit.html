@@ -1,0 +1,117 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>会员管理-会员编辑</h3>
+			<h5>系统会员管理</h5>
+		</div>
+	</div>
+	<form action="" method="post" class="form-horizontal">
+		<input type="hidden" name="userid" value="{$info.userid}" />
+		<input type="hidden" name="username" value="{$info.username}" />
+    	<div class="form-group">
+		    <label class="col-xs-2 control-label">会员账号</label>
+		    <div class="col-xs-8">
+         		<span class="form-control" style="border:0;">{$info.username}</span>
+           	</div>
+		</div>
+		<div class="form-group article">
+		    <label class="col-xs-2 control-label">会员昵称</label>
+		    <div class="col-xs-8">
+         		<span class="form-control" style="border:0;">{:deal_emoji($info.nickname)}</span>
+           	</div>
+		</div>
+		<div class="form-group article">
+		    <label class="col-xs-2 control-label">余额</label>
+		    <div class="col-xs-8">
+         		<span class="form-control" style="color:red;font-weight:bold;border:0;">￥{$info.mymoney}元</span>
+           	</div>
+		</div>
+		<div class="form-group article">
+		    <label class="col-xs-2 control-label">积分</label>
+		    <div class="col-xs-8">
+         		<span class="form-control" style="color:red;font-weight:bold;border:0;">￥{$info.mypoints}元</span>
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">性别</label>
+            <div class="col-xs-8" id="email_input">
+            	<label class="radio-inline"><input value="0" type="radio" name="sex" {if $info['sex']==0}checked{/if}>保密</label>
+            	<label class="radio-inline"><input value="1" type="radio" name="sex" {if $info['sex']==1}checked{/if}>男</label>
+            	<label class="radio-inline"><input value="2" type="radio" name="sex" {if $info['sex']==2}checked{/if}>女</label>
+		    </div>
+		</div>
+        <div class="form-group">
+		    <label class="col-xs-2 control-label">邮箱</label>
+            <div class="col-xs-8" id="email_input">
+            	<input type="text" value="{$info['email']}" name="email" id="email" class="form-control">
+            	<span class="help-block">请输入常用的邮箱，将用来找回密码、接受通知等。</span>
+		    </div>
+		</div>
+    	<div class="form-group">
+		    <label class="col-xs-2 control-label">手机号码</label>
+            <div class="col-xs-8" id="tel_input">
+            	<input type="text" value="{$info['tel']}" name="tel" id="tel" class="form-control">
+            	<span class="help-block">请输入常用的手机号码，将用来找回密码、接受通知等。</span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">QQ号码</label>
+            <div class="col-xs-8" id="tel_input">
+            	<input type="text" value="{$info['qq']}" name="qq" id="qq" class="form-control">
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">注册时间</label>
+		    <div class="col-xs-8 col-sm-9 col-md-9">
+                <span class="form-control" style="border:0;">{:date('Y-m-d H:i:s',$info['regtime'])}</span>
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">状态</label>
+            <div class="col-xs-8" id="email_input">
+            	<label class="radio-inline"><input value="0" type="radio" name="status" {if $info['status']==0}checked{/if}>禁用</label>
+            	<label class="radio-inline"><input value="1" type="radio" name="status" {if $info['status']==1}checked{/if}>正常</label>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"></label>
+		    <div class="col-xs-8 col-sm-9 col-md-9">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary">
+		    </div>
+		</div>
+    </form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['think','layer']);
+	//回车事件
+	document.onkeydown = function(e) {
+		var theEvent = window.event || e;
+		var code = theEvent.keyCode || theEvent.which;
+		if(code == 13){
+			$("#submitbtn").click();
+		}
+	}
+	//提交
+	$('#submitbtn').click(function(){
+		var fields = $('form').serializeArray();
+		var ll = layer.load('正在处理，请稍后...', 3);
+		$.post(Think.U('Admin/Member/edit'),fields,function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6}, function(){
+					location.reload();
+				});
+	        } else {
+	        	layer.msg(data.msg, {icon:5});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+});
+</script>
+{/block}

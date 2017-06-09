@@ -1,0 +1,38 @@
+﻿{extend name="public/base" /}
+{block name="main"}
+<div class="w1000 jgszbox" style="margin-top:0">
+	<div class="ld_title">人才招聘</div>
+	<div class="jgtable" style="padding:0;margin-top:20px">
+		<table style="width:100%">
+			<tr>
+				<th>职位名称</th>
+				<th style="width:100px">职位性质</th>
+				<th style="width:100px">招聘人数</th>
+				<th style="width:100px">工资待遇</th>
+				<th style="width:150px">更新时间</th>
+			</tr>
+			{volist name="lists" id="v"}
+			<tr>
+				<td class="left"><a href="{:url('shows',['id'=>$v.id,'catid'=>input('catid')])}">{$v.name}</a></td>
+				<td>{$jobtype[$v.jobtype]}</td>
+				<td>{$v.jobpep}</td>
+				<td>{$v.remuneration}</td>
+				<td>{:date('Y-m-d',$v['addtime'])}</td>
+			</tr>
+			{/volist}
+		</table>
+		<div class="pagebox">
+			<div class="pagination-row clearfix">
+				{if $total>$listRows}
+				<ul class="pagination">
+					<li><a>{$total} 条记录</a></li>
+					<li><a>{$currentPage}/{$lastPage}</a></li>
+				</ul>
+				{/if}
+				{$pages}
+			</div>
+		</div>
+	</div>
+</div>
+
+{/block}

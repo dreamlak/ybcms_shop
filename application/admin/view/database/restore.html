@@ -1,0 +1,89 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>数据还原管理</h3>
+			<h5>系统数据备份与恢复管理</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>可能系统数据库备份、优化和修复操作</li>
+		</ol>
+	</div>
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 还原数据库</span> 
+			<span class="tit-info">(备份文件数量：{$filenum}，占空间大小：{$total})</span>
+		</div>
+		<div class="panel-btn">
+			<form class="navbar-form form-inline" action="{:url('restoreUpload')}" name="change_System" method="post" enctype="multipart/form-data">
+	            <div class="input-group">要导入的SQL文件:</div>
+	            <div class="input-group">
+            	 	<input type="file" class="btn btn-default" name="sqlfile"/>
+	            </div>
+	            <div class="form-group">
+	            	<input type="submit" class="btn btn-primary" value="提交">
+	            	<label class="text-danger">导入的SQL语句必须按照MYSQL的语法编写</label>
+	            </div>		          
+          	</form>
+		</div>
+		<div class="panel-body table-responsive ng-scope">
+			<table class="table table-hover">
+				<thead class="navbar-inner">
+					<tr>
+						<th style="width:30px;">
+							<div class="custom-checkbox">
+								<input type="checkbox" id="chkAll" class="inbox-check">
+								<label for="chkAll"></label>
+							</div>
+						</th>
+						<th>文件名称</th>
+						<th>文件大小</th>
+						<th>备份时间</th>
+						<th>卷号</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+				{volist name="vlist" id="v"}
+					<tr for="chk{$v.name}">
+						<td>
+							<div class="custom-checkbox">
+								<input type="checkbox" name="backs[]" id="chk{$v.name}" class="inbox-check" value="{$v.name}">
+								<label for="chk{$v.name}"></label>
+							</div>
+						</td>
+						<td>{$v.name}</td>
+						<td>{$v.size|getRealSize}</td>
+						<td>{$v.time|date="Y-m-d H:i:s",###}</td>
+						<td>{$v.number}</td>
+						<td>
+							<a class="btn btn-default btn-xs" href="{:url('restoreData',array('sqlfilepre'=>$v['name']))}" data-url="">恢复</a>
+	                      	<a class="btn btn-default btn-xs" href="{:url('downFile',array('type'=>'sql','file'=>$v['name']))}">下载</a>
+	                      	<a class="btn btn-default btn-xs" href="{:url('delSqlFiles',array('sqlfilename'=>$v['name']))}" >删除</a>
+						</td>
+					</tr>
+				{/volist}
+				</tbody>
+			</table>
+		</div>
+	</div>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap','think','layer']);
+})
+</script>
+{/block}
