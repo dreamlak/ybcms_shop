@@ -1,8 +1,0 @@
-
-<li>
-	<a href="{:url('Mobile/Hotel/show',['hotel_id'=>$v.hotel_id])}">
-    	<figure><img src="{:thumb($v['thumb'],62,62)}"></figure>
-    	<figcaption>{:msubstr($v['name'],0,26)}</figcaption>
-    	<p><i>{$v.click_count}</i>{:friend_date($v['addtime'])}</p>
-	</a>
-</li>
