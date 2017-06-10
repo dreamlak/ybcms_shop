@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:59:"F:\myweb\ybcms_shop/application/admin\view\index\login.html";i:1495262993;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:59:"F:\myweb\ybcms_shop/application/admin\view\index\login.html";i:1497089756;}*/ ?>
 <!DOCTYPE html>
 <html lang="zh-cn">
 <head>

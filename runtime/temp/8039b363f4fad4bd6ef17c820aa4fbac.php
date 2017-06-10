@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:67:"F:\myweb\ybcms_shop/application/admin\view\goods\_categorylist.html";i:1496458537;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:1:{s:67:"F:\myweb\ybcms_shop/application/admin\view\goods\_categorylist.html";i:1497089755;}*/ ?>
 <div class="panel-heading">
 	<span class="tit-name"><i class="fa fa-folder-open-o"></i> 商品分类列表</span> 
 	<span class="tit-info">(共<?php echo count($cat_list); ?>条记录)</span>
