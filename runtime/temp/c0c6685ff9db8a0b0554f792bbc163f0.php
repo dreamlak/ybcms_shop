@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:61:"F:\myweb\ybcms_shop/application/admin\view\system\config.html";i:1495300898;s:59:"F:\myweb\ybcms_shop/application/admin\view\public\base.html";i:1495297878;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:61:"F:\myweb\ybcms_shop/application/admin\view\system\config.html";i:1497089756;s:59:"F:\myweb\ybcms_shop/application/admin\view\public\base.html";i:1497089756;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
@@ -307,7 +307,7 @@ var require={urlArgs:'v=<?php echo time(); ?>'};
 				    <label class="col-xs-2 control-label" style="padding-top:0px;">发货后多少天自动收货<em>auto_confirm_date</em></label>
 				    <div class="col-xs-8">
 				    	<select name="config[auto_confirm_date]" class="form-control">
-				    		<?php $__FOR_START_16383__=1;$__FOR_END_16383__=31;for($i=$__FOR_START_16383__;$i < $__FOR_END_16383__;$i+=1){ ?>
+				    		<?php $__FOR_START_11102__=1;$__FOR_END_11102__=31;for($i=$__FOR_START_11102__;$i < $__FOR_END_11102__;$i+=1){ ?>
 				    		<option value="<?php echo $i; ?>" <?php if($config['auto_confirm_date']==$i): ?>selected<?php endif; ?>><?php echo $i; ?>天</option>
 				    		<?php } ?>
 				    	</select>
@@ -711,7 +711,7 @@ var require={urlArgs:'v=<?php echo time(); ?>'};
 				    <label class="col-xs-2 control-label" style="padding-top:0px;">分成时间<em>distribut_date</em></label>
 				    <div class="col-xs-8">
 				    	<select name="config[distribut_date]" class="form-control">
-				    		<?php $__FOR_START_31518__=1;$__FOR_END_31518__=30;for($i=$__FOR_START_31518__;$i < $__FOR_END_31518__;$i+=1){ ?>
+				    		<?php $__FOR_START_3225__=1;$__FOR_END_3225__=30;for($i=$__FOR_START_3225__;$i < $__FOR_END_3225__;$i+=1){ ?>
 		            		<option value="<?php echo $i; ?>" <?php if($config['distribut_date']==$i): ?>selected<?php endif; ?>><?php echo $i; ?>天</option>
 		            		<?php } ?>
 		            	</select>

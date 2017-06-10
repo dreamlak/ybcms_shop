@@ -1,4 +1,4 @@
-<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:66:"F:\myweb\ybcms_shop/application/admin\view\goods\categorylist.html";i:1495300392;s:59:"F:\myweb\ybcms_shop/application/admin\view\public\base.html";i:1495297878;}*/ ?>
+<?php if (!defined('THINK_PATH')) exit(); /*a:2:{s:66:"F:\myweb\ybcms_shop/application/admin\view\goods\categorylist.html";i:1497089755;s:59:"F:\myweb\ybcms_shop/application/admin\view\public\base.html";i:1497089756;}*/ ?>
 <!DOCTYPE html>
 <html>
 <head>
