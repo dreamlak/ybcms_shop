@@ -1,0 +1,128 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+.head-right *{font-size:12px;}
+</style>
+{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>优惠券管理</h3>
+			<h5>商城优惠券管理</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>优惠券管理，对优惠券管理及删除和查看</li>
+		</ol>
+	</div>
+	
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 优惠券列表</span> 
+			<span class="tit-info">(共{$total}条记录)</span>
+			<div class="head-right">
+				<form action="" method="get" class="form-inline" id="search_form">
+		          	<input value="{:input('code')}" type="text" class="form-control" name="code" placeholder="优惠券码...">
+		          	<button type="submit" class="btn btn-default">搜索</button>
+				</form>
+			</div>
+		</div>
+		<div class="panel-btn">
+			<a href="javascript:" url="{:url('coupon_list_del')}" class="btn btn-default" data="ajax"><i class="fa fa-trash-o"></i> 批量删除</a>
+		</div>
+		<div class="panel-body table-responsive ng-scope">
+			<table class="table table-hover">
+				<thead class="navbar-inner">
+					<tr>
+						<th style="width:30px;">
+							<div class="custom-checkbox">
+								<input type="checkbox" id="chkAll" class="inbox-check">
+								<label for="chkAll"></label>
+							</div>
+						</th>
+						<th>优惠券名称</th>
+						<th style="width:80px;"class="text-center">发放类型</th>
+						<th style="width:130px;"class="text-center">订单号</th>
+						<th style="width:80px;" class="text-center">使用会员</th>
+						<th style="width:130px;" class="text-center">使用时间</th>
+						<th style="width:100px;" class="text-center">优惠券码</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					{volist name="lists" id="vo"}
+					<tr for="chk{$vo.id}">
+						<td>
+							<div class="custom-checkbox">
+								<input type="checkbox" name="ids[]" id="chk{$vo.id}" class="inbox-check" value="{$vo.id}">
+								<label for="chk{$vo.id}"></label>
+							</div>
+						</td>
+						<td>{$vo.name}</td>
+						<td class="text-center">{$coupon_type[$v[type]]}</td>
+						<td class="text-center">{$vo.order_sn}</td>
+						<td class="text-center">{:deal_emoji($vo.nickname)}</td>
+						<td class="text-center">
+							{if $vo['use_time']>0}{$vo.use_time|date='Y-m-d',###}{else}N{/if}
+						</td>
+						<td class="text-center">{$vo.code}</td>
+						<td>
+							<a href="javascript:" onclick="del({$vo['id']})" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i> 删除</a>
+						</td>
+					</tr>
+					{/volist}
+				</tbody>
+			</table>
+		</div>
+		<div class="panel-footer">
+			{$page}
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap']);
+});
+//删除操作
+function del(id){
+	require(['think','layer'],function(){
+		layer.confirm('确定要删除吗?',{icon:3,title:'提示'},function(index){
+		  	$.ajax({
+				url:Think.U('Admin/Coupon/del_coupon','id='+id),
+				success: function(v){	
+	                if(v.status==1){
+	                	layer.close(index);
+	                	location.reload();
+	                }else{
+	                	layer.msg(v.msg, {icon: 2,time: 1000});
+	                }
+				}
+			});
+	       return false;
+		});
+    });
+}
+$('#send_user').click(function(){
+    var url = $(this).attr('data-url');
+    layer.open({
+        type: 2,
+        title: '发放优惠券',
+        shadeClose: true,
+        shade: 0.5,
+        area: ['70%', '85%'],
+        content: url,
+    });
+});
+</script>
+{/block}
+{block name="script"}
+{/block}

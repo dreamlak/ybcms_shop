@@ -1,0 +1,104 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+.form-control em{display:inline-block;font-style:normal;font-size:12px;border:1px #eee solid;border-radius:4px;padding:2px 5px;margin:2px;color:#999;cursor:pointer;}
+.form-control em:hover{background:#ddd;}
+</style>
+{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>商品属性 - 添加修改属性</h3>
+			<h5>添加修改属性</h5>
+		</div>
+	</div>
+	<form action="" method="post" id="myforms" class="form-horizontal">
+		<input type="hidden" name="attr_id" value="{$info.attr_id}">
+        <div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>属性名称</label>
+            <div class="col-xs-7">
+            	<input type="text" value="{$info.attr_name}" id="attr_name" name="attr_name" placeholder="填写属性名称" class="form-control">
+            	<span class="help-block"></span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>所属商品模型</label>
+            <div class="col-xs-7">
+            	<select name="type_id" id="type_id" class="small form-control">
+                	<option value="">请选择</option>
+	                {volist name="goodsTypeList" id="vo"}
+	                <option value="{$vo['id']}" {if $vo['id']==$type_id}selected="selected"{/if}>{$vo['name']}</option>
+	                {/volist}                                        
+            	</select>
+            	<span class="help-block">选择所属商品模型</span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">能否进行检索：</label>
+            <div class="col-xs-7">
+            	{php}$attr_index=isset($info['attr_index'])?$info['attr_index']:''{/php}
+            	{:tpl_onoff('attr_index','attr_index',$value=['1','0','关键字检索','不需要检索'],$attr_index)}
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">该属性值的录入方式</label>
+            <div class="col-xs-7">
+            	<select name="attr_input_type" id="attr_input_type" class="small form-control">
+                	<option value="">请选择</option>
+	                <option value="0" {if $info['attr_input_type']=='0'}selected="selected"{/if}>手工录入</option>
+	                <option value="1" {if $info['attr_input_type']=='1'}selected="selected"{/if}>从下面的列表中选择（一行代表一个可选值）</option>
+	                <option value="2" {if $info['attr_input_type']=='2'}selected="selected"{/if}>多行文本框</option>
+            	</select>
+            	<span class="help-block">选择所属商品模型</span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">可选值列表：</label>
+            <div class="col-xs-7">
+            	<textarea rows="5" cols="30" name="attr_values" class="form-control" placeholder="可选值列表一行为一个规格项" style="height:100px;"/>{$info.attr_values}</textarea>
+            	<span class="help-block">录入方式为手工或者多行文本时，此输入框不需填写，可选值列表一行为一个规格项</span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"></label>
+		    <div class="col-xs-7">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary">
+		    </div>
+		</div>
+    </form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap','think','layer']);
+	//提交
+	$('#submitbtn').click(function(){
+		if($('#attr_name').val() == ''){
+            layer.msg('属性名称不能为空！', {icon: 2,time: 1000});
+            return false;
+        }else if($('#type_id').val() == ''){
+            layer.msg('所属商品模型不能为空！', {icon: 2,time: 1000});
+            return false;
+        }
+		
+		var fields = $('form#myforms').serializeArray();
+		var ll = layer.load('正在处理，请稍后...', 3);
+		$.post(Think.U('Admin/Goods/addEditGoodsAttribute'),fields,function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6}, function(){
+	        		history.go(-1);
+					location.reload();
+				});
+	        }else{
+	        	layer.msg(data.msg, {icon:5});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+});
+</script>
+{/block}
+{block name="script"}
+{/block}

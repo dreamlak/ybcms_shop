@@ -1,0 +1,116 @@
+<div class="template-one">
+	<!-- banner模块 _start -->
+	<div class="banner">
+		<!-- banner轮播 _start -->
+		<ul id="fullScreenSlides" class="full-screen-slides">
+			{ybcms:adv pid ="15" num="5" item="v" key="k" name="首页Banner幻灯"}
+			<li style="background: url('{$v.images}') center center;display:{if $k==0}list-item{else}none{/if};">
+				<a href="{$v.url}" title="" {if condition="$v['target'] eq 1"}target="_blank"{/if}>&nbsp;</a>
+			</li>
+			{/ybcms:adv}
+		</ul>
+		<ul class="full-screen-slides-pagination">
+			{ybcms:adv pid ="15" num="5" item="v" key="k"}
+        	<li{if $k==0} class="current"{/if}><a href="javascript:void(0);">{$k}</a></li>
+        	{/ybcms:adv}
+		</ul>
+		<!-- banner轮播 _end -->
+		<div class="right-sidebar  SZY-TEMPLATE-NAV-CONTAINER">
+			<!-- 商城公告版式1 -->
+			<!-- banner右侧公告 _start -->
+			<div class="proclamation1">
+				<h3>
+					<span><i></i> 公告</span>
+					<a href="{:url('article/lists',['catid'=>1])}">更多<i>&gt;</i></a>
+				</h3>
+				<ul class="mall-news">
+					{ybcms:sql sql="select * from `__PREFIX__article`  where catid = 4 order by artid desc limit 8" item="v" key="k"}
+            		<li><a href="{:url('article/show',['artid'=>$v.artid])}" title="{$v.title}">{$v.title}</a></li>
+                    {/ybcms:sql}
+				</ul>
+			</div>
+			<!-- banner右侧公告 _end -->
+			<!-- 促销活动版式1 -->
+			<!-- banner右侧限时抢购 _start -->
+			<div class="sale-discount">
+				<ul class="saleDiscount">
+					<?php $tadys=time();?>
+					{ybcms:sql sql="select * from __PREFIX__goods as g inner join __PREFIX__flash_sale as f on g.goods_id = f.goods_id   where  `start_time`<$tadys and `end_time`>$tadys" item="v" key="k"}
+					<li>
+						<div class="sale-con">
+							<div class="goods-info">
+								<div class="goods-detail">
+									<p class="time-remain" data-time="{$v.end_time}">
+										<!--span>
+											<em class="bg-color">73</em> 天 
+											<em class="bg-color">12</em> 小时 
+											<em class="bg-color">09</em> 分 
+											<em class="bg-color">15</em> 秒
+										</span-->
+									</p>
+									<a href="{:url('Goods/goodsInfo',array('id'=>$v['goods_id']))}" title="{$v[goods_name]}" class="goods-thumb">
+										<img src="{$v.goods_id|goods_thum_images=220,220}"  alt="21">
+									</a>
+									<p class="goods-name">
+										<a href="{:url('Goods/goodsInfo',array('id'=>$v['goods_id']))}" title="{$v[goods_name]}">{$v[goods_name]}</a>
+									</p>
+									<p class="goods-price">
+										<span class="color"> ￥{$v[shop_price]} </span>
+										<span class="goods-discount color"><?php echo round($v['price'] / $v[shop_price] * 10 , 1); ?>折</span>
+									</p>
+								</div>
+							</div>
+						</div>
+					</li>
+					{/ybcms:sql}
+				</ul>
+				<div class="arrow pre" style="opacity: 0;"></div>
+				<div class="arrow next" style="opacity: 0;"></div>
+				<script type="text/javascript">
+					Move(".next", ".pre", ".saleDiscount", ".sale-discount", "1");
+				</script>
+			</div>
+			<!-- banner右侧限时抢购 _end -->
+		</div>
+	</div>
+	<!-- banner模块 _end -->
+</div>
+<script type="text/javascript" src="__S_JS__/jquery.countdown.js"></script>
+<script type="text/javascript">
+	$(document).ready(function() {
+		$(".time-remain").each(function(i) {
+			var time = $(this).data("time");
+			$(this).countdown({
+				time: time,
+				htmlTemplate: '<span><em class="bg-color">%{d}</em> 天 <em class="bg-color">%{h}</em> 小时 <em class="bg-color">%{m}</em> 分 <em class="bg-color">%{s}</em> 秒</span>',
+				leadingZero: true,
+				onComplete: function(event) {
+					$(this).html("活动已经结束啦!");
+				}
+			});
+		});
+
+		//加入购物车
+		$('body').on('click', '.add-cart', function(event) {
+			var goods_id = $(this).data('goods_id');
+			var image_url = $(this).data('image_url');
+			$.cart.add(goods_id, 1, {
+				is_sku: false,
+				image_url: image_url,
+				event: event,
+				callback: function() {
+					var attr_list = $('.attr-list').height();
+					$('.attr-list').css({
+						"overflow": "hidden"
+					});
+					if (attr_list >= 200) {
+						$('.attr-list').addClass("attr-list-border");
+						$('.attr-list').css({
+							"overflow-y": "auto"
+						});
+					}
+				}
+			});
+		});
+	});
+</script>

@@ -1,0 +1,90 @@
+{extend name="public/user_main" /}
+{block name="main"}
+<div class="panelBox">
+	<div class="panelTitle">安全中心</div>
+	<div class="safety">
+		<div class="safelevel">
+			<b>安全级别：</b>
+			<i class="rank rank{$user.rank}"></i>
+			<span class="rank_text">{$ranklevel[$user.rank]}</span>
+			<span class="rank_text">建议您启动全部安全设置，以保障账户及资金安全。</span>
+		</div>
+		<div class="safe_item">
+			<div class="td fore1"><i class="fa fa-check"></i> <b>登录密码</b></div>
+			<div class="td fore2">
+				<span class="fx"></span>
+				<span class="fx_1">互联网账号存在被盗风险，建议您定期更改密码以保护账户安全。</span>
+			</div>
+			<div class="td fore3"><a href="{:url('Home/User/password')}">修改</a></div>
+		</div>
+		<div class="safe_item">
+			<div class="td fore1"><i class="fa {if $user['email_validated']==1}fa-check{else}fa-exclamation-triangle{/if}"></i> <b>邮箱验证</b></div>
+			<div class="td fore2">
+				<span class="fx"></span>
+				<span class="fx_2">您验证的邮箱：</span>
+				<span class="fx-2"><b>{$user.email|hiddenStr=3}</b></span>
+			</div>
+			<div class="td fore3">
+			{if $user['email_validated']==1}
+				<a href="{:url('Home/User/email_validate',['step'=>1])}">修改</a>
+			{else}
+				<a href="{:url('Home/User/email_validate',['step'=>1])}">立即验证</a>
+			{/if}
+			</div>
+		</div>
+		<div class="safe_item">
+			<div class="td fore1"><i class="fa {if $user['mobile_validated']==1}fa-check{else}fa-exclamation-triangle{/if}"></i> <b>手机验证</b></div>
+			<div class="td fore2">
+				<span class="fx"></span>
+				<span class="fx_2">您验证的手机：</span>
+				<span class="fx-2"><b>{$user.tel|hiddenStr=1}</b></span>
+				<span class="fx_3">若已丢失或停用，请立即更换，<font color="#cc0000">避免账户被盗</font></span>
+			</div>
+			<div class="td fore3">
+			{if $user['mobile_validated']==1}
+				<a href="{:url('Home/User/mobile_validate',['step'=>1])}">修改</a>
+			{else}
+				<a href="{:url('Home/User/mobile_validate',['step'=>1])}">立即验证</a>
+			{/if}
+			</div>
+		</div>
+		<div class="safe_item">
+			<div class="td fore1"><i class="fa {if $user['paypwd']!=''}fa-check{else}fa-exclamation-triangle{/if}"></i> <b>支付密码</b></div>
+			<div class="td fore2">
+				<span class="fx"></span>
+				<span class="fx_2">建议您定期更换新的支付密码，提高安全性。</span>
+			</div>
+			<div class="td fore3">
+			{if $user['paypwd']!=''}
+				<a href="{:url('paypassword')}">修改</a>
+			{else}
+				<a href="{:url('paypassword')}">立即设置</a>
+			{/if}
+			</div>
+		</div>
+		<div class="safe_item">
+			<div class="td fore1"><i class="fa {if $user['idcard']!=''}fa-check{else}fa-exclamation-triangle{/if}"></i> <b>实名认证</b></div>
+			<div class="td fore2">
+				<span class="fx"></span>
+				<span class="fx_2">实名认证后，可通过实名信息找回支付密码，修改手机号等，提高账户安全性</span>
+			</div>
+			<div class="td fore3">
+			{if $user['idcard']!=''}
+				<a href="{:url('certification')}">查看</a>
+			{else}
+				<a href="{:url('certification')}">立即认证</a>
+			{/if}
+			</div>
+		</div>
+	</div>
+	<div class="safe_msg">
+		<h3>安全服务提示</h3>
+		<p>1.确认您登录的是{$config.site_name}，注意防范进入钓鱼网站，不要轻信各种即时通讯工具发送的商品或支付链接，谨防网购诈骗。</p>
+		<p>2.建议您安装杀毒软件，并定期更新操作系统等软件补丁，确保账户及交易安全。</p>
+	</div>
+</div>
+<!--评论提交-->
+<script type="text/javascript">
+
+</script>
+{/block}

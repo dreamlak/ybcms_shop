@@ -1,0 +1,136 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+table tbody td .yes{color:#666;cursor:pointer;}
+table tbody td .no{color:#ddd;cursor:pointer;}
+.trSelected td{color:#333;background:#FFFFDF;border-color:transparent;border-bottom:1px solid #FFEFBF;}
+</style>
+{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>商品规格-({$typeName} 模型)</h3>
+			<h5>商品规格及管理</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>商品规格是购买商品时给用户选择的, 涉及到价格变动库存等, 例如:衣服的 颜色 尺寸 等。</li>
+		</ol>
+	</div>
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 规格列表 </span> 
+			<span class="tit-info">(共{$total}条记录)</span>
+			<div class="head-right">
+				<form action="" id="search-form2" method="get" class="form-inline">
+		          	<select name="type_id" id="type_id" class="form-control" style="width:120px;">
+						<option value="">全部模型</option>
+		               	{foreach name="goodsTypeList" item="v" key="k"}
+		            	<option value="{$v['id']}"> {$v['name']}</option>
+			            {/foreach}
+		            </select>
+		          	<button type="submit" class="btn btn-default">搜索</button>
+				</form>
+			</div>
+		</div>
+		<div class="panel-btn">
+			<a href="{:url('addEditSpec',['type_id'=>input('type_id')])}" class="btn btn-default"><i class="fa fa-plus"></i> 添加规格</a>
+		</div>
+		<div class="panel-body table-responsive ng-scope">
+			<table class="table table-hover">
+				<thead class="navbar-inner">
+					<tr>
+						<th style="width:30px;">
+							<div class="custom-checkbox">
+								<input type="checkbox" id="chkAll" class="inbox-check">
+								<label for="chkAll"></label>
+							</div>
+						</th>
+						<th style="width:60px;" class="text-center">ID</th>
+						<th style="width:130px;">规格名称</th>
+						<th style="width:130px;">所属模型</th>
+						<th style="width:200px;">规格项</th>
+						<th style="width:50px;">筛选</th>
+						<th style="width:60px;">排序</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					{volist name="lists" id="v"}
+					<tr for="chk{$v.id}">
+						<td>
+							<div class="custom-checkbox">
+								<input type="checkbox" name="ids[]" id="chk{$v.id}" class="inbox-check" value="{$v.id}">
+								<label for="chk{$v.id}"></label>
+							</div>
+						</td>
+						<td class="text-center">{$v.id}</td>
+						<td><input type="text" value="{$v.name}" onChange="changeTableVal('spec','id','{$v.id}','name',this)" class="form-control" style="display:inline-block"/></td>
+						<td>{$goodsTypeArr[$v['type_id']]['name']}</td>
+						<td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+							{$v.spec_item}
+						</td>
+						<td>
+							{if $v['search_index']==1}
+	                      	<span class="yes" onClick="changeTableVal('spec','id','{$v.id}','search_index',this)" ><i class="fa fa-check-circle"></i>是</span>
+	                      	{else}
+	                      	<span class="no" onClick="changeTableVal('spec','id','{$v.id}','search_index',this)" ><i class="fa fa-ban"></i>否</span>
+	                    	{/if}
+						</td>
+						<td><input type="text" onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" onChange="changeTableVal('spec','id','{v.id}','order',this)" size="4" value="{$v.order}" class="form-control"/></td>
+						<td>
+							<a href="{:url('addEditSpec',['id'=>$v['id']])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> 编辑</a>
+							<a href="javascript:" onclick="delGoodsSpec({$v['id']})" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i> 删除</a>
+						</td>
+					</tr>
+					{/volist}
+				</tbody>
+			</table>
+		</div>
+		{if $total>$listRows}
+		<div class="panel-footer">
+			<ul class="pagination">
+				<li><a>{$total} 条记录</a></li>
+				<li><a>{$currentPage}/{$lastPage}</a></li>
+			</ul>
+			{$pages}
+		</div>
+		{/if}
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap']);
+})
+function delGoodsSpec(id){
+	require(['layer','think'],function(){
+		var ll = layer.load('系统正在为您处理，请稍后...', 3);
+		var url=Think.U('Admin/goods/delGoodsSpec','id='+id);
+		$.ajax({
+			url:url,			
+			success: function(data){
+				if(data.status==1){
+				   	layer.msg(data.msg,{icon:6}, function(){
+						location.reload();
+					});
+				}
+				layer.msg(data.msg, {icon: 1});
+				layer.close(ll);
+				return false;
+			}
+		});
+	});
+}
+</script>
+{/block}
+{block name="script"}
+{/block}

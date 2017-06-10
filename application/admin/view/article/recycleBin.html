@@ -1,0 +1,156 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+#opencat{float:right;cursor:pointer;}
+.artsearch{position:absolute;top:2px;right:2px;width:550px;}
+</style>
+{/block}
+{block name="main"}
+<div class="art-content" style="right:180px;">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>文章管理-回收站管理</h3>
+			<h5>系统文章管理</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>系统文章误删除后，可以此恢复</li>
+		</ol>
+	</div>
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 回收文章列表</span> 
+			<span class="tit-info">(共{$lists->total()}条记录)</span>
+			<div class="head-right">
+				<form action="" method="get" class="form-inline">
+					<input type="text" name="starttime" id="starttime" value="{$ste}" placeholder="发布开始时间" class="form-control form_datetime">
+					<input type="text" name="endtime" id="endtime" value="{$ete}" placeholder="发布结束时间" class="form-control form_datetime">
+                    <script type="text/javascript">
+	        		require(['bootstrap-datetimepicker-zh-CN'],function(){
+		        		$(".form_datetime").datetimepicker({
+		        			language:'zh-CN',
+		        			format: 'yyyy-mm-dd',
+		        			autoclose: true,
+		        			startView:2,
+		        			minView:2,
+		        			todayHighlight:true
+		        		});
+	        		});
+	        		</script>
+					<input type="text" name="keys" placeholder="关键字搜索" class="form-control" value="{$keys}">
+					<button class="btn btn-default" type="submit"><i class="fa fa-search"></i>搜索</button>
+				</form>
+			</div>
+		</div>
+		<div class="panel-btn">
+			<span id="opencat" class="btn btn-default"><i class="fa fa-bars"></i></span>
+			<a href="javascript:" url="{:url('delRecycleBin')}" class="btn btn-default" data="ajax"><i class="fa fa-trash-o"></i> 删除文章</a>
+			<a href="javascript:" url="{:url('resRecycleBin')}" class="btn btn-default" data="ajax"><i class="fa fa-reply"></i> 还原文章</a>
+		</div>
+		<div class="panel-body table-responsive ng-scope">
+			<table class="table table-hover">
+				<thead class="navbar-inner">
+					<tr>
+						<th style="width:30px;">
+							<div class="custom-checkbox">
+								<input type="checkbox" id="chkAll" class="inbox-check">
+								<label for="chkAll"></label>
+							</div>
+						</th>
+						<th style="width:50px;" class="text-center">排序</th>
+						<th style="width:50px;">类型</th>
+						<th style="width:100px;">栏目</th>
+						<th>标题</th>
+						<th style="width:80px;">作者</th>
+						<th style="width:120px;">发布时间</th>
+						<th style="width:60px;">状态</th>
+						<th>管理</th>
+					</tr>
+				</thead>
+				<tbody>
+				{volist name="lists" id="v"}
+					<tr for="chk{$v.artid}">
+						<td>
+							<div class="custom-checkbox">
+								<input type="checkbox" name="ids[]" id="chk{$v.artid}" class="inbox-check" value="{$v.artid}">
+								<label for="chk{$v.artid}"></label>
+							</div>
+						</td>
+						<td class="text-center"><input type="text" name="sort[{$v.artid}]" id="sort" class="form-control" value="{$v.sort}"></td>
+						<td class="text-center"><i class="fa {$typearr[$v.modelid]}" style="font-size:20px;"></i></td>
+						<td>{:getCatname($v['catid'])}</td>
+						<td>
+							<a href="{$v.url}" target="_blank">{$v.title}</a> 
+							{if $v['thumb']!=''}<span id="showimg" img="{$v.thumb}"><i class="fa fa-photo" style="color:#3C7500;"></i></span>{/if}
+						</td>
+						<td>{$v.author}</td>
+						<td>{:date('Y-m-d H:i:s',$v.addtime)}</td>
+						<td>{$v.status}</td>
+						<td></td>
+					</tr>
+				{/volist}
+				</tbody>
+			</table>
+		</div>
+		<div class="panel-footer">
+			{if $lists->total()>$lists->listRows()}
+			<ul class="pagination">
+				<li><a>{$lists->total()} 条记录</a></li>
+				<li><a>{$lists->currentPage()}/{$lists->lastPage()}</a></li>
+			</ul>
+			{/if}
+			{$lists->render()}
+		</div>
+	</div>
+</div>
+<div class="artcattree">
+	<div class="at_title">文章栏目</div>
+	<div class="tree-view-menu-list font-12">
+		<ul class="font-12">
+			{$catTree}
+		</ul>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	$('.send').remove();
+	
+	require(['bootstrap']);
+	$('.tree-view-menu-list .openable>a').click(function()	{
+		var openable = $(this).parent();
+		//openable.toggleClass('open');	
+		//openable.children('.subtree').slideToggle(200);
+		$('.tree-view-menu-list .openable').removeClass("open");
+		openable.addClass("open");
+		return false;
+	});
+	
+	$("#opencat").click(function(){
+		var sty=$('.main-content').attr('style');
+		if(sty=='right:180px;'||sty=='right: 180px;'){
+			$(".main-content").animate({right:'0'});
+			$(".artcattree").animate({right:'-180px'});
+		}else{
+			$(".main-content").animate({right:'180px'});
+			$(".artcattree").animate({right:'0'});
+		}
+	});
+	
+	$('#showimg').click(function(){
+		var src = $(this).attr('img');
+		var modalobj=util.dialog('','<img src="'+src+'">');
+		modalobj.modal('show');
+	})
+})
+</script>
+{/block}
+{block name="script"}
+{/block}

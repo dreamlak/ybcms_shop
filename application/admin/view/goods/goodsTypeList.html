@@ -1,0 +1,105 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>商品模型</h3>
+			<h5>商品模型列表</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>商品模型是用来规定某一类商品共有规格和属性的集合，其中规格会影响商品价格，同一个商品不同的规格价格会不同，而属性仅仅是商品的属性特质展示。</li>
+		</ol>
+	</div>
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 模型列表</span> 
+			<span class="tit-info">(共{$total}条记录)</span>
+		</div>
+		<div class="panel-btn">
+			<a href="{:url('addEditGoodsType')}" class="btn btn-default"><i class="fa fa-plus"></i> 添加模型</a>
+		</div>
+		<div class="panel-body table-responsive ng-scope">
+			<table class="table table-hover">
+				<thead class="navbar-inner">
+					<tr>
+						<th style="width:30px;">
+							<div class="custom-checkbox">
+								<input type="checkbox" id="chkAll" class="inbox-check">
+								<label for="chkAll"></label>
+							</div>
+						</th>
+						<th style="width:60px;" class="text-center">ID</th>
+						<th>模型名称</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					{volist name="lists" id="v"}
+					<tr for="chk{$v.id}">
+						<td>
+							<div class="custom-checkbox">
+								<input type="checkbox" name="ids[]" id="chk{$v.id}" class="inbox-check" value="{$v.id}">
+								<label for="chk{$v.id}"></label>
+							</div>
+						</td>
+						<td class="text-center">{$v.id}</td>
+						<td><input type="text" value="{$v.name}" onChange="changeTableVal('goods_type','id','{$v.id}','name',this)" class="form-control" style="display:inline-block;width:180px;"/></td>
+						<td>
+							<a href="{:url('goodsAttributeList',['type_id'=>$v['id']])}" class="btn btn-default btn-xs"><i class="fa fa-search"></i> 属性列表</a>
+							<a href="{:url('specList',['type_id'=>$v['id']])}" class="btn btn-default btn-xs"><i class="fa fa-search"></i> 规格列表</a>
+							<a href="{:url('addEditGoodsType',['id'=>$v['id']])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> 编辑</a>
+							<a href="javascript:" onclick="delGoodsType({$v['id']})" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i> 删除</a>
+						</td>
+					</tr>
+					{/volist}
+				</tbody>
+			</table>
+		</div>
+		{if $total>$listRows}
+		<div class="panel-footer">
+			<ul class="pagination">
+				<li><a>{$total} 条记录</a></li>
+				<li><a>{$currentPage}/{$lastPage}</a></li>
+			</ul>
+			{$pages}
+		</div>
+		{/if}
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap']);
+})
+function delGoodsType(id){
+	require(['layer','think'],function(){
+		var ll = layer.load('系统正在为您处理，请稍后...', 3);
+		var url=Think.U('Admin/goods/delGoodsType','id='+id);
+		$.ajax({
+			url:url,			
+			success: function(data){
+				if(data.status==1){
+				   	layer.msg(data.msg,{icon:6}, function(){
+						location.reload();
+					});
+				}
+				layer.msg(data.msg, {icon: 1});
+				layer.close(ll);
+				return false;
+			}
+		});
+	});
+}
+</script>
+{/block}
+{block name="script"}
+{/block}

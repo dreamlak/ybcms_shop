@@ -1,0 +1,92 @@
+{extend name="public/user_main" /}
+{block name="main"}
+<div class="panelBox">
+	<div class="panelTitle">我的钱包</div>
+	<div class="account">
+		<table class="account_table">
+			<tr>
+				<td class="td1">
+					<div class="td1-title">我的可用余额</div>
+					<div class="td1-price">
+						<?php
+							$mymoney=number_format($user['mymoney'],2);
+							$money=explode('.',$mymoney);
+						?>
+						<em class="td1-p-num">{$money[0]}</em>.{$money[1]}
+                    </div>
+				</td>
+				<td class="td2">
+					<p>全部余额：<em class="td2-num">{$user['mymoney']+$user['stopmoney']}</em></p>
+					<p>冻结余额：<em class="td2-num">{$user['stopmoney']}</em></p>
+					<p>消费总额：<em class="td2-num">{$user.spendmoney}</em></p>
+					<p>分佣金额：<em class="td2-num">{$user.getmoney}</em></p>
+					<p>会员折扣：<em class="td2-num">{$user.discount*100}%</em></p>
+				</td>
+				<td class="td3">
+					<a class="td3-btn" id="chongzi" href="{:url('recharge')}">充值</a>
+					<p class="td3-txt">您还可以申请提现，账号安全又便捷</p>
+					<p>
+						可提现金额：<em class="td3-num">{$user['mymoney']}</em>
+						<a class="font-link" href="{:url('Home/User/withdrawals')}">申请 &gt;</a>
+					</p>
+				</td>
+			</tr>
+		</table>
+	</div>
+	<div class="account_log">
+		<div class="log_tab">
+			<a href="{:url('account',['type'=>0])}"{if input('type')==''||input('type')=='0'} class="on"{/if}>消费记录</a>
+			<a href="{:url('account',['type'=>1])}"{if input('type')=='1'} class="on"{/if}>充值记录</a>
+		</div>
+		{if condition="$Request.param.type neq 1"}
+		<table class="ctable">
+			<tr>
+				<th>时间</th>
+				<th>金额</th>
+				<th>订单号</th>
+				<th>描述</th>
+			</tr>
+			{foreach name="consume_list" item="vv"}
+            <tr>
+                <td>{$vv.addtime|date='Y-m-d H:i:s',###}</td>
+                <td>￥{$vv.mymoney}</td>
+                <td>{$vv.ordersn}</td>
+                <td>{$vv.content}</td>
+            </tr>
+            {/foreach}
+        </table>
+        <div class="consume_log">{$page2}</div>
+        
+        {else/}
+        <table class="ctable">
+			<tr>
+				<th>时间</th>
+				<th>状态</th>
+				<th>金额</th>
+				<th>支付方式</th>
+			</tr>
+			{foreach name="recharge_list" item="vo"}
+			<tr>
+				<td>{$vo.addtime|date='Y-m-d H:i:s',###}</td>
+                <td>
+                	{if $vo[paystatus] == 0}
+                	待支付
+                	<a href="{:url('payment/getpay',['pay_radio'=>'pay_code='.$vo['paycode'],'order_id'=>$vo['id']])}" style="color:#0000CC;">立即支付</a>
+                	{else/}
+                	已支付
+                	{/if}
+                </td>
+                <td>￥{$vo.account}</td>
+                <td>{$vo.paytype}</td>
+			</tr>
+			{/foreach}
+		</table>
+		<div class="recharge_log">{$page}</div>
+		{/if}
+	</div>
+</div>
+<!--评论提交-->
+<script type="text/javascript">
+	
+</script>
+{/block}

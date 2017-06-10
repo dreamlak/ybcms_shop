@@ -1,0 +1,164 @@
+{extend name="public/base" /}
+{block name="main"}
+<div class="template-one">
+	<!-- 默认缓载图片 -->
+	<script type="text/javascript">$.imgloading.loading();</script>
+	<!-- 推荐的商品 _start -->
+	<div class="w1210 index-sale2">
+		<h2 class="index-sale-title">发现好货</h2>
+		<ul class="tabs-nav">
+			<li class="tabs-selected"><i class="arrow"></i><h3>精品推荐</h3></li>
+			<li ><i class="arrow"></i><h3>新货上架</h3></li>
+			<li ><i class="arrow"></i><h3>热卖单品</h3></li>
+		</ul>
+		<div class="tabs-panel">
+			<ul>
+				{ybcms:sql sql="select * from `__PREFIX__goods` where is_new = 1 and is_on_sale = 1 order by sort desc limit 5" item="v" key="k"}
+				<li>
+					<dl>
+						<dt class="goods-thumb">
+							<a href="{:url('Goods/goodsInfo',['id'=>$v.goods_id])}" title="{$v.goods_name}" >
+								<img class="" src="{$v.goods_id|goods_thum_images=220,220}"  alt="{$v.goods_name}" style="display:inline;">
+							</a>
+						</dt>
+						<dd class="goods-info">
+							<a href="{:url('Goods/goodsInfo',['id'=>$v.goods_id])}" title="{$v.goods_name}" class="goods-name">{$v.goods_name}</a>
+							<em class="goods-price second-color">￥{$v.shop_price}</em>
+						</dd>
+					</dl>
+				</li>
+				{/ybcms:sql}
+			</ul>
+		</div>
+		<div class="tabs-panel tabs-hide">
+			<ul>
+				{ybcms:sql sql="select * from `__PREFIX__goods` where is_recommend = 1 and is_on_sale = 1 order by on_time desc limit 5" item="v" key="k"}
+				<li>
+					<dl>
+						<dt class="goods-thumb">
+							<a href="{:url('Goods/goodsInfo',['id'=>$v.goods_id])}" title="{$v.goods_name}" >
+								<img class="" src="{$v.goods_id|goods_thum_images=220,220}"  alt="{$v.goods_name}" style="display:inline;">
+							</a>
+						</dt>
+						<dd class="goods-info">
+							<a href="{:url('Goods/goodsInfo',['id'=>$v.goods_id])}" title="{$v.goods_name}" class="goods-name">{$v.goods_name}</a>
+							<em class="goods-price second-color">￥{$v.shop_price}</em>
+						</dd>
+					</dl>
+				</li>
+				{/ybcms:sql}
+			</ul>
+		</div>
+		<div class="tabs-panel tabs-hide">
+			<ul>
+				{ybcms:sql sql="select * from `__PREFIX__goods` where is_hot = 1 and is_on_sale = 1 order by sales_sum desc limit 5" item="v" key="k"}
+				<li>
+					<dl>
+						<dt class="goods-thumb">
+							<a href="{:url('Goods/goodsInfo',['id'=>$v.goods_id])}" title="{$v.goods_name}" >
+								<img class="" src="{$v.goods_id|goods_thum_images=220,220}"  alt="{$v.goods_name}" style="display:inline;">
+							</a>
+						</dt>
+						<dd class="goods-info">
+							<a href="{:url('Goods/goodsInfo',['id'=>$v.goods_id])}" title="{$v.goods_name}" class="goods-name">{$v.goods_name}</a>
+							<em class="goods-price second-color">￥{$v.shop_price}</em>
+						</dd>
+					</dl>
+				</li>
+				{/ybcms:sql}
+			</ul>
+		</div>
+	</div>
+	<!-- 推荐的商品 _end -->
+	
+	<!-- 品牌 _start -->
+	<div class="w1210 store-wall2">
+    	<h2><a class="store-wall-title" href="#" title="推荐品牌" style="color: #333333">推荐品牌</a></h2>
+		<div class="store-con2">
+			<div class="store-wall2-ad">
+			 	{ybcms:adv pid ="16" num="1" item="v" name="首页品牌"}
+	            <a href="{$v.url}" {if condition="$v['target'] eq 1"}target="_blank"{/if}>
+	        		<img src="{$v.images}" title="{$v.name}" style="{$v.style};display:block;"/>
+	            </a>
+				{/ybcms:adv}
+			</div>
+            <ul class="store-wall2-list">
+            	{ybcms:sql sql="select * from `__PREFIX__brand` where is_hot = 1 order by sort asc limit 18" item="v" key="k"}
+                <li title="{$v.name}" {if ($k+1)%6==0}class="item"{/if}> 
+                    <img alt="{$v.name}" src="{$v.logo}">
+                    <div class="black-cover" style="display: none;"></div>
+                    <div class="cover-content" style="display: none;">
+                      	<a href="{:url('brand/info',['id'=>$v.id])}" class="enter" >点击进入</a>
+                    </div>
+                </li>
+                {/ybcms:sql}
+            </ul>
+		</div>
+	</div>
+	<!--品牌 _end-->
+	
+	<!--推荐楼层 _star -->
+	{ybcms:sql sql="SELECT * FROM `__PREFIX__goods_category` WHERE parent_id=0 and is_show=1 and is_hot=1 and `level` = 1 ORDER BY sort_order LIMIT 7" key="key" item='val'}
+	<?php 
+	    $cat_id_arr = getCatGrandson($val['id']); //找到某个大类下面的所有子分类id
+	    $cat_id_str = implode(',',$cat_id_arr);
+	    //dump($cat_id_str);
+	?>
+	<!--楼层{$key+1}-->
+	<div class="w1210 floor">
+		<div class="floor-brief">
+			<h1 class="floor-title">
+				<span class="floor-num SZY-FLOOR-NAME" data-name="{$val.name|getSubstr=0,2}">{$key+1}F</span><em></em>
+				<a href="{:url('Goods/goodsList',['id'=>$val.id])}" class="floor-name">{$val.name}</a>
+			</h1>
+			<div class="floor-ad"><a href="{:url('Goods/goodsList',['id'=>$val.id])}"><img src="{$val.image}"></a></div>
+			<div class="floor-cat">
+				{ybcms:sql sql="select * from `__PREFIX__goods_category` where is_show=1 and parent_id=$val[id]" key="key2" item='val2'}
+				<a href="{:url('Goods/goodsList',['id'=>$val2.id])}" title="{$val2.name}">{$val2.name}</a>
+				{/ybcms:sql} 
+			</div>
+		</div>
+		<div class="floor-con">
+			{ybcms:sql sql="select * from `__PREFIX__goods` where cat_id in($cat_id_str) and is_on_sale = 1 order by sort desc limit 8" key="k" item='v'}
+			<div class="floor-goods">
+				<div class="good-img {if $v['store_count']==0}empty{/if}">
+					<a href="{:url('Goods/goodsInfo',['id'=>$v.goods_id])}" title="{$v.goods_name}"><img src="{$v.goods_id|goods_thum_images=220,220}" alt="{$v.goods_name}"></a>
+					{if $v.is_new==1}<span class="tag"><em>新品</em><i></i></span>{/if}
+					{if $v.is_hot==1}<span class="tag"><em>热买</em><i></i></span>{/if}
+					{if $v.is_recommend==1}<span class="tag"><em>推荐</em><i></i></span>{/if}
+					{if $v['store_count']==0}<span class="shouqing"></span>{/if}
+				</div>
+				<div class="good-price">
+					<em>￥{$v.shop_price}</em><s>￥{$v.market_price}</s>
+					<a href="{:url('Goods/goodsInfo',['id'=>$v.goods_id])}" class="buy add-cart" title="立即购买"><img src="__S_IMG__/add-cart.png" width="30" height="30"></a>
+				</div>
+				<div class="good-name" title=""><a href="{:url('Goods/goodsInfo',['id'=>$v.goods_id])}" title="{$v.goods_name}">{$v.goods_name}</a></div>
+			</div>
+			{/ybcms:sql}
+		</div>
+	</div>
+	{/ybcms:sql}
+	<!-- 左侧楼层定位-->
+	<div class="elevator" style="visibility:hidden;">
+		<div class="elevator-floor" style="transform: scale(1); opacity: 1;"></div>
+	</div>
+	<script type="text/javascript">
+	$(function(){
+		$('.floor .floor-con').each(function(ci,cv){
+			$(cv).find('.floor-goods').each(function(gi,gv){
+				if(gi==0||gi==4){
+					$(gv).hover(function(){
+						$(gv).parent().prev().css('z-index',-1).css('border-width',0);
+					},function(){
+						$(gv).parent().prev().css('z-index',1).css('border-width',1);
+					});
+				}else{
+					$(gv).parent().prev().css('z-index',1).css('border-width',1);
+				}
+			});
+		});
+	});
+	</script>
+	<!-- 楼层 _end -->
+</div>
+{/block}

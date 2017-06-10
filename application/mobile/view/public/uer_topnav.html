@@ -1,0 +1,23 @@
+<div class="com_top">
+	<h2><a href="{:url('Mobile/User/userinfo')}">设置</a></h2>
+	<p class="tuij_cas">
+        {:deal_emoji($user['nickname'])}
+        {if $first_nickname!=''}
+        	<br />
+        	<span>由({$first_nickname})推荐</span>
+        {/if}
+    </p>
+	<dl>
+		<dt>
+			<img src='{$user[head_pic]|default="__P_IMG__/public/no-photo.png"}' />
+			<dd>{$level_name}</dd>
+		</dt>
+	</dl>
+</div>
+<div class="uer_topnav">
+	<ul>
+		<li class="bain"><a href="{:url('mobile/user/order_list')}" ><span>{$order_count}</span>我的订单</a></li>
+		<li class="bain"><a href="{:url('mobile/user/collect_list')}"><span>{$goods_collect_count}</span>我的收藏</a></li>
+		<li><a href="{:url('mobile/user/comment')}"><span>{$comment_count}</span>我的评价</a></li>
+	</ul>
+</div>

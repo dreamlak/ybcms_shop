@@ -1,0 +1,73 @@
+{extend name="public/base" /}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>角色管理-编辑角色</h3>
+			<h5>后台管理员角色及权限管理</h5>
+		</div>
+	</div>
+	<form action="" method="post" class="form-horizontal">
+        <div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>角色名</label>
+		    <div class="col-sm-9 col-xs-12">
+         		<input type="text" name="name" id="name" placeholder="" class="form-control" value="{$info.name}">
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">备注</label>
+		    <div class="col-sm-9 col-xs-12">
+         		<textarea name="remark" id="remark" class="form-control">{$info.remark}</textarea>
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">角色状态</label>
+		    <div class="col-sm-9 col-xs-12">
+	            <label class="radio-inline"><input type="radio" name="status" value="1" {if $info['status']==1}checked{/if}>启用</label>
+	            <label class="radio-inline"><input type="radio" name="status" value="0" {if $info['status']==0}checked{/if}>禁用</label>
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+		    <div class="col-sm-9 col-xs-12">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary col-lg-1">
+		    	<input type="hidden" name="roleid" id="roleid" value="{$info.roleid}" />
+		    </div>
+		</div>
+    </form>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap']);
+	//回车事件
+	document.onkeydown = function(e) {
+		var theEvent = window.event || e;
+		var code = theEvent.keyCode || theEvent.which;
+		if(code == 13){
+			$("#submitbtn").click();
+		}
+	}
+	//提交
+	$('#submitbtn').click(function(){
+		require(['think','layer'],function(){
+			var fields = $('form').serializeArray();
+			var ll = layer.load('正在处理，请稍后...', 3);
+			$.post(Think.U('Admin/AdminRole/edit'),fields,function(data){
+		        if(data.status==1) {
+		        	layer.msg(data.msg,{icon:6,time:1000}, function(){
+						history.go(-1);
+						location.reload();
+					});
+		        } else {
+		        	layer.msg(data.msg, {icon:5});
+		        }
+		        layer.close(ll);
+		        return false;
+		    });
+	    });
+	});
+});
+</script>
+{/block}

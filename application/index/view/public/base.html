@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>{block name="title"}YBMALL网上商城{/block}-{$config['site_name']}</title>
+<meta http-equiv="X-UA-Compatible" content="IE=edge,Chrome=1" />
+<meta http-equiv="keywords" content="{$config['site_key']}" />
+<meta name="description" content="{$config['site_desc']}" />
+<!-- css_start -->
+<link rel="stylesheet" href="__S_CSS__/iconfont/iconfont.css">
+<link rel="stylesheet" href="__S_CSS__/common.css">
+<link rel="stylesheet" href="__S_CSS__/color-style.css">
+{block name="css"}<link rel="stylesheet" href="__S_CSS__/index.css">{/block}
+<!-- css_end -->
+
+<!-- js_start -->
+<script src="__P_JS__/jquery/jquery-1.11.1.min.js" type="text/javascript"></script>
+<!--[if lt IE 9]>
+<script type="text/javascript" src="__P_JS__/ie/html5shiv.min.js"></script>
+<script type="text/javascript" src="__P_JS__/ie/respond.min.js"></script>
+<![endif]-->
+<script src="__P_JS__/layer/layer.js" type="text/javascript"></script>
+<script src="__P_JS__/jquery/jquery.lazyload.js" type="text/javascript"></script>
+{include file="public/thinkjs" /}
+<script src="__S_JS__/common.js" type="text/javascript"></script>
+{block name="js"}
+<script src="__S_JS__/szy.cart.js" type="text/javascript"></script>
+<script src="__S_JS__/index.js" type="text/javascript"></script>
+{/block}
+<!-- js_end -->
+{block name="script"}{/block}
+{block name="style"}{/block}
+</head>
+<body>
+<!-- 头部滚动通栏悬浮框 _start -->
+{block name="top_fixed"}{include file="public/top_fixed"/}{/block}
+<!-- 头部滚动通栏悬浮框 _end -->
+
+<!-- 头部广告 _start 注意：此广告只在网站首页展示 -->
+{block name="top_ad"}{include file="public/top_ad"/}{/block}
+<!-- 头部广告 _end 注意：此广告只在网站首页展示 -->
+
+<!--站点头部-->
+{block name="top_header"}{include file="public/top_header"/}{/block}
+<!--站点头部 结束-->
+
+<!--头部LOGO、搜索... 开始-->
+{block name="header"}{include file="public/header"/}{/block}
+<!--头部LOGO、搜索... 结束-->
+
+<!--导航-->
+{block name="nav"}{include file="public/menu"/}{/block}
+<!--导航 end-->
+
+<!--Banner-->
+{block name="banner"}{include file="public/banner"/}{/block}
+<!--Banner end-->
+
+<!--main_start-->
+{block name="main"}{include file="index/index"/}{/block}
+<!--main_end-->
+
+
+<!-- 右侧边栏 _start -->
+{block name="right_fixed"}{include file="public/right_fixed"/}{/block}
+<!-- 右侧边栏 _end -->
+
+<!-- 底部 _start-->
+{block name="footer"}
+{include file="public/friend_link"/}
+{include file="public/footer"/}
+{/block}
+<!-- 底部 _end-->
+</body>
+</html>

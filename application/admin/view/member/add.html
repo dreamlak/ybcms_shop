@@ -1,0 +1,93 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>会员管理-会员添加</h3>
+			<h5>系统会员管理</h5>
+		</div>
+	</div>
+	<form action="" method="post" class="form-horizontal">
+    	<div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>登录账号</label>
+		    <div class="col-xs-8">
+		    	<input type="text" value="" name="username" id="username" class="form-control">
+         		<span class="help-block">会员的登录账号</span>
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>登录密码</label>
+		    <div class="col-xs-8">
+		    	<input type="text" value="" name="password" id="password" class="form-control">
+         		<span class="help-block">会员的登录密码，6位以上的字母数字符号组合</span>
+           	</div>
+		</div>
+		<div class="form-group article">
+		    <label class="col-xs-2 control-label">会员昵称</label>
+		    <div class="col-xs-8">
+		    	<input type="text" value="" name="nickname" id="nickname" class="form-control">
+         		<span class="help-block">会员的昵称或称呼</span>
+           	</div>
+		</div>
+        <div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>手机号码</label>
+		    <div class="col-xs-8">
+         		<input type="text" value="" name="tel" id="tel" class="form-control">
+         		<span class="help-block">会员的手机号(必填)</span>
+           	</div>
+		</div>
+        <div class="form-group">
+		    <label class="col-xs-2 control-label">邮件地址</label>
+            <div class="col-xs-8" id="email_input">
+            	<input type="text" value="" name="email" id="email" class="form-control">
+            	<span class="help-block">会员的电子邮箱地址</span>
+		    </div>
+		</div>
+    	<div class="form-group">
+		    <label class="col-xs-2 control-label">QQ</label>
+            <div class="col-xs-8" id="tel_input">
+            	<input type="text" value="" name="qq" id="qq" class="form-control">
+            	<span class="help-block">会员的QQ号码</span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"></label>
+		    <div class="col-xs-8">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary">
+		    </div>
+		</div>
+    </form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['think','layer']);
+	//回车事件
+	document.onkeydown = function(e) {
+		var theEvent = window.event || e;
+		var code = theEvent.keyCode || theEvent.which;
+		if(code == 13){
+			$("#submitbtn").click();
+		}
+	}
+	//提交
+	$('#submitbtn').click(function(){
+		var fields = $('form').serializeArray();
+		var ll = layer.load('正在处理，请稍后...', 3);
+		$.post(Think.U('Admin/Member/add'),fields,function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6}, function(){
+					history.go(-1);
+					location.reload();
+				});
+	        } else {
+	        	layer.msg(data.msg, {icon:5});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+});
+</script>
+{/block}

@@ -1,0 +1,191 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+#opencat{float:right;cursor:pointer;}
+</style>
+{/block}
+{block name="main"}
+<div class="art-content" style="right:180px;">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>文章管理</h3>
+			<h5>系统文章管理</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>系统文章发布在对应栏目处</li>
+		</ol>
+	</div>
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 文章管理{if $catName!=''} - ({$catName}){/if}</span> 
+			<span class="tit-info">(共{$lists->total()}条记录)</span>
+			<div class="head-right">
+				<form action="" method="get" class="form-inline">
+					<input type="text" name="starttime" id="starttime" value="{$ste}" placeholder="发布开始时间" class="form-control form_datetime">
+					<input type="text" name="endtime" id="endtime" value="{$ete}" placeholder="发布结束时间" class="form-control form_datetime">
+                    <script type="text/javascript">
+	        		require(['bootstrap-datetimepicker-zh-CN'],function(){
+		        		$(".form_datetime").datetimepicker({
+		        			language:'zh-CN',
+		        			format: 'yyyy-mm-dd',
+		        			autoclose: true,
+		        			startView:2,
+		        			minView:2,
+		        			todayHighlight:true
+		        		});
+	        		});
+	        		</script>
+					<input type="text" name="keys" placeholder="关键字搜索" class="form-control" value="{$keys}">
+					<button class="btn btn-default" type="submit"><i class="fa fa-search"></i>搜索</button>
+				</form>
+			</div>
+		</div>
+		<div class="panel-btn">
+			<span id="opencat" class="btn btn-default"><i class="fa fa-bars"></i></span>
+			{if $cid!=''}
+			<a href="{:url('add',['catid'=>$cid,'modelid'=>$mid])}" class="btn btn-danger"><i class="fa fa-plus" style="color:#fff;"></i> 添加文章</a>
+			{/if}
+			<div class="btn-group">
+			  	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">文章设置 <span class="caret"></span></button>
+			  	<ul class="dropdown-menu font-14" role="menu">
+			  		<li><a href="javascript:" url="{:url('setStatus',['status'=>1])}" data="ajax"><i class="fa fa-toggle-on"></i> 启用文章</a></li>
+				    <li><a href="javascript:" url="{:url('setStatus',['status'=>0])}" data="ajax"><i class="fa fa-toggle-off"></i> 禁用文章</a></li>
+			  		<li class="divider" style="margin:5px 0;"></li>
+				    <li><a href="javascript:" url="{:url('setSort')}" data="ajax_sort"><i class="fa fa-sort"></i> 文章排序</a></li>
+			  		<li class="divider" style="margin:5px 0;"></li>
+			  		<li><a href="javascript:" url="{:url('del')}" data="ajax"><i class="fa fa-trash-o"></i> 删除文章</a></li>
+			  	</ul>
+			</div>
+			<div class="btn-group">
+			  	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">按文章模型查看<span class="caret"></span></button>
+			  	<ul class="dropdown-menu font-14" role="menu">
+			  		<li><a href="{:url('index',['catid'=>$cid,'modelid'=>'','status'=>$sts,'starttime'=>$ste,'addtime'=>$ete,'key'=>$keys])}">全部</a></li>
+			  		<li class="divider" style="margin:5px 0;"></li>
+			  		{volist name="modlist" id="mv"}
+			  		{if $mv['modelid']!=4 && $mv['modelid']!=5}
+			  		<li><a href="{:url('index',['catid'=>$cid,'modelid'=>$mv['modelid'],'status'=>$sts,'starttime'=>$ste,'addtime'=>$ete,'key'=>$keys])}">{$mv['title']}</a></li>
+			  		{/if}
+			  		{/volist}
+			  	</ul>
+			</div>
+			<div class="btn-group">
+			  	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">按文章状态查看 <span class="caret"></span></button>
+			  	<ul class="dropdown-menu font-14" role="menu">
+			  		<li><a href="{:url('index',['catid'=>$cid,'modelid'=>$mid,'status'=>'','starttime'=>$ste,'addtime'=>$ete,'key'=>$keys])}">全部</a></li>
+			  		<li class="divider" style="margin:5px 0;"></li>
+			  		<li><a href="{:url('index',['catid'=>$cid,'modelid'=>$mid,'status'=>1,'starttime'=>$ste,'addtime'=>$ete,'key'=>$keys])}">启用</a></li>
+			  		<li><a href="{:url('index',['catid'=>$cid,'modelid'=>$mid,'status'=>0,'starttime'=>$ste,'addtime'=>$ete,'key'=>$keys])}">禁用</a></li>
+			  	</ul>
+			</div>
+		</div>
+		<div class="panel-body table-responsive ng-scope">
+			<table class="table table-hover">
+				<thead class="navbar-inner">
+					<tr>
+						<th style="width:30px;">
+							<div class="custom-checkbox">
+								<input type="checkbox" id="chkAll" class="inbox-check">
+								<label for="chkAll"></label>
+							</div>
+						</th>
+						<th style="width:50px;" class="text-center">ID</th>
+						<th style="width:50px;" class="text-center">排序</th>
+						<th style="width:50px;" class="text-center">类型</th>
+						<th style="width:100px;">栏目</th>
+						<th>标题</th>
+						<th style="width:80px;">作者</th>
+						<th style="width:150px;">发布时间</th>
+						<th style="width:60px;">状态</th>
+						<th>管理</th>
+					</tr>
+				</thead>
+				<tbody>
+				{volist name="lists" id="v"}
+					<tr for="chk{$v.artid}">
+						<td>
+							<div class="custom-checkbox">
+								<input type="checkbox" name="ids[]" id="chk{$v.artid}" class="inbox-check" value="{$v.artid}">
+								<label for="chk{$v.artid}"></label>
+							</div>
+						</td>
+						<td class="text-center">{$v['artid']}</td>
+						<td class="text-center"><input type="text" name="sort[{$v.artid}]" id="sort" class="form-control" value="{$v.sort}"></td>
+						<td class="text-center"><i class="{$typearr[$v.modelid]}" style="font-size:20px;"></i></td>
+						<td>{:getCatname($v['catid'])}</td>
+						<td style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+							<a href="{$v.url}" target="_blank">{$v.title}</a> 
+							{if $v['thumb']!=''}<span id="showimg" img="{$v.thumb}"><i class="fa fa-photo" style="color:#3C7500;"></i></span>{/if}
+						</td>
+						<td>{$v.author}</td>
+						<td>{:date('Y-m-d H:i:s',$v.addtime)}</td>
+						<td>{if $v['status']==1}正常{else/}禁用{/if}</td>
+						<td>
+							<a href="{:url('edit',['artid'=>$v['artid']])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> 编辑</a>
+						</td>
+					</tr>
+				{/volist}
+				</tbody>
+			</table>
+		</div>
+		<div class="panel-footer">
+			{if $lists->total()>$lists->listRows()}
+			<ul class="pagination">
+				<li><a>{$lists->total()} 条记录</a></li>
+				<li><a>{$lists->currentPage()}/{$lists->lastPage()}</a></li>
+			</ul>
+			{/if}
+			{$lists->render()}
+		</div>
+	</div>
+</div>
+<div class="artcattree">
+	<div class="at_title">文章栏目</div>
+	<div class="tree-view-menu-list font-12">
+		<ul class="font-12">
+			{$catTree}
+		</ul>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap']);
+	$('.tree-view-menu-list .openable>a').click(function()	{
+		var openable = $(this).parent();
+		if(openable.hasClass('open')){
+			openable.removeClass("open");
+		}else{
+			openable.addClass("open");
+		}
+		return false;
+	});
+
+	$("#opencat").click(function(){
+		var sty=$('.art-content').attr('style');
+		if(sty=='right:180px;'||sty=='right: 180px;'){
+			$(".art-content").animate({right:'0'});
+			$(".artcattree").animate({right:'-180px'});
+		}else{
+			$(".art-content").animate({right:'180px'});
+			$(".artcattree").animate({right:'0'});
+		}
+	});
+	
+	$('#showimg').click(function(){
+		var src = $(this).attr('img');
+		var modalobj=util.dialog('','<img src="'+src+'">');
+		modalobj.modal('show');
+	})
+})
+</script>
+{/block}
+{block name="script"}
+{/block}

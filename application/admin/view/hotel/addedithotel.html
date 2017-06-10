@@ -1,0 +1,330 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+label{font-weight:400;max-width:none;}
+.tab-content{padding-bottom:80px;}
+.tab-pane h4{padding: 10px 0;font-weight:normal;font-size:14px;}
+.tab-pane h4 input{vertical-align:middle;}
+.goods_xc{width:100px;height:118px;text-align:center;margin:5px;display:inline-block;float:left;}
+.goods_xc img{border-radius:4px;border:1px #ddd solid;padding:2px;}
+.table{width:100%;max-width:100%;margin:0px;padding:0;}
+.table-bordered,.table-bordered tr td,.table-bordered>thead>tr>th, .table-bordered>tbody>tr>th, .table-bordered>tfoot>tr>th, .table-bordered>thead>tr>td, .table-bordered>tbody>tr>td, .table-bordered>tfoot>tr>td{border:1px solid #f4f4f4;vertical-align:middle;}
+.row{margin:0;}
+.col-xs-8,.col-xs-4{margin:-1px 0 0 0;padding:0;}
+#goods_shipping_table label{font-weight:400;}
+#goods_shipping_table .title{color:#999;width:180px;}
+#goods_shipping_table .group-list{color:#555;}
+.form-btn{position:fixed;bottom:0;left:278px;right:0;text-align:center;padding:10px;border-top:1px #ddd solid;background:#fff;z-index:3;}
+.form-btn .btn-lan{padding:6px 40px;}
+
+.attr_table{border-collapse:collapse;border:1px #eee ssolid;width:100%;border-radius:4px;}
+.attr_table td{padding:10px;border:1px #eee solid;}
+.attr_table td label{cursor:pointer;display:inline-block;margin:5px;}
+.attr_table tr:hover{background:#f5f5f5;}
+
+.map{position:absolute;top:0;bottom:0;left:0;right:0;}
+label.BMapLabel{background-color:#fff;color:red;}
+label.BMapLabel .avatar{width:30px;height:30px;border-radius:25px;}
+.BMap_Marker img{max-width:none;}
+</style>
+{/block}
+{block name="main"}
+<script type="text/javascript" src="__JS__common.js"></script>
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>酒店管理 - 添加修改酒店</h3>
+			<h5>添加修改酒店</h5>
+		</div>
+		<ul class="tab-base">
+			<li class="active"><a href="#goodstab1" data-toggle="tab"><span class="text-wrapper">基本信息</span></a></li>
+			<li class=""><a href="#goodstab2" data-toggle="tab"><span class="text-wrapper">酒店详情</span></a></li>
+		  	<li class="" id="openImggr"><a href="#goodstab3" data-toggle="tab"><span class="text-wrapper">酒店相册</span></a></li>
+		  	<li class=""><a href="#goodstab4" data-toggle="tab"><span class="text-wrapper">属性配置</span></a></li>
+		</ul>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>发布并配置酒店的正确信息</li>
+		</ol>
+	</div>
+	<form action="" method="post" id="myform" class="form-horizontal">
+		<div class="tab-content">
+			<!--基本信息-->
+			<div class="tab-pane fade active in" id="goodstab1">
+				<div class="form-group">
+				    <label class="col-xs-2 control-label">酒店名称</label>
+				    <div class="col-xs-8">
+                 		<input type="text" value="{$info.name}" name="name" placeholder="填写酒店名称" class="form-control">
+                 		<span class="help-block"></span>
+	               	</div>
+				</div>
+				<div class="form-group">
+				    <label class="col-xs-2 control-label">酒店摘要</label>
+				    <div class="col-xs-8">
+                 		<textarea rows="3" cols="80" name="description" placeholder="填写酒店摘要" class="form-control">{$info.description}</textarea>
+                 		<span class="help-block"></span>
+	               	</div>
+				</div>
+				<div class="form-group">
+				    <label class="col-xs-2 control-label">酒店关键词</label>
+				    <div class="col-xs-8">
+				    	<input type="text" value="{$info.keywords}" name="keywords" placeholder="酒店关键词" class="form-control"/>
+                 		<span class="help-block">酒店关键词,更于酒店索引，多个用英文章豆号（,）隔开</span>
+	               	</div>
+				</div>
+				<div class="form-group">
+				    <label class="col-xs-2 control-label">酒店星级</label>
+				    <div class="col-xs-8">
+                 		<select name="star_level" id="star_level" class="form-control">
+                        	<option value="0">请选择酒店星级</option>                                      
+                         	{for start="1" end="10"}
+                           	<option value="{$i}" {if $i==$info['star_level']}selected{/if}>{$i}星级</option>
+                         	{/for}
+                      	</select>
+                 		<span class="help-block"></span>
+	               	</div>
+				</div>
+				<div class="form-group">
+				    <label class="col-xs-2 control-label">所属城市</label>
+				    <div class="col-xs-8 form-inline">
+                 		{:tpl_area(4,$info.province,$info.city,$info.district,$info.twon)}
+                 		<span class="help-block"></span>
+	               	</div>
+				</div>
+				<div class="form-group">
+				    <label class="col-xs-2 control-label">详细地址</label>
+				    <div class="col-xs-8">
+				    	<input type="text" value="{$info.address}" name="address" placeholder="详细地址" class="form-control"/>
+                 		<span class="help-block"></span>
+	               	</div>
+				</div>
+				<div class="form-group">
+				    <label class="col-xs-2 control-label">地图</label>
+				    <div class="col-xs-8">
+				    	<div class="input-group ">
+                 			<input type="text" value="{$info.lnglat}" name="lnglat" id="lnglat" placeholder="地图(经度,纬度)" class="form-control">
+                 			<span class="input-group-btn"><button type="button" class="btn btn-default" onclick="showCoordinate(this)">定位</button></span>
+				    	</div>
+                 		<span class="help-block"></span>
+	               	</div>
+	               	<script type="text/javascript">
+	               	function showCoordinate(elm) {
+		               	var val = {};
+						val.lng = 107.984712;
+						val.lat = 26.588644;
+						util.map(val, function(r){
+							var lnglat=r.lng+','+r.lat;
+							$('#lnglat').val(lnglat);
+						});
+					}
+	               	</script>
+				</div>
+				<div class="form-group">
+				    <label class="col-xs-2 control-label">联系电话</label>
+				    <div class="col-xs-8">
+				    	<input type="tel" value="{$info.tel}" name="tel" placeholder="联系电话" class="form-control"/>
+                 		<span class="help-block"></span>
+	               	</div>
+				</div>
+				<div class="form-group">
+				    <label class="col-xs-2 control-label">传真</label>
+				    <div class="col-xs-8">
+				    	<input type="text" value="{$info.fax}" name="fax" placeholder="传真号码" class="form-control"/>
+                 		<span class="help-block"></span>
+	               	</div>
+				</div>
+				<div class="form-group">
+				    <label class="col-xs-2 control-label">标准价</label>
+				    <div class="col-xs-8">
+				    	<div class="input-group ">
+				    		<span class="input-group-addon">￥</span>
+                 			<input type="text" value="{$info.price|default=0}" name="price" placeholder="酒店标间价格" class="form-control"onKeyUp="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')">
+                 			<span class="input-group-addon">元</span>
+				    	</div>
+                 		<span class="help-block">酒店标间价格</span>
+	               	</div>
+				</div>
+				<div class="form-group">
+				    <label class="col-xs-2 control-label">缩略图</label>
+				    <div class="col-xs-8">
+				    	{:tpl_upimg('thumb','thumb',$info['thumb'],0,is_login(),0,'可直接填写文件远程地址','','上传缩略图')}
+	               	</div>
+				</div>
+				<div class="form-group">
+				    <label class="col-xs-2 control-label">房间数</label>
+				    <div class="col-xs-8">
+				    	<div class="input-group ">
+                 			<input type="text" value="{$info.room_count}" name="room_count" placeholder="酒店房间数" class="form-control"onKeyUp="this.value=this.value.replace(/[^\d.]/g,'')" onpaste="this.value=this.value.replace(/[^\d.]/g,'')">
+                 			<span class="input-group-addon">间</span>
+				    	</div>
+                 		<span class="help-block"></span>
+	               	</div>
+				</div>
+			</div>
+			<!--酒店详情-->
+			<div class="tab-pane fade in" id="goodstab2">
+				<div class="form-group">
+				    <label class="col-xs-2 control-label">酒店详情描述</label>
+				    <div class="col-xs-8">
+				    	{:tpl_ueditor('content','content',$info.content,360,'full',1,1,is_login(),0)}
+				    	<span class="help-block"></span>
+	               	</div>
+				</div>
+			</div>
+			<!--酒店相册-->
+			<div class="tab-pane fade in" id="goodstab3">
+				<div class="tab-pane" id="tab_goods_images">
+                    <table class="table table-bordered">
+                        <tbody>
+                        <tr>                                    
+                            <td id="goods_images_show">                                    
+                            	{foreach name="info['images']" item="vo" key="k"}
+                                <div class="goods_xc">
+                                    <input type="hidden" value="{$vo}" name="images[]">
+                                    <a class="img_group" href="{$vo}"><img width="100" height="100" src="{$vo}"></a>
+                                    <br>
+                                    <a href="javascript:void(0)" onclick="MovePicArr(this)">移除</a>
+                                </div>
+                            	{/foreach}
+                            	<div class="goods_xc">
+                                    <a href="javascript:" id="up_images"><img width="100" height="100" src="__JS__ueditor/dialogs/image/images/image.png"></a>
+                                </div>
+                                <script type="text/javascript">
+                                clicimg();
+                                $('#up_images').click(function(){
+									var parame={};
+										parame.filetype='images';//上传文件类型
+										parame.filenum=10;//允许上传文件个数
+										parame.ext='jpg,jpeg,gif,png,bmp';//允许上传扩展名
+										parame.upfilesize=1024*1024*2;//允许单个上传文件的大小2M
+										parame.ismark=1,//是否水印
+										parame.adminid={:is_login()};
+										parame.userid=0;
+										parame.dir='hotel';
+									util.upfile(parame,function(img){
+										var html='';
+										for(var i=0;i<img.length;i++){
+								            html+='<div class="goods_xc">';
+								            html+='<input type="hidden" value="'+img[i]+'" name="images[]">';
+								            html+='<a class="img_group" href="'+img[i]+'"><img width="100" height="100" src="'+img[i]+'"></a>';
+								            html+='<br>';
+								            html+='<a href="javascript:void(0)" onclick="MovePicArr(this)">移除</a>';
+								            html+='</div>';
+										}
+										$(".goods_xc:eq(0)").before(html);//插入一个 新图片
+										clicimg();
+									});
+								});
+								function clicimg(){
+									require(['jquery-colorbox'],function(){
+										$(".img_group").colorbox({rel:'img_group'});
+									});
+								}
+								//移除
+								function MovePicArr(obj){
+									$(obj).parent().remove();
+								}
+								</script>
+                            </td>
+                        </tr>                                              
+                        </tbody>
+                    </table>
+                </div>
+			</div>
+			<!--属性配置-->
+			<div class="tab-pane fade in" id="goodstab4">
+				<div class="tab-pane">
+                    <table class="attr_table">
+                    	<?php
+                    		if(empty($info['attribute_id'])){
+                    			$arrar=[];
+                    		}else{
+                    			$arrar=explode(',', $info['attribute_id']);
+                    		}
+                    	?>
+                    	
+                    	{volist name="attrArr" id="v"}
+                        <tr>
+                            <td width="100"><label><input value="{$v.attr_id}" name="attr[]" onclick="checknode(this);" {if in_array($v['attr_id'], $arrar)}checked{/if} level="1" type="checkbox">{$v.name}</label>:</td>
+                            <td>                                        
+                              	{volist name="v['child']" id="c"}
+                              	<label><input value="{$c.attr_id}" name="attr[]" onclick="checknode(this);" {if in_array($c['attr_id'], $arrar)}checked{/if} level="2" type="checkbox">{$c.name}</label>
+                              	{/volist}
+                            </td>
+                        </tr>
+                        {/volist}
+                    </table>
+                </div>
+			</div>
+		</div>
+		<input type="hidden" name="hotel_id" value="{$info.hotel_id|default=0}">
+		<div class="form-btn">
+		    <input type="button" value="确 认 提 交" id="submitbtn" class="btn btn-primary btn-lan">
+		</div>
+    </form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap','think','layer']);
+
+	//提交
+	$('#submitbtn').click(function(){
+		require(['think','layer'],function(){
+			var fields = $('form').serializeArray();
+			var ll = layer.load('正在处理，请稍后...', 3);
+			$.post(Think.U('Admin/Hotel/addedithotel'),fields,function(data){
+		        if(data.status==1) {
+		        	layer.msg(data.msg,{icon:6}, function(){
+		        		history.go(-1);
+						location.reload();
+					});
+		        }else{
+		        	layer.msg(data.msg, {icon:5});
+		        }
+		        layer.close(ll);
+		        return false;
+		    });
+	    });
+	});
+});
+function checknode(obj) {
+    var chk = $("input[type='checkbox']");
+    var count = chk.length;
+    var num = chk.index(obj);
+    var level_top = level_bottom = chk.eq(num).attr('level');
+    for (var i = num; i >= 0; i--) {
+        var le = chk.eq(i).attr('level');
+        if (eval(le) < eval(level_top)) {
+            chk.eq(i).prop("checked",true);
+            var level_top = level_top - 1;
+        }
+    }
+    for (var j = num + 1; j < count; j++) {
+        var le = chk.eq(j).attr('level');
+        if (chk.eq(num).prop("checked")) {
+            if (eval(le) > eval(level_bottom)){
+                chk.eq(j).prop("checked",true);
+            }else if (eval(le) == eval(level_bottom)){
+                break;
+            }
+        } else {
+            if (eval(le) > eval(level_bottom)){
+                chk.eq(j).prop("checked",false);
+            }else if(eval(le) == eval(level_bottom)){
+                break;
+            }
+        }
+    }
+}
+</script>
+{/block}
+{block name="script"}
+{/block}

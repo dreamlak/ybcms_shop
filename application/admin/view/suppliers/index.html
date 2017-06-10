@@ -1,0 +1,126 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+table tbody td .yes{color:#666;cursor:pointer;}
+table tbody td .no{color:#ddd;cursor:pointer;}
+.trSelected td{color:#333;background:#FFFFDF;border-color:transparent;border-bottom:1px solid #FFEFBF;}
+</style>
+{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>供应商管理</h3>
+			<h5>提交商品的供应商管理</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>供应商管理，可以对供应商进行管理。</li>
+		</ol>
+	</div>
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 供应商列表</span> 
+			<span class="tit-info">(共{$total}条记录)</span>
+			<div class="head-right">
+				<form action="" method="get" class="form-inline">
+					<input type="text" name="keys" value="{:input('keys')}" placeholder="名称/电话/联系人/地址..." class="form-control"/>
+                    <select name="status" id="status" class="form-control">
+        				<option value="" selected="">全部状态</option>
+                       	<option value="1" {if input('status')=='1'}selected{/if}>启用</option>
+                       	<option value="0" {if input('status')=='0'}selected{/if}>禁用</option>
+                    </select>
+		          	<button type="submit" class="btn btn-default">搜索</button>
+				</form>
+			</div>
+		</div>
+		<div class="panel-btn">
+			<a href="{:url('addEditmanage')}" class="btn btn-default"><i class="fa fa-plus"></i> 添加供应商</a>
+			<a href="javascript:" url="{:url('delsuppliers')}" class="btn btn-default" data="ajax"><i class="fa fa-trash-o"></i> 删除供应商</a>
+			<div class="btn-group">
+			  	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">状态设置 <span class="caret"></span></button>
+			  	<ul class="dropdown-menu" role="menu">
+				    <li><a href="javascript:" url="{:url('setStatus',['status'=>1])}" data="ajax">启用供应商</a></li>
+					<li><a href="javascript:" url="{:url('setStatus',['status'=>0])}" data="ajax">禁用供应商</a></li>
+			  	</ul>
+			</div>
+		</div>
+		<div class="panel-body table-responsive ng-scope">
+			<table class="table table-hover">
+				<thead class="navbar-inner">
+					<tr>
+						<th style="width:30px;">
+							<div class="custom-checkbox">
+								<input type="checkbox" id="chkAll" class="inbox-check">
+								<label for="chkAll"></label>
+							</div>
+						</th>
+						<th>ID</th>
+						<th>供应商名称</th>
+						<th>供应商描述</th>
+						<th>供应商联系人</th>
+						<th>供应商电话</th>
+						<th>供应商地址</th>
+						<th>供应商状态</th>
+						<th>排序</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					{volist name="lists" id="v"}
+					<tr for="chk{$v.suppliers_id}">
+						<td>
+							<div class="custom-checkbox">
+								<input type="checkbox" name="ids[]" id="chk{$v.suppliers_id}" class="inbox-check" value="{$v.suppliers_id}">
+								<label for="chk{$v.suppliers_id}"></label>
+							</div>
+						</td>
+						<td>{$v.suppliers_id}</td>
+						<td><input type="text" value="{$v.suppliers_name}" onChange="changeTableVal('suppliers','suppliers_id','{$v.suppliers_id}','suppliers_name',this)" class="form-control"/></td>
+						<td><input type="text" value="{$v.suppliers_desc}" onChange="changeTableVal('suppliers','suppliers_id','{$v.suppliers_id}','suppliers_desc',this)" class="form-control"/></td>
+						<td><input type="text" value="{$v.suppliers_contacts}" onChange="changeTableVal('suppliers','suppliers_id','{$v.suppliers_id}','suppliers_contacts',this)" class="form-control"/></td>
+						<td><input type="text" value="{$v.suppliers_phone}" onChange="changeTableVal('suppliers','suppliers_id','{$v.suppliers_id}','suppliers_phone',this)" class="form-control"/></td>
+						<td><input type="text" value="{$v.suppliers_address}" onChange="changeTableVal('suppliers','suppliers_id','{$v.suppliers_id}','suppliers_address',this)" class="form-control"/></td>
+						<td>
+							{if $v['status']==1}
+					      	<span class="yes" onClick="changeTableVal('suppliers','suppliers_id','{$v.suppliers_id}','status',this)" ><i class="fa fa-check-circle"></i>是</span>
+					      	{else}
+					      	<span class="no" onClick="changeTableVal('suppliers','suppliers_id','{$v.suppliers_id}','status',this)" ><i class="fa fa-ban"></i>否</span>
+					        {/if}
+						</td>
+						<td><input type="text" value="{$v.sort}" onChange="changeTableVal('suppliers','suppliers_id','{$v.suppliers_id}','sort',this)" class="form-control" style="width:60px;"/></td>
+						<td>
+							<a href="{:url('addEditmanage',['suppliers_id'=>$v['suppliers_id']])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> 编辑</a>
+						</td>
+					</tr>
+					{/volist}
+				</tbody>
+			</table>
+		</div>
+		{if $total>$listRows}
+		<div class="panel-footer">
+			<ul class="pagination">
+				<li><a>{$total} 条记录</a></li>
+				<li><a>{$currentPage}/{$lastPage}</a></li>
+			</ul>
+			{$pages}
+		</div>
+		{/if}
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap']);
+})
+</script>
+{/block}
+{block name="script"}
+{/block}

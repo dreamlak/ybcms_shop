@@ -1,0 +1,49 @@
+<!DOCTYPE html >
+<html>
+<head>
+<meta name="Generator" content="Ybcms" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=0" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black">
+<meta name="applicable-device" content="mobile">
+<title>{$config['site_title']}</title>
+<meta http-equiv="keywords" content="{$config['site_key']}" />
+<meta name="description" content="{$config['site_desc']}" />
+<meta name="Keywords" content="{$config['site_key']}" />
+<meta name="Description" content="{$config['site_desc']} "/>
+<link rel="stylesheet" href="__STATIC__/css/public.css">
+<link rel="stylesheet" href="__STATIC__/css/user.css">
+<script type="text/javascript" src="__STATIC__/js/jquery.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/global.js"></script>
+<script type="text/javascript" src="__PUBLIC__/js/mobile_common.js"></script>
+<script type="text/javascript" src="__STATIC__/js/modernizr.js"></script>
+<script type="text/javascript" src="__STATIC__/js/layer.js" ></script>
+<!-- IE8及以下支持JSON -->
+<!--[if lt IE 9]>
+<script src="https://g.alicdn.com/aliww/ww/json/json.js" charset="utf-8"></script>
+<![endif]-->
+<!-- WSDK-->
+<script src="https://g.alicdn.com/aliww/h5.openim.sdk/1.0.6/scripts/wsdk.js"></script>
+<script type="text/javascript">
+    //全局内容的定义
+    var _ROOT_ = "__ROOT__";
+    var MODULE_NAME="{$module_name}";
+    var CONTROLLER_NAME ="{$controller_name}";
+    var ACTION_NAME="{$action_name}";
+    var ThinkPHP = window.Think = {
+        "ROOT": "__ROOT__",
+        "APP": "",
+        "PUBLIC": "__PUBLIC__",
+        "DEEP": "{:config('pathinfo_depr')}",
+        "MODEL": ["3", "true", "{:config('url_html_suffix')}"],
+        "VAR": ["m", "c", "a"],
+        'URL_MODEL': "3",
+        'WEIBO_ID': "1",
+        "DOMAIN" : "/",
+    }
+</script>
+<script type="text/javascript" src="__PUBLIC_JS__/think.js" ></script>
+</head>

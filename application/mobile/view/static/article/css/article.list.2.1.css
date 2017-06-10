@@ -1,0 +1,206 @@
+/**
+	* 手机站文章列表页
+	* @authors ZP (zhanpeng.zhu@360che.com)
+	* @date    2016-08-02 09:47:57
+	* @version $Id$
+*/
+
+/* Reset */
+html, body, h1, h2, h3, h4, h5, p, figure, figcaption, ul, ol, li,dl,dt,dd,form{margin:0;padding:0; font-size: 16px; font-weight: 400;-webkit-text-size-adjust: none;}
+body,select,textarea,input{ font:16px/1.5 "Microsoft YaHei",Arial; }
+body{background: #f5f5f5}
+ol, ul{list-style: none}
+var, em, i{ font-style:normal;}
+a img{ border:0 none;}
+a:link,a:visited{text-decoration: none;color:none;}
+img{ vertical-align: middle;}
+input:focus::-webkit-input-placeholder { color: rgba(255,255,255,0); }
+input::-webkit-input-placeholder { color: #999; }
+input:focus:-ms-input-placeholder { color: rgba(255,255,255,0); }
+input:-ms-input-placeholder { color: #999; }
+input[type="search"],input[type="text"],input[type="tel"],input[type="number"],input[type="date"],button,select,textarea,input[type="submit"]{-webkit-appearance: none;-webkit-border-image: none; border-image: none; -webkit-border-radius: 0; border-radius: 0; border:0 none; outline: none; box-sizing:border-box;}
+input::-webkit-search-decoration,input::-webkit-search-cancel-button {display: none;}
+table { border-collapse:collapse; border-spacing:0; } 
+th,td { padding: 0;font-weight: 400 }
+.clearfix:after {content:"."; display: block; visibility: hidden; clear: both; height:0; font-size:0}
+
+/* Global */
+@font-face {
+  font-family: 'detail';
+  src:url('//at.alicdn.com/t/font_1467964616_7432158.woff') format('woff'), 
+  url('//at.alicdn.com/t/font_1467964616_7432158.ttf') format('truetype');
+}
+
+/* nav */
+.compare-nav{position: relative;max-height: 40px;height:40px;line-height: 40px;overflow: hidden;border-bottom: 1px solid #eee;background: #fff;-webkit-transition: max-height .3s linear;transition: max-height .3s linear;}
+.compare-nav:before,.compare-nav:after{position: absolute;top:0;content:"";width: 10px; height: 40px; z-index: 2}
+.compare-nav:before{left:0;border-left: 5px solid #fff;background: -webkit-gradient(linear,0 0,100% 0,from(#fff),to(rgba(255,255,255,0)));background: linear-gradient(-90deg,rgba(255,255,255,0) 0,#fff 100%);}
+.compare-nav:after{right:54px;border-right: 5px solid #fff;background: -webkit-gradient(linear,0 0,100% 0,from(rgba(255,255,255,0)),to(#fff));background: linear-gradient(-90deg,#fff 0,rgba(255,255,255,0) 100%);}
+.compare-nav .inner{position: absolute;left:0;top:0;padding-right:54px;font-size: 0;white-space: nowrap;}
+.compare-nav .inner > a,.compare-nav .inner > span{text-align:center;display:inline-block;vertical-align:top;padding:0 10px;}
+.compare-nav .inner > a{font-size: 14px;color:#999;}
+.compare-nav .inner > span{font-size: 16px; color:#1571e5;}
+.compare-nav .nav-expand{position: absolute;right:0;bottom:0;padding:0;width: 54px; height: 40px; text-align: center; font-family: "detail"; color:#999;background:#fff;-webkit-transition:all .3s linear;transition:all .3s linear;  z-index: 1;}
+.compare-nav.visible{max-height: 160px;height:auto;}
+.compare-nav.visible .inner{position: static;white-space:initial;width: 100%}
+.compare-nav.visible .nav-expand{-webkit-transform: rotate(180deg);transform: rotate(180deg);background:rgba(255,255,255,0); }
+.compare-nav.visible:before,.compare-nav.visible:after{display: none}
+
+/*  侯耀辉  资讯页列表样式  2016.06.17 17:24*/
+@font-face {
+  font-family: 'home';
+  src: url('//at.alicdn.com/t/font_1465872888_0882368.woff') format('woff'),
+  url('//at.alicdn.com/t/font_1465872888_0882368.ttf') format('truetype')
+}
+
+.news-list a{position: relative;display: block;height: 77px;border-bottom: 1px solid #eee;padding:13px 0 0 102px; margin: 0 15px;color: #333}
+.news-list li:last-of-type a{border-bottom: 0;}
+.news-list figure,.model-list figure{width: 90px;height: 60px;text-align: center;overflow: hidden;position: absolute;left:0; top: 15px;display:-webkit-flex;display: flex;flex-direction: column;flex-wrap: wrap; z-index: 1}
+.news-list figure:before,
+.model-list figure:before,
+.video-list figure:before,
+.home-ad .m-ad-item .f_inewsimg:before{position:absolute;left:0;top:0;font-family:"home";content:"暂无";text-align:center;width:100%;height:60px;line-height:60px;font-size:25px;color:#d1d1d1; background:#efefef;z-index:-1}
+.news-list figure img,.model-list figure img{width:100%;height:100%;-webkit-object-fit: cover;object-fit: cover;display: block;}
+.news-list figcaption,.model-list figcaption{font-size: 16px;line-height: 24px;height: 48px;overflow: hidden;}
+.news-list p{font-size: 10px;color: #999;}
+.news-list em{margin-left: 5px;}
+.news-list i{float: right;}
+.news-list i:before{content: '\770b';font-family: 'home';font-size: 10px;display: inline-block; vertical-align: top; margin:0 5px 0 0;color: #ddd;}
+.news-list .address{color: #f60;margin-right: 3px;}
+
+.last-news {margin-top:10px;background: #fff;}
+.last-news .more,.module-more{border-top: 1px solid #eee;display: block;height: 44px;line-height: 44px;text-align: center; color: #999;font-size: 14px;}
+.last-news .more:after{content: '';display: inline-block;margin:15px 0 0 10px;vertical-align: top;width: 9px;height: 9px;border-top: 1px solid #979797;border-right: 1px solid #979797; -webkit-transform: rotate(135deg);transform: rotate(135deg);}
+.module-more:after{content: '';display: inline-block;margin:17px 0 0 5px;vertical-align: top;width: 9px;height: 9px;border-top: 1px solid #979797;border-right: 1px solid #979797; -webkit-transform: rotate(45deg);transform: rotate(45deg);}
+
+
+/*询底价v1.1*/
+.price .long-button{width: 100%;}
+.price.speaclbutton > div:first-of-type{width:30%;}
+.price.speaclbutton > div:last-of-type{width:70%;}
+/*title标题浮动样式*/
+
+.float-title{ position:fixed; top:0; left:0;width:100%;height:45px; z-index:9}
+.float-title > header{position: relative;padding:0 75px;height: 44px;line-height: 44px;border-bottom: 1px solid #eee;background: #fff;z-index: 2}
+.float-title > header .back{position: absolute;left:0;top:0;width: 44px;width: 27px;font-family:"detail"; color:#999; text-align: center;}
+.float-title > header .tabs{ text-align: center;color:#666; font-size: 0}
+.float-title > header .tabs span,body > .float-title > header .tabs a{margin:0 5px;padding:0 10px; font-size: 16px; display: inline-block; vertical-align: top;color:#999;}
+.float-title > header .tabs .selected{ font-size: 18px; color:#333; }
+.float-title > header h1,body > .float-title > header h3,body > .float-title > header .title{ text-align: center; font-size: 18px;white-space: nowrap;overflow: hidden;text-overflow:ellipsis;}
+.float-title > header .location{position: absolute;right:10px;top:0;color:#999;}
+.float-title > header .location:before{margin-right:-3px;margin-left:5px;content:"\4f4d"; font-family: "detail";vertical-align: top;}
+.float-title .default > .header-title h1{padding-left:10px;    text-align: center; font-size: 18px; white-space: nowrap; overflow: visible;}
+
+/*新版选择车型弹窗*/
+
+.select-car-model,.select-location{background-color:#fff;width:100%;height: 100%;overflow: auto;-webkit-overflow-scrolling:touch;display: none;z-index:13;}
+.select-car-model.show,.select-location.show{display: block}
+.select-car-model .hot-tags header,.select-car-model .tab-content header,.select-location .hot-location header,.select-location .location-model header{height:30px;line-height:30px;padding-left:15px;margin:0;color:#999;font-size:12px;background-color:#f5f5f5;}
+.select-car-model .inner,.select-location .inner{width:100%;}
+.select-car-model .hot-tags{padding-bottom:10px;}
+.select-car-model .hot-tags ul{padding:0px 10px;clear:both;overflow:hidden}
+.select-car-model .hot-tags ul.more-brand{padding:10px 10px 0;}
+.select-car-model .hot-tags ul li{float:left;width:33.33%;}
+.select-car-model .hot-tags ul li.hide{display: none;}
+.select-car-model .hot-tags ul.show li.hide{display: block}
+.select-car-model .hot-tags ul li a,.select-car-model .hot-tags ul li span{display:block;margin:5px;height:30px;line-height:30px;color:#999;text-align:center;font-size:12px;border:1px solid #ddd;border-radius:4px;}
+.select-car-model .hot-tags ul li span.active{color:#1571e5;border:1px solid #1571e5;}
+.select-car-model .hot-tags ul li .fold:after{display:inline-block;content:'\4e0b';font-family:'detail';margin-left:5px;vertical-align:middle; -webkit-transition:all 0.4s;transition:all 0.4s;}
+.select-car-model .hot-tags ul li .fold.unfold:after{transform:rotate(-180deg);-webkit-transform:rotate(-180deg);margin-top:-7px;}
+.select-car-model .tab-content li{padding:15px;border-bottom:1px solid #eee;}
+.select-car-model .tab-content li:last-of-type{border-bottom:none;}
+.select-car-model .tab-content .truck-name{display:block;font-size:14px;color:#333;word-wrap: break-word;word-break: break-all;}
+.select-car-model .tab-content .truck-name em{display:inline-block;width:30px;height:14px;line-height:14px;color:#fff;font-size:10px;text-align:center;margin-right:5px;border-radius:3px;background-color:#f60;}
+.select-car-model .tab-content .truck-name var{margin-right:15px;}
+/*新版选择地区弹窗*/
+.select-location .shade{position:absolute;width:100%;height:100%;left:0;top:91px;background-color:#f5f5f5;z-index:20;display:none;}
+.select-location .shade.show{display:block;margin-top:10px;overflow: auto;}
+.select-location .prompts{padding:0 15px;background-color:#fff;}
+.select-location .prompts li{border-bottom:1px solid #eee;height:44px;line-height:44px;}
+.select-location .prompts li a{display:block;color:#333;}
+#index_nav.select-city{z-index:15;}
+
+/*选择地区*/
+.search-location{position:relative;padding:10px 15px 0;background-color: #f5f5f5}
+.search-location div{height:35px;padding:0 15px 0 35px;border:1px solid #eee;background-color:#fff;border-radius:5px}
+.search-location div input{width:100%;height:15px;padding:10px 0;font-size:14px;line-height:15px;outline:none;box-sizing:content-box;}
+.search-location div ::-webkit-input-placeholder{color:#d8d8d8;}
+.search-location div em:after{position:absolute;top:50%;margin-top:-8px;left:30px;content:'\e60c';font-family:'detail';color:#d8d8d8;}
+.search-location.show{padding-right:55px;}
+.search-location span{position:absolute;top:10px;right:0;width:55px;line-height:37px;color:#999;font-size:14px;text-align:center;display:none;}
+.search-location.show span{display:block;}
+
+  /*常用定位*/
+.hot-location ul{clear:both;overflow:hidden;padding:10px;background-color:#fff;}
+.hot-location ul li{float:left;width:33.33%;}
+.hot-location ul li span{display:block;height:30px;line-height:30px;margin:5px;color:#333;font-size:14px;text-align:center;border:1px solid #ddd;border-radius:4px;padding: 0 15px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;}
+.hot-location ul li span.active:before{margin-right:2px;content:"\e60a";font-family:'detail';color:#f60;}
+.location-model ul{padding:0 15px;background-color:#fff}
+.location-model ul li{height:44px;line-height:44px;border-bottom:1px solid #eee;}
+.location-model ul li:last-of-type{border-bottom:none;}
+.location-model ul li.selected{color:#f60;}
+
+/*索引导航*/
+.scale {position: fixed;display:none;left: 50%;top: 50%;margin: -40px 0 0 -40px;width: 80px;height: 80px;line-height: 80px;text-align: center;font-size: 50px;color: #fff;border-radius: 8px;z-index: 11;opacity:0;background: rgba(0,0,0,.6);-webkit-transition: opacity .2s ease-out;transition: opacity .2s ease-out;}
+.scale.show{opacity:1;}
+
+/*侧边栏*/
+.select_city{z-index:15;padding:0;margin-right:-75px;}
+.select_city header .close{color:#999;font-size:14px;}
+.select_city header h4{font-size:18px;color:#000;padding-right: 44px}
+.select_city .location-model ul{margin-right:75px;}
+.select_city .location-model li.selected:after{float:right;content:"\52fe";font-family:'detail';}
+.select_city{box-shadow: -2px 2px 2px 2px #d6d6d6}
+
+/*广告位*/
+.advertis{width:100%;}
+.advertis img{max-width: 100%;margin:10px 0;}
+
+/*车系车型1.2优化*/
+.truck-details .truck-info .truck-name{position:relative;padding-right:54px;}
+.truck-details .truck-info .truck-name > a{position:absolute;right:8px;bottom:0;color:#f60;font-size:10px;}
+.truck-details .truck-info .truck-name > a:before{display:block;margin-bottom:-5px;content:"\e60d";font-family:'detail';font-size:30px;}
+.truck-details .truck-info .truck-name > a.top1 em{position:absolute;right:17px;top:8px;color:#fff;}
+
+/*降价*/
+.depreciate .truck-info,.recommend-dealer .sell-location,.other-concerns .rests-car{padding:0;}
+.depreciate .truck-info li,.recommend-dealer .sell-location li,.other-concerns .rests-car li{padding:12px;border-top:1px solid #eee;}
+.depreciate .truck-info .truck-name{color:#333;}
+.depreciate .truck-info p span:first-of-type{font-weight:normal;font-size:18px;}
+.depreciate .truck-info p span:last-of-type{font-size:14px;text-decoration:line-through}
+.depreciate .truck-info p b{float:right;color:#15b609;font-weight:normal}
+.depreciate .truck-info p b:before{content:'\e606';font-family:'detail';margin-right:5px;font-size:12px;}
+.depreciate .truck-info .dealer-name{font-size:12px; color:#666}
+.depreciate .truck-info .dealer-name span{display:inline-block;max-width:180px;overflow: hidden;white-space: nowrap;text-overflow: ellipsis;}
+.depreciate .truck-info .dealer-name em{float:right;color:#999;}
+.depreciate .truck-info .dealer-name em:first-of-type{margin-left:11px;}
+
+/*经销商导航*/
+.quote > div header span{display:inline-block;margin-right:25px;font-size:12px;}
+.quote > div header span.active{color:#1571e5;font-size:14px;}
+
+/*推荐经销商*/
+.recommend-dealer .dealer-name > a{display:block;font-size:16px;color:#333;}
+.recommend-dealer .dealer-name > a p:first-of-type{position:relative;padding-right:95px;box-sizing:border-box}
+.recommend-dealer .dealer-name > a p em{position:absolute;top:0;right:0;color:#f60;font-size:18px;}
+.recommend-dealer .sell-location .sales{color:#f60;font-size:12px;}
+.recommend-dealer .sell-location .sales em{padding:0 5px;margin-right:5px;color:#fff;font-size:10px;border-radius:4px;background-color:#f60;}
+
+/*其他的人还关注*/
+.other-concerns .rests-car{background-color:#fff;}
+.other-concerns .rests-car li{position:relative;}
+.other-concerns .rests-car a:first-of-type {position:relative;display:block;height:60px;padding-left:100px;color:#333;font-size:14px;overflow:hidden}
+.other-concerns .rests-car a figure{position:absolute;left:0;top:0;width:90px;height:60px;border:1px solid #eeeeee}
+.other-concerns .rests-car a figure:before{position: absolute;left: 0;top: 0;font-family: "detail";content: "\5361";text-align: center;width: 100%;height: 60px;line-height: 60px;font-size: 14px;color: #d1d1d1;background: #efefef;}
+.other-concerns .rests-car a figure img{max-width:100%;}
+.other-concerns .rests-car a p{height:40px;line-height:20px;vertical-align:top;margin-top:-4px;}
+.other-concerns .rests-car a span:last-of-type{display:inline-block;height:20px;line-height:34px;color:#f60;}
+.other-concerns .rests-car a:last-of-type{position:absolute;right:12px;bottom:12px;width:60px;height:24px;line-height:24px;text-align:center;color:#fff;font-size:12px;border-radius:6px;background-color:#1571e5;}
+
+/* init */
+@media screen and (min-device-width:321px) and (max-device-width:375px){
+  .compare-nav .inner > a,.compare-nav .inner > span{padding:0 10px;}
+}
+@media screen and (min-device-width:376px){
+  .compare-nav .inner > a,.compare-nav .inner > span{padding:0 15px;}
+}

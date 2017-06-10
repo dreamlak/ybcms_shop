@@ -1,0 +1,110 @@
+{extend name="public/user_main" /}
+{block name="style"}
+<style type="text/css">
+</style>
+{/block}
+{block name="main"}
+<div class="user_info">
+	<div class="info_td info_m">
+		<span class="avatar"><a href="{:url('Home/User/info')}"><img src="{$user.avatar|default='__P_IMG__/public/no-photo.png'}" alt=""/></a></span>
+		<div class="info_u">
+			<h3>{$user.username}({$user.nickname|deal_emoji}) <i class="l{$user['level']}" title="{$user['level']|getlevel}"></i></h3>
+			<p class="level">({$user['level']|getlevel})</p>
+			<p class="bind">{$user.tel|hiddenStr}
+				{if $user['mobile_validated']==1}
+				<i class="yb-code-v validated" title="已验证"></i>
+				{else}
+				<a href="{:url('Home/User/mobile_validate',['step'=>1])}"><i class="yb-code-v" title="未验证"></i></a>
+				{/if}
+			</p>
+			<p class="bind">{$user.email|hiddenStr=3} 
+				{if $user['email_validated']==1}
+				<i class="yb-code-v validated" title="已验证"></i>
+				{else}
+				<a href="{:url('Home/User/email_validate',['step'=>1])}"><i class="yb-code-v" title="未验证"></i></a>
+				{/if}
+			</p>
+		</div>
+	</div>
+	<div class="info_td info_a">
+		<ul class="account">
+			<li class="mymoney">
+				余 额：<a href="{:url('Home/User/recharge')}">￥{$user.mymoney|number_format=2}</a>
+				<a href="" title="在线充值"><i class="yb-congzi"></i></a>
+			</li>
+			<li class="mypoints">积 分：<a href="{:url('Home/User/account')}">{$user.mypoints}</a></li>
+			<li class="discount">折  扣：<a href="javascript:">{$user.discount*100}%</a></li>
+			<li class="discount">优惠券：<a href="{:url('Home/User/coupon')}">{$user.coupon_count}</a></li>
+		</ul>
+	</div>
+	<div class="info_td">
+		<ul class="order">
+			<li><a href="{:url('Home/User/order_list',['type'=>'WAITPAY'])}"><i class="yb-pay"></i>待付款<span class="num">{$scount.nopay}</span></a></li>
+			<li><a href="{:url('Home/User/order_list',['type'=>'WAITSEND'])}"><i class="yb-deliver"></i>待发货<span class="num">{$scount.nofan}</span></a></li>
+			<li><a href="{:url('Home/User/order_list',['type'=>'WAITRECEIVE'])}"><i class="yb-present"></i>待收货<span class="num">{$scount.nosou}</span></a></li>
+			<li><a href="{:url('Home/User/order_list',['type'=>'WAITCCOMMENT'])}"><i class="yb-mark"></i>待评价<span class="num">{$scount.noping}</span></a></li>
+		</ul>
+	</div>
+</div>
+<div class="objBox">
+	<h3>最新订单 <span><a href="{:url('Home/User/order_list')}">查看全部订单</a></span></h3>
+	<div class="objBody">
+	<div class="empty" {notempty name="order_list"}style="display:none;"{/notempty}>
+		<i class="yb-cart"></i>
+		您买的东西太少了，这里都空空的，快去挑选合适的商品吧！
+	</div>
+	{volist name="order_list" id="v"}
+		{if $v.order_status < 2}
+		{volist name="v.goods_list" id="good"}
+		<div class="order_item">
+			<div class="thumb"><a href="{:url('Home/Goods/goodsInfo',['id'=>$good.goods_id])}"target="_blank"><img src="{$good.goods_id|goods_img}"/></a></div>
+			<div class="goods">
+				<h3 class="title"><a href="{:url('Home/Goods/goodsInfo',['id'=>$good.goods_id])}"target="_blank">{$good.goods_name}</a></h3>
+				<p class="color">{$good.spec_key_name}</p>
+				<p class="info"><a href="{:url('Home/User/order_detail',['id'=>$v.order_id])}">订单详情</a></p>
+				<!--p class="trace"><a href="">查看物流</a></p-->
+			</div>
+			<div class="chsh">
+				<p class="price">￥{$v.order_amount}</p>
+				<p>{$v['order_status_desc']}</p>
+				{if $v.pay_btn==1}<a href="{:url('/Home/Cart/cart4',['order_id'=>$v.order_id])}" target="_blank" class="btn btn-default">立即支付</a>&nbsp;{/if}
+				{if $v.cancel_btn==1}<a href="javascript:" class="btn btn-default" onclick="cancel_order({$v.order_id})">取消订单</a>&nbsp;{/if}
+				{if $v.receive_btn==1}<a href="javascript:" class="btn btn-default" onClick="if(confirm('你确定收到货了吗?')) location.href='{:url('Home/User/order_confirm',['id'=>$v.order_id])}'">收货确认</a>{/if}
+			</div>
+		</div>
+		{/volist}
+		{else}
+		<script>$('.empty').show()</script>
+		{/if}
+	{/volist}
+	</div>
+</div>
+<div class="objBox">
+	<h3>为您推荐 </h3>
+	<div class="objBody">
+		<ul class="tjgoods clearfix">
+			{ybcms:sql sql="select * from `__PREFIX__goods` where is_recommend = 1 order by sales_sum desc limit 12" item="v" key="k"}
+			<li class="item">
+				<div class="thumb"><a href="{:url('Home/Goods/goodsInfo',['id'=>$v.goods_id])}" title="{$v.goods_name}" target="_blank"><img src="{$v.original_img|thumb=222,222}"></a></div>
+				<div class="price">
+					<span class="s-price"><em class="s-price-sign">¥</em><em class="s-value">{$v.shop_price}</em></span>
+					<span class="s-history-price"><em class="s-price-sign">¥</em><s class="s-value">{$v.cost_price}</s></span>
+				</div>
+				<div class="title">
+					<a href="{:url('Home/Goods/goodsInfo',['id'=>$v.goods_id])}" title="{$v.goods_name}" target="_blank">{$v.goods_name}</a>
+				</div>
+				<div class="s-extra-box"><span class="s-sales">销量: {$v.sales_sum}</span></div>
+			</li>
+			{/ybcms:sql}
+		</ul>
+	</div>
+</div>
+<script type="text/javascript">
+//取消订单
+function cancel_order(id){
+    if(!confirm("确定取消订单?"))
+        return false;
+    location.href = Think.U('Home/User/cancel_order','id='+id);
+}
+</script>
+{/block}

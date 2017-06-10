@@ -1,0 +1,107 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>留信管理-留言处理</h3>
+			<h5>系统站内留信管理</h5>
+		</div>
+	</div>
+	<form action="" method="post" class="form-horizontal">
+    	<div class="form-group">
+		    <label class="col-xs-12 col-sm-2 col-md-2 control-label">留言主题</label>
+		    <div class="col-xs-12 col-sm-7 col-md-7" style="line-height:30px;">
+         		{$info.title}
+         		<input type="hidden" name="title" value="{$info.title}" />
+           	</div>
+		</div>
+    	<div class="form-group">
+		    <label class="col-xs-12 col-sm-2 col-md-2 control-label">留言人姓名</label>
+		    <div class="col-xs-12 col-sm-7 col-md-7" style="line-height:30px;">
+         		{$info.name}
+         		<input type="hidden" name="name" value="{$info.name}" />
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-2 col-md-2 control-label">留言人电话</label>
+		    <div class="col-xs-12 col-sm-7 col-md-7" style="line-height:30px;">
+                {$info.tel}
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-2 col-md-2 control-label">电子邮箱</label>
+		    <div class="col-xs-12 col-sm-7 col-md-7" style="line-height:30px;">
+                {$info.email}
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-2 col-md-2 control-label">留言内容</label>
+		    <div class="col-xs-12 col-sm-7 col-md-7" style="line-height:30px;">
+         		{$info.content}
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-2 col-md-2 control-label">留言时间</label>
+		    <div class="col-xs-12 col-sm-7 col-md-7" style="line-height:30px;">
+         		{:date('Y-m-d H:i:s',$info['addtime'])}
+           	</div>
+		</div>
+        <div class="form-group">
+		    <label class="col-xs-12 col-sm-2 col-md-2 control-label">留言状态</label>
+		    <div class="col-xs-12 col-sm-7 col-md-7">
+		    	<label class="radio-inline"><input type="radio" name="status" value="0" {if $info['status']==0}checked{/if}>审核中</label>
+	            <label class="radio-inline"><input type="radio" name="status" value="1" {if $info['status']==1}checked{/if}>已查阅</label>
+	            <label class="radio-inline"><input type="radio" name="status" value="2" {if $info['status']==2}checked{/if}>已回复</label>
+	            <label class="radio-inline"><input type="radio" name="status" value="3" {if $info['status']==3}checked{/if}>被拒绝</label>
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-2 col-md-2 control-label">处理回复</label>
+		    <div class="col-xs-12 col-sm-7 col-md-7">
+         		<textarea name="answer" id="answer" class="form-control">{$info.answer}</textarea>
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-2 col-md-2 control-label"></label>
+		    <div class="col-xs-12 col-sm-7 col-md-7">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary col-lg-1">
+		    </div>
+		    <input type="hidden" name="id" id="id" value="{$info.id}" />
+		</div>
+    </form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['think']);
+	//回车事件
+	/*document.onkeydown = function(e) {
+		var theEvent = window.event || e;
+		var code = theEvent.keyCode || theEvent.which;
+		if(code == 13){
+			$("#submitbtn").click();
+		}
+	}*/
+	//提交
+	$('#submitbtn').click(function(){
+		require(['layer'],function(){
+			var fields = $('form').serializeArray();
+			var ll = layer.load('正在处理，请稍后...', 3);
+			$.post(Think.U('Admin/Guestbook/disposal'),fields,function(data){
+		        if(data.status==1) {
+		        	layer.msg(data.msg,{icon:6}, function(){
+		        		history.go(-1);
+						location.reload();
+					});
+		        } else {
+		        	layer.msg(data.msg, {icon:5});
+		        }
+		        layer.close(ll);
+		        return false;
+		    });
+	   	});
+	});
+});
+</script>
+{/block}

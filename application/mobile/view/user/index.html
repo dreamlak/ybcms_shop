@@ -1,0 +1,35 @@
+{include file="public/header"}
+<body>      
+<div id="tbh5v0">
+	<div class="user_com">
+		{include file="public/uer_topnav"}
+		<div class="Wallet">
+			<ul>
+				<li class="bain1"><strong>￥{$user['mymoney']}元</strong><span>余额</span></li>
+				<li class="bain1"><strong>{$coupon_count}</strong><span>优惠券</span></li>
+				<li><strong>{$user['mypoints']}</strong><span>积分</span></li>
+			</ul>
+			<a href="{:url('Mobile/User/account')}"><em class="Icon Icon1"></em><dl><dt>我的钱包</dt><dd style="color:#aaaaaa;">查看我的钱包</dd></dl></a>
+		</div>
+
+		<div class="Wallet">
+			<a href="{:url('Mobile/User/order_list')}" ><em class="Icon Icon2"></em><dl class="b"><dt>全部订单</dt><dd>查看订单</dd></dl></a>
+			<a href="{:url('Mobile/User/coupon')}"><em class="Icon Icon3"></em><dl class="b"><dt>我的优惠券</dt><dd>&nbsp;</dd></dl></a>
+			<a href="{:url('Mobile/User/comment')}"><em class="Icon Icon4"></em><dl class="b"><dt>我的评价</dt><dd>查看评价</dd></dl></a>
+			<a href="{:url('Mobile/User/collect_list')}"><em class="Icon Icon10"></em><dl class="b"><dt>我的收藏</dt><dd>&nbsp;</dd></dl></a>
+			<a href="{:url('Mobile/User/withdrawals')}"><em class="Icon Icon1"></em><dl><dt>申请提现</dt><dd>&nbsp;</dd></dl></a>
+		</div>
+		<div class="Wallet">
+			<a href="{:url('User/address_list')}"><em class="Icon Icon5"></em><dl class="b"><dt>地址管理</dt><dd>&nbsp;</dd></dl></a>
+			<a href="{:url('User/points')}"><em class="Icon Icon6"></em><dl class="b"><dt>积分余额</dt><dd>&nbsp;</dd></dl></a>
+			<!--<a href="{:url('User/message_list')}"><em class="Icon Icon7"></em><dl class="b"><dt>我的留言</dt><dd>&nbsp;</dd></dl></a>--->
+			<a href="{:url('User/return_goods_list')}"><em class="Icon Icon11"></em><dl class="{if $tpshop_config['distribut_switch']==1}b{/if}"><dt>售后服务</dt><dd>&nbsp;</dd></dl></a>
+		    {if $tpshop_config['distribut_switch']==1}
+			<a href="{:url('Distribut/index')}"><em class="Icon Icon1"></em><dl><dt>我发展收益</dt><dd>&nbsp;</dd></dl></a>    
+		    {/if}  
+		</div>
+	</div>
+</div>
+{include file="public/footer_nav"}
+</body>
+</html>

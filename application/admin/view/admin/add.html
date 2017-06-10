@@ -1,0 +1,112 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+</style>
+{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>管理员管理-添加管理员</h3>
+			<h5>网站系统管理员列表</h5>
+		</div>
+	</div>
+	
+	<form action="" method="post" class="form-horizontal">
+    	<div class="form-group">
+		    <label class="col-xs-2 control-label"><span style="color:red">*</span>管理角色</label>
+		    <div class="col-xs-8">
+         		<select name="roleid" id="roleid" class="form-control">
+                	<option value="">选择角色</option>
+                   	{volist name="admin_role" id="v"}
+                   	<option value="{$v.roleid}" >├─{$v.name}</option>
+                   	{/volist}
+                </select>
+           	</div>
+		</div>
+        <div class="form-group">
+		    <label class="col-xs-2 control-label"><span style="color:red">*</span>管理员名</label>
+		    <div class="col-xs-8">
+         		<input type="text" name="adminname" id="adminname" placeholder="管理员的登录名，一般填写英文字母" class="form-control" value="">
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"><span style="color:red">*</span>管理员密码</label>
+		    <div class="col-xs-8">
+                <input type="password" name="password" id="password" placeholder="6~20位的字母或数字" class="form-control" value="">
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">管理邮箱</label>
+		    <div class="col-xs-8">
+         		<input type="text" name="email" id="email" placeholder="@" class="form-control" value="">
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">管理电话</label>
+		    <div class="col-xs-8">
+         		<input type="text" name="tel" id="tel" placeholder="电话或手机号码" class="form-control" value="">
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">管理员姓名</label>
+		    <div class="col-xs-8">
+         		<input type="text" name="realname" id="realname" placeholder="" class="form-control" value="">
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">管理员状态</label>
+		    <div class="col-xs-8">
+	            <label class="radio-inline"><input type="radio" name="status" value="1" checked="">启用</label>
+	            <label class="radio-inline"><input type="radio" name="status" value="0" >禁用</label>
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">备注</label>
+		    <div class="col-xs-8">
+         		<textarea name="remark" id="remark" class="form-control"></textarea>
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"></label>
+		    <div class="col-xs-8">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary col-lg-1">
+		    </div>
+		</div>
+    </form>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap']);
+	//回车事件
+	document.onkeydown = function(e) {
+		var theEvent = window.event || e;
+		var code = theEvent.keyCode || theEvent.which;
+		if(code == 13){
+			$("#submitbtn").click();
+		}
+	}
+	//提交
+	$('#submitbtn').click(function(){
+		require(['think','layer'],function(){
+			var fields = $('form').serializeArray();
+			var ll = layer.load('正在处理，请稍后...', 3);
+			$.post(Think.U('Admin/Admin/add'),fields,function(data){
+		        if(data.status==1) {
+		        	layer.msg(data.msg,{icon:6,time:1000}, function(){
+						history.go(-1);
+						location.reload();
+					});
+		        } else {
+		        	layer.msg(data.msg, {icon:5});
+		        }
+		        layer.close(ll);
+		        return false;
+		    });
+	    });
+	});
+});
+</script>
+{/block}

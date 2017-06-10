@@ -1,0 +1,124 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>友情链接管理-添加链接</h3>
+			<h5>系统站内信箱管理</h5>
+		</div>
+	</div>
+	<form action="" method="post" class="form-horizontal">
+    	<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>链接分类</label>
+		    <div class="col-sm-9 col-xs-12">
+         		<select name="typeid" class="form-control">
+         			<option value="">选择分类</option>
+         			{volist name="typelist" id="v"}
+         			<option value="{$v.id}">{$v.name}</option>
+         			{/volist}
+         		</select>
+           	</div>
+		</div>
+    	<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>网站名称</label>
+		    <div class="col-sm-9 col-xs-12">
+         		<input type="text" name="name" id="name" placeholder="要链接的网站名称" class="form-control" value="">
+           	</div>
+		</div>
+		
+        <div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">链接URL</label>
+		    <div class="col-sm-9 col-xs-12">
+         		<input type="text" name="url" id="url" placeholder="链接的URL地址" class="form-control" value="">
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">LOGO</label>
+		    <div class="col-sm-9 col-xs-12" id="uploader_logo">
+				<div class="input-group ">
+					<input type="text" name="logo" id="logo" value="" placeholder="LOGL地址" class="form-control" autocomplete="off">
+					<div class="input-group-addon" id="logoPicke">上传</div>
+				</div>
+				<div class="input-group" style="margin-top:.5em;">
+					<img src="__IMG__public/nopic.jpg" id="logoshow" onerror="this.src='__IMG__public/nopic.jpg'; this.title='图片未找到.'" class="img-responsive img-thumbnail" style="width:200px;height:80px;background:#ddd;" title="图片未找到.">
+					<em class="close" style="position:absolute; top: 0px; right: -14px;" title="删除这张图片" onclick="delimage(this)">×</em>
+				</div>
+			</div>
+			<script type="text/javascript">
+			var parame={};
+				parame.paste='uploader_logo';
+				parame.ismark=0;//是否水印(0不加，1加)
+				parame.inputid='logo';
+				parame.btn='logoPicke';
+				parame.imgid='logoshow';
+			util.images(parame);
+			
+			function delimage(elm){
+				$(elm).prev().attr("src", "__IMG__public/nopic.jpg");
+				$(elm).parent().prev().find("input").val("");
+			}
+			</script>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">链接状态</label>
+		    <div class="col-sm-9 col-xs-12">
+	            <label class="radio-inline"><input type="radio" name="status" value="1" checked="">启用</label>
+	            <label class="radio-inline"><input type="radio" name="status" value="0" >禁用</label>
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">打开方式</label>
+		    <div class="col-sm-9 col-xs-12">
+	            <label class="radio-inline"><input type="radio" name="target" value="_blank" checked="">新窗口</label>
+	            <label class="radio-inline"><input type="radio" name="target" value="_self">本地窗口</label>
+            </div>
+		</div>
+    	<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">排序</label>
+		    <div class="col-sm-9 col-xs-12">
+                <input type="text" name="sort" id="sort" class="form-control" value="0">
+		        <span class="help-block">数字越小，排名越靠前,如果为空，默认排序方式为创建时间</span>
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+		    <div class="col-sm-9 col-xs-12">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary col-lg-1">
+		    </div>
+		</div>
+    </form>
+</div>
+{/block}
+{block name="script"}
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['think','layer','bootstrap']);
+	//回车事件
+	document.onkeydown = function(e) {
+		var theEvent = window.event || e;
+		var code = theEvent.keyCode || theEvent.which;
+		if(code == 13){
+			$("#submitbtn").click();
+		}
+	}
+	//提交
+	$('#submitbtn').click(function(){
+		var fields = $('form').serializeArray();
+		var ll = layer.load('正在处理，请稍后...', 3);
+		$.post(Think.U('Admin/FriendLink/add'),fields,function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6,time:1000}, function(){
+					history.go(-1);
+					location.reload();
+				});
+	        } else {
+	        	layer.msg(data.msg, {icon:5});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+});
+</script>
+{/block}

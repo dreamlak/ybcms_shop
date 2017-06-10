@@ -1,0 +1,23 @@
+<?php
+	if(MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME == 'index/Index/index' && $_COOKIE["top-banner"] == null){
+?>
+<div class="top-active" style="background-color:#e2283d;">
+	{ybcms:adv pid ="1" num="1" item="v" name="首页顶部"}
+	<div class="top-active-wrap">
+		<a href="{$v.url}" {if $v['target']==1}target="_blank"{/if}>
+			<img src="{$v['images']}"  title="{$v['name']}" />
+		</a>
+		<a href="javascript:void(0);" title="关闭" class="top-active-close"></a>
+	</div>
+	{/ybcms:adv}
+</div>
+<script type="text/javascript">
+//头部广告
+$(".top-active-close").click(function(){	
+	$(".top-active").slideUp();
+	setcookie("top-banner", "1", time()+ 3600); //弹过窗的 不在弹窗
+});
+</script>
+<?php 
+}
+?>

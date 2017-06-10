@@ -1,0 +1,116 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+table tbody td{position:relative;height:41px;}
+table tbody td .yes{color:#666;cursor:pointer;}
+table tbody td .no{color:#ddd;cursor:pointer;}
+.trSelected td{color:#333;background:#FFFFDF;border-color:transparent;border-bottom:1px solid #FFEFBF;}
+
+table tbody td img{width:auto;height:30px;border:1px #ddd solid;border-radius:4px;cursor:pointer;}
+table tbody td img:hover{width:auto;height:auto;max-height:80px;position:absolute;top:0;left:0;z-index:1;}
+</style>
+{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>评价管理</h3>
+			<h5>商品交易评价管理</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>用户对购买的商品进行评价</li>
+			<li>"显示"栏可控制某条评论是否显示或隐藏.</li>
+		</ol>
+	</div>
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 商品评价列表 </span> 
+			<span class="tit-info">(共{$total}条记录)</span>
+			<div class="head-right">
+				<form action="" id="search-form2" method="get" class="form-inline">
+		          	<input type="text" value="{:input('content')}" name="content" class="form-control" placeholder="评论内容...">
+		          	<input type="text" value="{:input('nickname')}" name="nickname" class="form-control" placeholder="搜索用户...">
+		          	<button type="submit" class="btn btn-default">搜索</button>
+				</form>
+			</div>
+		</div>
+		<div class="panel-btn">
+			<a url="{:url('del')}" data="ajax" class="btn btn-default"><i class="fa fa-trash-o"></i> 删除评论</a>
+		</div>
+		<div class="panel-body table-responsive ng-scope">
+			<table class="table table-hover">
+				<thead class="navbar-inner">
+					<tr>
+						<th style="width:30px;">
+							<div class="custom-checkbox">
+								<input type="checkbox" id="chkAll" class="inbox-check">
+								<label for="chkAll"></label>
+							</div>
+						</th>
+						<th style="width:100px;">用户</th>
+						<th style="width:260px;">评论内容</th>
+						<th style="width:260px;">商品</th>
+						<th style="width:80px;">显示</th>
+						<th style="width:120px;">评论时间</th>
+						<th style="width:90px;">ip地址</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					{volist name="lists" id="v"}
+					<tr for="chk{$v.comment_id}">
+						<td>
+							<div class="custom-checkbox">
+								<input type="checkbox" name="ids[]" id="chk{$v.comment_id}" class="inbox-check" value="{$v.comment_id}">
+								<label for="chk{$v.comment_id}"></label>
+							</div>
+						</td>
+						<td>{$v.username}</td>
+						<td>{$v.content}</td>
+						<td><a target="_blank" href="{:url('Home/Goods/goodsInfo',array('id'=>$v['goods_id']))}">{$goods_list[$v['goods_id']]}</a></td>
+						<td>
+							{if $v['is_show']==1}
+	                      	<span class="yes" onclick="changeTableVal('goods_comment','comment_id','{$v.comment_id}','is_show',this)" ><i class="fa fa-check-circle"></i>是</span>
+	                      	{else}
+	                      	<span class="no" onclick="changeTableVal('goods_comment','comment_id','{$v.comment_id}','is_show',this)" ><i class="fa fa-ban"></i>否</span>
+	                    	{/if}
+						</td>
+						
+						<td>{$v.add_time|date='Y-m-d H:i:s',###}</td>
+						<td>{$v.ip_address}</td>
+						<td>
+							<a href="{:url('detail',['id'=>$v['comment_id']])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> 查看</a>
+						</td>
+					</tr>
+					{/volist}
+				</tbody>
+			</table>
+		</div>
+		{if $total>$listRows}
+		<div class="panel-footer">
+			<ul class="pagination">
+				<li><a>{$total} 条记录</a></li>
+				<li><a>{$currentPage}/{$lastPage}</a></li>
+			</ul>
+			{$pages}
+		</div>
+		{/if}
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap']);
+})
+</script>
+{/block}
+{block name="script"}
+{/block}

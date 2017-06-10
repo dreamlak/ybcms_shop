@@ -1,0 +1,106 @@
+<div class="header-top">
+	<div class="header-box">
+		<!-- 登录信息 -->
+		<font id="login-info" class="login-info SZY-USER-NOT-LOGIN">
+			<em>欢迎来到{$config.site_name}! </em>
+			<a class="login color" href="{:url('user/login')}">请登录</a>
+			<a class="register" href="{:url('user/reg')}">免费注册</a>
+		</font>
+		<font id="login-info" class="login-info SZY-USER-ALREADY-LOGIN" style="display: none;">
+			<em>
+				<a href="{:url('User/index')}" class="color SZY-USER-NAME"></a>
+				<!--欢迎您回来!-->
+			</em>
+			<a href="{:url('user/logout')}" data-method="post">退出</a>
+		</font>
+		<ul>
+			<li>
+				<a class="menu-hd home" href="/" target="_top"><i></i>商城首页</a>
+			</li>
+			<li class="menu-item">
+				<div class="menu">
+					<a class="menu-hd myinfo" href="user.html">
+						<i></i>我的商城<b></b>
+					</a>
+					<div id="menu-2" class="menu-bd">
+						<span class="menu-bd-mask"></span>
+						<div class="menu-bd-panel">
+							<a href="{:url('user/order_list')}">已买到的宝贝</a>
+							<a href="myaddress.html">我的地址管理</a>
+							<a href="goods_collect.html">我收藏的宝贝</a>
+							<a href="shop_collect.html">我收藏的店铺</a>
+						</div>
+					</div>
+				</div>
+			</li>
+			<li class="menu-item cartbox">
+				<div class="menu">
+					<a class="menu-hd cart" href="{:url('Cart/cart')}" target="_top">
+						<i></i>购物车
+						<span class="SZY-CART-COUNT">0</span>
+						<b></b>
+					</a>
+					<div id="menu-4" class="menu-bd cart-box-main">
+						<span class="menu-bd-mask"></span>
+						<div class="dropdown-layer">
+							<div class="spacer"></div>
+							<div class="dropdown-layer-con cartbox-goods-list">
+								<!-- 正在加载 -->
+								<div class="cart-type">
+									<i class="cart-type-icon"></i>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+			<!--li><a class="menu-hd" href="seller.html">卖家中心</a></li-->
+			<li class="menu-item">
+				<div class="menu">
+					<a class="menu-hd we-chat" href="javascript:" target="_top">
+						<i></i>关注商城<b></b>
+					</a>
+					<div id="menu-5" class="menu-bd we-chat-qrcode">
+						<span class="menu-bd-mask"></span>
+						<a target="_top">
+							<img src="__S_IMG__/qrd.jpg" alt="官方微信">
+						</a>
+						<p class="font-14">关注官方微信</p>
+					</div>
+				</div>
+			</li>
+			<li class="menu-item">
+				<div class="menu">
+					<a class="menu-hd mobile" href="javascript:" target="_top">
+						<i></i>手机版<b></b>
+					</a>
+					<div id="menu-6" class="menu-bd qrcode">
+						<span class="menu-bd-mask"></span>
+						<a target="_top">
+							<img src="__S_IMG__/qrd.jpg" alt="手机客户端">
+						</a>
+						<p>手机客户端</p>
+					</div>
+				</div>
+			</li>
+			<li class="menu-item">
+				<div class="menu">
+					<a href="javascript:" class="menu-hd site-nav">
+						商家支持<b></b>
+					</a>
+					<div id="menu-7" class="menu-bd site-nav-main">
+						<span class="menu-bd-mask"></span>
+						<div class="menu-bd-panel">
+							<div class="site-nav-con">
+								<a href="help.html" title="新手上路">新手上路</a>
+								<a href="##a" title="配送服务">配送服务</a>
+								<a href="##a" title="商家合作">商家合作</a>
+								<a href="##a" title="入驻说明">入驻说明</a>
+							</div>
+						</div>
+					</div>
+				</div>
+			</li>
+		</ul>
+	</div>
+</div>

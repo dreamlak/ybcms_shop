@@ -1,0 +1,128 @@
+<div class="panel-body table-responsive ng-scope">
+	<table class="table table-hover" style="width:100%">
+		<thead class="navbar-inner">
+			<tr>
+				<th style="width:30px;">
+					<div class="custom-checkbox">
+						<input type="checkbox" id="chkAll" class="inbox-check">
+						<label for="chkAll"></label>
+					</div>
+				</th>
+				<th style="width:50px;"><a href="javascript:" onclick="sort('goods_id');">ID<i class="fa fa-caret-down"></i></a></th>
+				<th style="max-width:300px;">商品名称</th>
+				<th style="width:80px;"><a href="javascript:" onclick="sort('goods_sn');">货号 <i class="fa fa-caret-down"></i></a></th>
+				<th><a href="javascript:" onclick="sort('cat_id');">分类 <i class="fa fa-caret-down"></i></a></th>
+				<th style="width:60px;"><a href="javascript:" onclick="sort('shop_price');">价格 <i class="fa fa-caret-down"></i></a></th>
+				<th style="width:60px;"><a href="javascript:" onclick="sort('is_recommend');">推荐 <i class="fa fa-caret-down"></i></a></th>
+				<th style="width:60px;"><a href="javascript:" onclick="sort('is_new');">新品 <i class="fa fa-caret-down"></i></a></th>
+				<th style="width:60px;"><a href="javascript:" onclick="sort('is_hot');">热卖 <i class="fa fa-caret-down"></i></a></th>
+				<th style="width:80px;"><a href="javascript:" onclick="sort('is_on_sale');">上/下架 <i class="fa fa-caret-down"></i></a></th>
+				<th style="width:60px;"><a href="javascript:" onclick="sort('store_count');">库存 <i class="fa fa-caret-down"></i></a></th>
+				<th style="width:60px;"><a href="javascript:" onclick="sort('sort');">排序 <i class="fa fa-caret-down"></i></a></th>
+				<th>操作</th>
+			</tr>
+		</thead>
+		<tbody>
+			{volist name="goodsList" id="vo"}
+			<tr for="chk{$vo.goods_id}">
+				<td>
+					<div class="custom-checkbox">
+						<input type="checkbox" name="ids[]" id="chk{$vo.goods_id}" class="inbox-check" value="{$vo.goods_id}">
+						<label for="chk{$vo.goods_id}"></label>
+					</div>
+				</td>
+				<td>{$vo.goods_id}</td>
+				<td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">
+					<a target="_blank" href="{:url('Home/Goods/goodsInfo',array('id'=>$vo['goods_id']))}" title="{$vo.goods_name}">{$vo.goods_name}</a>
+				</td>
+				<td>{$vo.goods_sn}</td>
+				<td>{$catList[$vo['cat_id']]['name']}</td>
+				<td>{$vo.shop_price}</td>
+				<td>
+					{if $vo['is_recommend']==1}
+			      	<span class="yes" onClick="changeTableVal('goods','goods_id','{$vo.goods_id}','is_recommend',this)" ><i class="fa fa-check-circle"></i>是</span>
+			      	{else}
+			      	<span class="no" onClick="changeTableVal('goods','goods_id','{$vo.goods_id}','is_recommend',this)" ><i class="fa fa-ban"></i>否</span>
+			        {/if}
+				</td>
+				<td>
+					{if $vo['is_new']==1}
+			      	<span class="yes" onClick="changeTableVal('goods','goods_id','{$vo.goods_id}','is_new',this)" ><i class="fa fa-check-circle"></i>是</span>
+			      	{else}
+			      	<span class="no" onClick="changeTableVal('goods','goods_id','{$vo.goods_id}','is_new',this)" ><i class="fa fa-ban"></i>否</span>
+			        {/if}
+				</td>
+				<td>
+					{if $vo['is_hot']==1}
+			      	<span class="yes" onClick="changeTableVal('goods','goods_id','{$vo.goods_id}','is_hot',this)" ><i class="fa fa-check-circle"></i>是</span>
+			      	{else}
+			      	<span class="no" onClick="changeTableVal('goods','goods_id','{$vo.goods_id}','is_hot',this)" ><i class="fa fa-ban"></i>否</span>
+			        {/if}
+				</td>
+				<td>
+					{if $vo['is_on_sale']==1}
+			      	<span class="yes" onClick="changeTableVal('goods','goods_id','{$vo.goods_id}','is_on_sale',this)" ><i class="fa fa-check-circle"></i>是</span>
+			      	{else}
+			      	<span class="no" onClick="changeTableVal('goods','goods_id','{$vo.goods_id}','is_on_sale',this)" ><i class="fa fa-ban"></i>否</span>
+			        {/if}
+				</td>
+				<td><input type="text" onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" onChange="changeTableVal('goods','goods_id','{$vo.goods_id}','store_count',this)" size="4" value="{$vo.store_count}"  class="form-control" style="display:inline-block" /></td>
+				<td><input type="text" onKeyUp="this.value=this.value.replace(/[^\d]/g,'')" onpaste="this.value=this.value.replace(/[^\d]/g,'')" onChange="changeTableVal('goods','goods_id','{$vo.goods_id}','sort',this)" size="4" value="{$vo.sort}" class="form-control" style="display:inline-block" /></td>
+				<td>
+					<a href="{:url('addEditGoods',['id'=>$vo['goods_id']])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> 编辑</a>
+					<a onclick="del('{$vo['goods_id']}')" class="btn btn-default btn-xs"><i class="fa fa-trash-o"></i> 删除</a>
+					<a onclick="ClearGoods('{$vo['goods_id']}')" class="btn btn-default btn-xs"><i class="fa fa-trash"></i> 缓存</a>
+				</td>
+			</tr>
+			{/volist}
+		</tbody>
+	</table>
+</div>
+<div class="panel-footer">
+	{$page}
+</div>
+<script type="text/javascript">
+//点击排序
+function sort(field){
+   $("input[name='orderby1']").val(field);
+   var v = $("input[name='orderby2']").val() == 'desc' ? 'asc' : 'desc';             
+   $("input[name='orderby2']").val(v);
+   ajax_get_table('search-form2',cur_page);
+}
+//删除操作
+function del(id){
+	require(['think','layer'],function(){
+		layer.confirm('确定要删除吗?',{icon:3,title:'提示'},function(index){
+		  	$.ajax({
+				url:Think.U('Admin/goods/delGoods','id='+id),
+				success: function(v){	
+	                if(v.status==1){
+	                	layer.close(index);
+	                	ajax_get_table('search-form2',cur_page);
+	                }else{
+	                	layer.msg(v.msg, {icon: 2,time: 1000});
+	                }
+				}
+			});
+	       return false;
+		});
+    });
+}
+//点击分页触发的事件
+$(".pagination  a").click(function(){
+	cur_page = $(this).data('p');
+	ajax_get_table('search-form2',cur_page);
+});
+//清除静态页面缓存
+function ClearGoods(goods_id){
+	$.ajax({
+		type:'GET',
+		url:"{:url('Admin/Index/ClearGoods')}",
+		data:{goods_id:goods_id},
+		dataType:'json',
+		success:function(data){
+			layer.alert(data.msg, {icon: 2});								 
+		}
+	});
+}
+</script>

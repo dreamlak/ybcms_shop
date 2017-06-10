@@ -1,0 +1,83 @@
+{extend name="public/user_main" /}
+{block name="script"}
+<script type="text/javascript" src="__P_JS__/util.js"></script>
+<script type="text/javascript" src="__P_JS__/require.js"></script>
+<script type="text/javascript" src="__P_JS__/main.js"></script>
+{/block}
+{block name="main"}
+<div class="modTitle">申请服务详情</div>
+<div class="panelBox">
+	<div class="panelTitle">要<b style="color:red;">{if $return_goods['type']}退货{else}换货{/if}</b>的商品</div>
+	<table class="ctable">
+	<thead>
+		<tr>
+			<th colspan="2">商品</th>
+			<th>属性</th>
+			<th>数量</th>
+			<th>单品价格</th>
+			<th>会员折扣价</th>
+			<th>单品小计</th>
+			<th>状态</th>
+		</tr>
+	</thead>
+	<tbody>
+		<tr>
+			<td style="width:60px;">
+				<a href="{:url('Home/Goods/goodsInfo',['id'=>$goods.goods_id])}" target="_blank">
+					<img height="50" width="50" title="{$goods['goods_name']}" src="{$goods[goods_id]|goods_thum_images=80,80}" data-img="1" alt="">
+				</a>
+			</td>
+			<td style="text-align:left;">
+				<a href="{:url('Home/Goods/goodsInfo',['id'=>$goods.goods_id])}" target="_blank">
+					{$goods['goods_name']}
+				</a>
+			</td>
+			<td>{$goods['spec_key_name']}</td>
+			<td>{$goods['goods_num']}</td>
+			<td>{$goods['goods_price']}</td>
+			<td>{$goods['member_goods_price']}</td>
+			<td>{$goods['member_goods_price'] * $goods['goods_num']}</td>
+			<td>
+				{if $return_goods[status]==0}申请中
+				{elseif $return_goods[status]==0}客服理中
+				{else}已完成{/if}
+			</td>
+		</tr>
+	</tbody>
+	</table>
+	<br>
+	<div class="title">处理情况</div>
+	<div class="optfore">
+		<ul class="mslist">
+			<li>
+				<h3>问题描述：</h3>
+				<p>{if $return_goods['reason']!=''}{$return_goods['reason']}{else}无{/if}</p>
+				<s></s>
+			</li>
+			<li>
+				<h3>问题照片：</h3>
+				{notempty name="return_goods['imgs']"}
+				<div class="img">
+					{volist name="return_goods['imgs']" id="item"}
+                    <a href="{$item}" class="img_group"><img src="{$item}" width="85" height="85"/></a>&nbsp;&nbsp;&nbsp;
+                    {/volist}
+				</div>
+				{else}
+				<p>无</p>
+				{/notempty}
+				<s></s>
+			</li>
+			<li>
+				<h3>客服备注：</h3>
+				<p>{if $return_goods['remark']!=''}{$return_goods['remark']}{else}无{/if}</p>
+				<s></s>
+			</li>
+		</ul>
+	</div>
+</div>
+<script type="text/javascript">
+require(['jquery-colorbox'],function(){
+	$(".img_group").colorbox({rel:'img_group'});
+});
+</script>
+{/block}

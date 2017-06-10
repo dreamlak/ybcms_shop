@@ -1,0 +1,256 @@
+<div class="right-sidebar-con">
+	<div class="right-sidebar-main">
+		<div class="right-sidebar-panel">
+			<div id="quick-links" class="quick-links">
+				<ul>
+					<li class="quick-area quick-login sidebar-user-trigger">
+						<!-- 用户 -->
+						<a href="javascript:void(0);" class="quick-links-a"><i class="setting"></i></a>
+						<div class="sidebar-user quick-sidebar">
+							<i class="arrow-right"></i>
+							<div class="sidebar-user-info">
+								<!-- 没有登录的情况 _start -->
+								<div class="SZY-USER-NOT-LOGIN" style="display:block;">
+									<div class="user-pic">
+										<div class="user-pic-mask"></div>
+										<img src="../static/images/public/no-photo.png" />
+									</div>
+									<br />
+									<p>
+										你好！请
+										<a href="javascript:void(0);" class="quick-login-a color ajax-login">登录</a>
+										|
+										<a href="#" class="color">注册</a>
+									</p>
+								</div>
+								<!-- 没有登录的情况 _end -->
+								<!-- 有登录的情况 _start -->
+								<div class="SZY-USER-ALREADY-LOGIN" style="display: none;">
+									<div class="user-have-login">
+										<div class="user-pic">
+											<div class="user-pic-mask"></div>
+											<img src="" class="SZY-USER-PIC" />
+										</div>
+										<div class="user-info">
+											<p>
+												用&nbsp;&nbsp;&nbsp;户：
+												<span class="SZY-USER-NAME"></span>
+											</p>
+										</div>
+									</div>
+									<p class="m-t-10">
+										<span class="prev-login">
+											上次登录时间：
+											<span class="SZY-USER-LAST-LOGIN"></span>
+										</span>
+										<a href="#a" class="btn account-btn">个人中心</a>
+										<a href="#a" class="btn order-btn">订单中心</a>
+									</p>
+								</div>
+								<!-- 有登录的情况 _end -->
+							</div>
+						</div>
+					</li>
+					<li class="sidebar-tabs">
+						<!-- 购物车 -->
+						<div class="cart-list quick-links-a sidebar-cartbox-trigger">
+							<i class="cart"></i>
+							<div class="span">购物车</div>
+							<span class="ECS_CARTINFO">
+								<span class="cart_num SZY-CART-COUNT">0</span>
+								<div class="sidebar-cart-box">
+									<h3 class="sidebar-panel-header">
+										<a href="javascript:void(0);" class="title"><i class="cart-icon"></i><em class="title">购物车</em></a>
+										<span class="close-panel"></span>
+									</h3>
+									
+								</div>
+							</span>
+						</div>
+					</li>
+					<li class="sidebar-tabs">
+						<a href="javascript:void(0);" class="mpbtn_history quick-links-a sidebar-historybox-trigger"><i class="history"></i></a>
+						<div class="popup"><font id="mpbtn_histroy">我看过的</font><i class="arrow-right"></i></div>
+					</li>
+					<!-- 如果当前页面有对比功能 则显示对比按钮 _start-->
+					<li class="sidebar-tabs">
+						<a href="javascript:void(0);" class="mpbtn-contrast quick-links-a sidebar-comparebox-trigger"><i class="contrast"></i></a>
+						<div class="popup">对比商品<i class="arrow-right"></i></div>
+					</li>
+					<!-- 如果当前页面有对比功能 则显示对比按钮 _end-->
+					<li>
+						<a href="#W" class="mpbtn_stores quick-links-a"><i class="stores"></i></a>
+						<div class="popup">我收藏的店铺<i class="arrow-right"></i></div>
+					</li>
+					<li id="collectGoods">
+						<a href="#" class="mpbtn_collect quick-links-a"><i class="collect"></i></a>
+						<div class="popup">我的收藏<i class="arrow-right"></i>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="quick-toggle">
+				<ul>
+					<li class="quick-area">
+						<a class="quick-links-a" href="javascript:void(0);"><i class="customer-service"></i></a>
+						<div class="sidebar-service quick-sidebar">
+							<i class="arrow-right"></i>
+							<div class="customer-service">
+								<a href="http://wpa.qq.com/msgrd?v=3&uin=315865872&site=qq&menu=yes"><span class="icon-qq"></span>QQ</a>
+							</div>
+							<div class="customer-service">
+								<a href="http://amos1.taobao.com/msg.ww?v=2&uid=dreamlak&s=2"><span class="icon-ww"></span>旺旺</a>
+							</div>
+							<div class="customer-service">
+								<a href="javascript:void(0);" class="service-online"><span class="icon-online"></span>在线客服</a>
+							</div>
+						</div>
+					</li>
+					<li class="quick-area">
+						<a class="quick-links-a" href="javascript:void(0);"><i class="qr-code"></i></a>
+						<div class="sidebar-code quick-sidebar">
+							<i class="arrow-right"></i>
+							<img src="images/qrd.jpg" />
+						</div>
+					</li>
+					<li class="returnTop">
+						<a href="javascript:void(0);" class="return_top quick-links-a"><i class="top"></i></a>
+						<div class="popup">返回顶部<i class="arrow-right"></i></div>
+					</li>
+				</ul>
+			</div>
+		</div>
+		<div class="rpoen">
+			<!--购物车 start-->
+			<div class="right-sidebar-panels sidebar-cartbox">
+				<div class="sidebar-cart-box">
+					<h3 class="sidebar-panel-header">
+						<a href="javascript:void(0);" class="title"><i class="cart-icon"></i><em class="title">购物车</em></a>
+						<span class="close-panel"></span>
+					</h3>
+					<div class="sidebar-cartbox-goods-list">
+						<div class="cart-panel-main">
+							<div class="cart-panel-content" style="height:703px;">
+								<!-- 没有商品的展示形式 _start -->
+								<div class="tip-box">
+									<i class="tip-icon"></i>
+									<div class="tip-text">
+										您的购物车里什么都没有哦
+										<br />
+										<a class="color" href="#a" title="再去看看吧">再去看看吧</a>
+									</div>
+								</div>
+								<!-- 没有商品的展示形式 _end-->
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--购物车 end-->
+			<!--浏览历史 start-->
+			<div class="right-sidebar-panels sidebar-historybox">
+				<h3 class="sidebar-panel-header">
+					<a href="javascript:;" class="title">
+						<i></i>
+						<em class="title">我的足迹</em>
+					</a>
+					<span class="close-panel"></span>
+				</h3>
+				<div class="sidebar-panel-main">
+					<div class="sidebar-panel-content sidebar-historybox-goods-list">
+						<!-- 没有浏览历史的展示形式 _start -->
+						<div class="tip-box">
+							<i class="tip-icon"></i>
+							<div class="tip-text">
+								您还没有在商城留下任何足迹哦
+								<br />
+								<a class="color" href="./">赶快去看看吧</a>
+							</div>
+						</div>
+						<!-- 没有浏览历史的展示形式 _end-->
+					</div>
+				</div>
+			</div>
+			<!--浏览历史 end-->
+			<!--对比列表 start-->
+			<div class="right-sidebar-panels sidebar-comparebox">
+				<h3 class="sidebar-panel-header">
+					<a href="javascript:void(0);" class="title">
+						<i class="compare-icon"></i>
+						<em class="title">宝贝对比</em>
+					</a>
+					<span class="close-panel"></span>
+				</h3>
+				<div>
+					<div class="sidebar-panel-main sidebar-comparebox-goods-list">
+						<div class="sidebar-panel-content compare-panel-content">
+							<!-- 没有对比商品的展示形式 _start -->
+							<div class="tip-box">
+								<i class="tip-icon"></i>
+								<div class="tip-text">
+									您还没有选择任何的对比商品哦 
+									<br />
+									<a class="color" href="./">再去看看吧</a>
+								</div>
+							</div>
+							<!-- 没有对比商品的展示形式 _end-->
+						</div>
+					</div>
+				</div>
+			</div>
+			<!--对比列表 end-->
+		</div>
+	</div>
+</div>
+<div id="openlogin_con" style="display:none;">
+	<div class="login-form">
+		<div class="login-con pos-r">
+			<div class="login-wrap">
+				<div class="login-tit">
+					还没有账号？
+					<a href="#a" class="regist-link color">立即注册 <i>&gt;</i></a>
+				</div>
+				<!-- 普通登录 star -->
+				<div id="con_login_2" class="form">
+					<form id="form2" action="#a" method="POST" novalidate="novalidate">
+					<div class="form-group item-name">
+						<div class="form-control-box">
+							<i class="icon"></i> 
+							<input type="text" id="username" name="username" value="" class="text" tabindex="1" placeholder="已验证手机/邮箱/用户名" autocomplete="off" aria-required="true">
+						</div>
+					</div>
+					<div class="form-group item-password">
+						<div class="form-control-box">
+							<i class="icon"></i>
+							<input type="password" id="password" name="password" value="" class="text" tabindex="2" placeholder="密码" autocomplete="off" aria-required="true">
+						</div>
+					</div>
+					<div class="form-group item-vcode">
+						<div class="form-control-box">
+							<i class="icon"></i>
+							<input type="text" id="verify_code" name="verify_code" value="" class="text" tabindex="2" placeholder="验证码" autocomplete="off" aria-required="true">
+							<img id="verify_code_img" class="verify-code" src="/captcha.html" onclick="$(this).parent().find('#verify_code').val('');$(this).attr('src','/captcha.html?t='+Math.random());" title="点击刷新">
+						</div>
+					</div>
+					<div class="safety">
+						<label for="remember">
+							<input type="checkbox" value="1" name="remember" id="remember" class="checkbox">
+							<span>自动登录</span>
+						</label>
+						<a class="forget-password fr" href="#a">忘记密码？</a>
+					</div>
+					<div class="login-btn">
+						<input type="submit" name="submit" class="btn-img btn-entry bg-color" id="loginsubmit" value="立即登录">
+					</div>
+					<div class="item-coagent">
+						<a href="javascript:void(0);" data-id="pc_weixin" class="website-login"><i class="weixin"></i></a>
+						<a href="javascript:void(0);" data-id="qq" class="website-login"><i class="qq"></i></a>
+						<a href="javascript:void(0);" data-id="weibo" class="last website-login"><i class="sina"></i></a>
+					</div>
+				</form>
+				</div>
+				<!-- 普通登录 end -->
+			</div>
+		</div>
+	</div>
+</div>

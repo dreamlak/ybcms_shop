@@ -1,0 +1,176 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+.form-control em{display:inline-block;font-style:normal;font-size:12px;border:1px #eee solid;border-radius:4px;padding:2px 5px;margin:2px;color:#999;cursor:pointer;}
+.form-control em:hover{background:#ddd;}
+</style>
+{/block}
+{block name="main"}
+<script type="text/javascript" src="__JS__common.js"></script>
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>商品分类 - 添加修改分类</h3>
+			<h5>添加或编辑商品分类</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>商品分类最多分为三级</li>
+      		<li>添加或者修改分类时, 应注意选择对应的上级</li>
+		</ol>
+	</div>
+	<form action="" method="post" id="myform" class="form-horizontal">
+		<input type="hidden" name="id" value="{$info.id}">
+        <div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>分类名称</label>
+            <div class="col-xs-7">
+            	<input type="text" value="{$info.name}" id="name" name="name" class="form-control">
+            	<span class="help-block"></span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>手机分类名称</label>
+            <div class="col-xs-7">
+            	<input type="text" value="{$info.mobile_name}" id="mobile_name" name="mobile_name" class="form-control">
+            	<span class="help-block">手机显示的分类名称</span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">上级分类</label>
+            <div class="col-xs-7 form-inline">
+            	<select name="parent_id_1" id="parent_id_1" onchange="get_category(this.value,'parent_id_2','0');" class="form-control">
+            		<option value="0">顶级分类</option>
+                	{foreach $cat_list as $v}                                            
+                    <option value="{$v['id']}">{$v['name']}</option>
+                	{/foreach}
+            	</select>
+            	<select name="parent_id_2" id="parent_id_2" class="form-control">
+            		<option value="0">请选择商品分类</option>
+            	</select>
+            	<span class="help-block">最多成为第三级,如果设置为第二级, 只选择第一级即可</span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>导航显示</label>
+            <div class="col-xs-7">
+            	<div class="onoff">
+		            <label for="is_show1" class="cb-enable {if $info['is_show']==1}selected{/if}">是</label>
+		            <label for="is_show0" class="cb-disable {if $info['is_show']==0}selected{/if}">否</label>
+		            <input id="is_show1" name="is_show" value="1" type="radio" {if $info['is_show']==1} checked="checked"{/if}>
+		            <input id="is_show0" name="is_show" value="0" type="radio" {if $info['is_show']==0} checked="checked"{/if}>
+	          	</div>
+            	<span class="help-block"></span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>是否推荐</label>
+            <div class="col-xs-7">
+            	<div class="onoff">
+		            <label for="is_hot1" class="cb-enable {if $info['is_hot']==1}selected{/if}">是</label>
+		            <label for="is_hot0" class="cb-disable {if $info['is_hot']==0}selected{/if}">否</label>
+		            <input id="is_hot1" name="is_hot" value="1" type="radio" {if $info['is_hot']==1} checked="checked"{/if}>
+		            <input id="is_hot0" name="is_hot" value="0" type="radio" {if $info['is_hot']==0} checked="checked"{/if}>
+	          	</div>
+            	<span class="help-block"></span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>分类分组</label>
+            <div class="col-xs-7">
+            	<select name="cat_group" id="cat_group" class="form-control">
+            		{for start="0" end="31"}
+            		<option value="{$i}" {if $info['cat_group']==$i}selected{/if}>{$i}</option>
+            		{/for}
+            	</select>
+            	<span class="help-block">有时候左侧菜单栏同一行显示多个分类, 所以给他们一个分组</span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>分类展示图片</label>
+            <div class="col-xs-7">
+            	{:tpl_upimg('imagetext','image',$info['image'],0,is_login(),0,'Logo URL,可直接填写文件远程地址','','上传图片')}
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>排序</label>
+            <div class="col-xs-7">
+            	<input type="number" value="{$info.sort_order|default=0}" id="t_sort" name="sort_order" class="form-control">
+            	<span class="help-block">根据排序进行由小到大排列显示。</span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"><em class="red">*</em>分佣比例</label>
+            <div class="col-xs-7">
+		    	<div class="input-group ">
+         			<input type="number" value="{$info.commission_rate|default=0}" name="commission_rate" id="commission_rate"  class="form-control">
+		    		<span class="input-group-addon">%</span>
+		    	</div>
+            	<span class="help-block">用于商城分销,微信三级分销。</span>
+		    </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"></label>
+		    <div class="col-xs-7">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary">
+		    </div>
+		</div>
+    </form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap','think','layer']);
+	//回车事件
+	document.onkeydown = function(e) {
+		var theEvent = window.event || e;
+		var code = theEvent.keyCode || theEvent.which;
+		if(code == 13){
+			$("#submitbtn").click();
+		}
+	}
+	{if isset($level_cat[2]) && $level_cat[2] > 0}
+		//如果当前是二级分类就让一级父id默认选中
+		$("#parent_id_1").val('{$level_cat[1]}');
+		get_category('{$level_cat[1]}','parent_id_2','0');
+	{/if}	 
+	{if isset($level_cat['3']) &&  $level_cat['3'] > 0}
+		//如果当前是三级分类就一级和二级父id默认 都选中
+		$("#parent_id_1").val('{$level_cat[1]}');
+		get_category('{$level_cat[1]}','parent_id_2','{$level_cat[2]}');
+	{/if}
+	//提交
+	$('#submitbtn').click(function(){
+		if($('#name').val() == ''){
+            layer.msg('分类名称不能为空！', {icon: 2,time: 1000});
+            return false;
+        }else if($('#mobile_name').val()==''){
+        	layer.msg('手机分类名称不能为空！', {icon: 2,time: 1000});
+            return false;
+        }
+		var fields = $('form').serializeArray();
+		var ll = layer.load('正在处理，请稍后...', 3);
+		$.post(Think.U('Admin/Goods/addEditCategory','is_ajax=1'),fields,function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6}, function(){
+	        		history.go(-1);
+					location.reload();
+				});
+	        } else {
+	        	layer.msg(data.msg, {icon:5});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+});
+</script>
+{/block}
+{block name="script"}
+{/block}

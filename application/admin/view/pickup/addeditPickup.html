@@ -1,0 +1,110 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>自提点管理-添加编辑</h3>
+			<h5>商城自动提货点管理</h5>
+		</div>
+	</div>
+	<form action="" method="post" class="form-horizontal">
+		<input type="hidden" name="pickup_id" value="{$info.pickup_id}" />
+        <div class="form-group article">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>自提点名称</label>
+		    <div class="col-sm-9 col-xs-12">
+         		<input type="text" value="{$info.pickup_name}" name="pickup_name" id="pickup_name" placeholder="填写自提点名称" class="form-control">
+         		<span class="help-block"></span>
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>自提点地址</label>
+		    <div class="col-sm-9 col-xs-12 form-inline">
+		    	<script type="text/javascript" src="__JS__city/city.js"></script>
+                <select name="province_id" id="province" class="form-control" onchange="getCity(this)">
+                	<option value="">选择省</option>
+                	{volist name="province" id="v"}
+                	<option value="{$v.id}" {if $info['province_id']==$v.id}selected{/if}>{$v.name}</option>
+                	{/volist}
+                </select>
+                <select name="city_id" id="city" class="form-control" onchange="getArea(this)">
+                	<option value="">选择州区</option>
+                	{volist name="city" id="v"}
+                	<option value="{$v.id}" {if $info['city_id']==$v.id}selected{/if}>{$v.name}</option>
+                	{/volist}
+                </select>
+                <select name="district_id" id="district" class="form-control">
+                	<option value="">选择市县</option>
+                	{volist name="district" id="v"}
+                	<option value="{$v.id}" {if $info['district_id']==$v.id}selected{/if}>{$v.name}</option>
+                	{/volist}
+                </select>
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>详细地址</label>
+		    <div class="col-sm-9 col-xs-12">
+                <input type="text" value="{$info.pickup_address}" name="pickup_address" id="pickup_address" class="form-control" placeholder="填写自提点名称">
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>供货商</label>
+		    <div class="col-sm-9 col-xs-12">
+                <select name="suppliersid" id="suppliersid" class="form-control" onchange="">
+                	<option value="0">{:config(config)['site_name']}</option>
+                	{volist name="suppliersList" id="v"}
+                	<option value="{$v.suppliers_id}" {if $v['suppliers_id']==$info.suppliers_id}selected{/if}>{$v.suppliers_name}</option>
+                	{/volist}
+                </select>
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>自提点联系人</label>
+		    <div class="col-sm-9 col-xs-12">
+                <input type="text" value="{$info.pickup_contact}" name="pickup_contact" id="pickup_contact" class="form-control" placeholder="填写自提点联系人">
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"><span style="color:red">*</span>自提点电话</label>
+		    <div class="col-sm-9 col-xs-12">
+                <input type="text" value="{$info.pickup_phone}" name="pickup_phone" id="pickup_phone" class="form-control" placeholder="填写自提点电话">
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label">状态</label>
+		    <div class="col-sm-9 col-xs-12">
+                {:tpl_onoff('status','status',['1','0','启用','禁用'],$info['status'],$msg='')}
+            </div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-12 col-sm-3 col-md-2 control-label"></label>
+		    <div class="col-sm-9 col-xs-12">
+		    	<input type="button" value="提交" id="submitbtn" class="btn btn-primary col-lg-1">
+		    </div>
+		</div>
+    </form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['think','layer']);
+	//提交
+	$('#submitbtn').click(function(){
+		var fields = $('form').serializeArray();
+		var ll = layer.load('正在处理，请稍后...', 3);
+		$.post(Think.U('Admin/Pickup/addeditPickup'),fields,function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6}, function(){
+	        		history.go(-1);
+					location.reload();
+				});
+	        } else {
+	        	layer.msg(data.msg, {icon:5});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+});
+</script>
+{/block}

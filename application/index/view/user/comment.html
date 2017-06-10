@@ -1,0 +1,263 @@
+{extend name="public/user_main" /}
+{block name="script"}
+<script type="text/javascript" src="__P_JS__/util.js"></script>
+<script type="text/javascript" src="__P_JS__/require.js"></script>
+<script type="text/javascript" src="__P_JS__/main.js"></script>
+{/block}
+{block name="main"}
+<div class="panelBox commentBox">
+	<div class="comment_title">
+		商品评价
+		<ul class="commenu">
+	        <li{if input('status')!='0' && input('status')!='1'} class="on"{/if}><a href="{:url('Home/User/comment')}">全部</a></li>
+	        <li{if input('status')=='0'} class="on"{/if}><a href="{:url('Home/User/comment',['status'=>0])}">待评价</a></li>
+	        <li{if input('status')=='1'} class="on"{/if}><a href="{:url('Home/User/comment',['status'=>1])}">已评价</a></li>
+	    </ul>
+    </div>
+    <table class="ctable comment_table">
+    	<thead>
+    		<tr>
+    			<th colspan="2">商品</th>
+    			<th>状态</th>
+    			<th>操作</th>
+    		</tr>
+    	</thead>
+    	{volist name="comment_list" id="list"}
+    	<tbody class="c_t_t">
+    		<tr>
+    			<td colspan="4">
+    				{$list.add_time|date='Y-m-d H:i:s',###}&nbsp;&nbsp;&nbsp;&nbsp;
+    				订单号：{$list.order_sn}
+    			</td>
+    		</tr>
+    	</tbody>
+    	<tbody class="c_tiem">
+    		<tr>
+    			<td style="width:80px;">
+    				<a title="{$list.goods_name}" href="javascript:">
+                		<img alt="{$list.goods_name}" src="{$list.goods_id|goods_thum_images=80,80}" style="width:60px;height:60px;">
+                	</a>
+                </td>
+    			<td style="text-align:left;border-right:1px #eee solid;"><a href="javascript:">{$list.goods_name}</a></td>
+    			<td style="width:130px;border-right:1px #eee solid;">{if condition="$list['is_comment'] eq 1"}已评价{else}未评价{/if}</td>
+    			<td style="width:130px;">
+    				{if condition="$list['is_comment'] eq 0"}
+                        <p><a href="javascript:" onclick="comment({$list.order_id},{$list.goods_id})">立即评价</a></p>
+                    {/if}
+                    {if condition="$list['is_comment'] eq 1"}
+                        <p><a href="{:url('Home/Goods/goodsInfo',['id'=>$list['goods_id']])}">查看评价</a></p>
+                    {/if}
+    			</td>
+    		</tr>
+    	</tbody>
+    	{if condition="$list['is_comment'] eq 0"}
+    	<tbody class="c_opt" id="div_{$list.order_id}_{$list.goods_id}">
+    		<tr>
+    			<td colspan="4">
+    			<form action="{:url('Home/User/add_comment')}" data-test="formtest" id="commentpost" method="post">
+    				<input type="hidden" name="order_id" value="{$list.order_id}">
+					<input type="hidden" name="goods_id" value="{$list.goods_id}">
+					<div class="fwypj">评价与晒图:</div>
+					<div class="fl">
+						<textarea placeholder="可输入1-200字符" name="content" id="content" cols="70" rows="8"></textarea>
+					</div>
+					<div class="fl dafen">
+						<div class="cu-po">
+							<span class="sf">商品与描述相符：</span>
+							<span>
+								<span class="starRating-area">
+									<img onMouseMove="c(this,event)" src="__STATIC__/images/start/stars0.gif" alt="">
+									<input type="hidden" id="goods_rank" name="goods_rank" value="0">
+								</span>
+							</span>
+						</div>
+						<div class="cu-po">
+							<span class="sf">客服服务质量：</span>
+							<span>
+								<span class="starRating-area">
+									<img onMouseMove="c(this,event)" src="__STATIC__/images/start/stars0.gif" alt="">
+									<input type="hidden" id="service_rank" name="service_rank" value="0">
+								</span>
+							</span>
+						</div>
+						<div class="cu-po">
+							<span class="sf">物流服务质量：</span>
+							<span>
+								<span class="starRating-area">
+									<img onMouseMove="c(this,event)" src="__STATIC__/images/start/stars0.gif" alt="">
+									<input type="hidden" id="deliver_rank" name="deliver_rank" value="0">
+								</span>
+							</span>
+						</div>
+						<div class="merge">
+							<a class="btn btn-default" onClick="comment_submit(this)">提交</a>
+						</div>
+					</div>
+					<div class="fl upimg" id="img_container" style="white-space:normal;">
+						<div class="imgitem" id="add_img" title="添加图片">
+							<img border="0" alt="" onclick="uploadimg('#div_{$list.order_id}_{$list.goods_id}')" src="__P_JS__/ueditor/dialogs/image/images/image.png">
+							<p>&nbsp;</p>
+						</div>
+					</div>
+					<script type="text/javascript">
+					clicimg();
+                    $('#add_img').click(function(){
+                    	require(['bootstrap'], function(){
+							var parame={};
+								parame.filetype='images';//上传文件类型
+								parame.filenum=5;//允许上传文件个数
+								parame.ext='jpg,jpeg,gif,png,bmp';//允许上传扩展名
+								parame.upfilesize=1024*1024*2;//允许单个上传文件的大小2M
+								parame.ismark=0,//是否水印
+								parame.adminid=0;
+								parame.userid={$user.userid};
+								parame.dir='comment';
+							util.upfile(parame,function(img){
+								var html='';
+								for(var i=0;i<img.length;i++){
+						            html+='<div class="imgitem">';
+						            html+='<input type="hidden" value="'+img[i]+'" name="comment_img[]">';
+						            html+='<a class="img_group" href="'+img[i]+'"><img width="55" height="55" src="'+img[i]+'"></a>';
+						            html+='<p>';
+						            html+='<a href="javascript:void(0)" onclick="MovePicArr(this)">移除</a> / ';
+						            html+='<a href="javascript:void(0)" onclick="delimg(\''+img[i]+'\',this)">删除</a>';
+						            html+='</p>';
+						            html+='</div>';
+								}
+								$(".imgitem:eq(0)").before(html);//插入一个 新图片
+							});
+						});
+					});
+					function clicimg(){
+						require(['jquery-colorbox'],function(){
+							$(".img_group").colorbox({rel:'img_group'});
+						});
+					}
+					function MovePicArr(obj){
+						$(obj).parent().parent().remove();
+					}
+					function delimg(file,t){
+					    $.get(Think.U('common/Fileupload/delupload'),{action:"del", filename:file},function(){});
+					    $(t).parent().parent().remove();
+					    $('#img_container').find('#add_img').show();
+					}
+					</script>
+    			</form>
+    			</td>
+    		</tr>
+    	</tbody>
+    	{/if}
+    	{/volist}
+    </table>
+    <div class="page pager-paging fr">{$page}</div>
+</div>
+<!--评论提交-->
+<script type="text/javascript">
+function comment(order_id,goods_id){
+    var div = "#div_"+order_id+"_"+goods_id;
+    $(div).toggle();
+}
+function comment_submit(t){
+    //表单对象
+    var form = $(t).parent().parent().parent();
+
+    var service_rank = parseInt($(form).find('#service_rank').val());
+    var deliver_rank = parseInt($(form).find('#deliver_rank').val());
+    var goods_rank = parseInt($(form).find('#goods_rank').val());
+	if($(form).find('#content').val()==''){
+		layer.msg('请输入评论内容', { icon:2, time: 2000 });   //2秒关闭（如果不配置，默认是3秒）
+        return false;
+    }
+    if(!service_rank> 0){
+		layer.msg('请为商家服务评分', { icon:2, time: 2000 });   //2秒关闭（如果不配置，默认是3秒）
+        return false;
+    }
+    if(!deliver_rank> 0){
+		layer.msg('请为物流评分', { icon:2, time: 2000 });   //2秒关闭（如果不配置，默认是3秒）
+        return false;
+    }
+    if(!goods_rank> 0){
+		layer.msg('请为商品评分', { icon:2, time: 2000 });   //2秒关闭（如果不配置，默认是3秒）
+        return false;
+    }
+	 
+    var data = $(form).serialize();
+    $.ajax({
+        type : "POST",
+        url:"{:url('Home/User/add_comment')}",
+        data :data,// 你的formid 搜索表单 序列化提交
+        success: function(data){
+            data = jQuery.parseJSON(data);
+            //console.log(data);
+            if(data.status == 1){
+                //评论成功
+                 //alert('评论成功');
+				layer.msg('评论成功', {
+				  	icon: 1,
+				  	time: 2000 //2秒关闭（如果不配置，默认是3秒）
+				}, function(){
+                   	location.reload();
+				});
+ 
+            }else{
+                $(form).parent().remove();
+                alert(data.msg);
+            }
+        }
+    });
+}
+</script>
+<!--评论提交结束-->
+<script type="text/javascript">
+function c(obj,event){
+    var objTop = getOffsetTop(obj);//对象x位置
+    var objLeft = getOffsetLeft(obj);//对象y位置
+
+    var mouseX = event.clientX+document.body.scrollLeft;//鼠标x位置
+    var mouseY = event.clientY+document.body.scrollTop;//鼠标y位置
+    //计算点击的相对位置
+    var objX = mouseX-objLeft;
+    var objY = mouseY-objTop;
+    clickObjPosition = objX + "," + objY;
+    if(objX < 13 && objX > 0){
+        $(obj).attr('src','__STATIC__/images/start/stars1.gif');
+        $(obj).next().val(1);
+    }
+    if(objX < 28 && objX > 13){
+        $(obj).attr('src','__STATIC__/images/start/stars2.gif');
+        $(obj).next().val(2);
+    }
+    if(objX < 43 && objX > 28){
+        $(obj).attr('src','__STATIC__/images/start/stars3.gif');
+        $(obj).next().val(3);
+    }
+    if(objX < 58 && objX > 43){
+        $(obj).attr('src','__STATIC__/images/start/stars4.gif');
+        $(obj).next().val(4);
+    }
+    if(objX < 74 && objX > 58){
+        $(obj).attr('src','__STATIC__/images/start/stars5.gif');
+        $(obj).next().val(5);
+    }
+}
+function getOffsetTop(obj){
+    var tmp = obj.offsetTop;
+    var val = obj.offsetParent;
+    while(val != null){
+        tmp += val.offsetTop;
+        val = val.offsetParent;
+    }
+    return tmp;
+}
+
+function getOffsetLeft(obj){
+    var tmp = obj.offsetLeft;
+    var val = obj.offsetParent;
+    while(val != null){
+        tmp += val.offsetLeft;
+        val = val.offsetParent;
+    }
+    return tmp;
+}
+</script>
+{/block}

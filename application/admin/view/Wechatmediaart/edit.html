@@ -1,0 +1,154 @@
+{extend name="public/base" /}
+{block name="main"}
+<style>
+.artsubbtn2{position:fixed;bottom:0;left:280px;right:300px;height:50px;padding-top:8px;text-align:center;vertical-align:middle;background:#fff;border-top:1px #ddd solid;border-left:0px #ddd solid;}
+.artsubbtn2 a.btn{background-color:#00b7ee;color:#fff;text-align:center;}
+.artsubbtn2 a.btn:hover{background-color:#00a2d4;}
+
+.martbox{margin:10px;border:1px #ddd solid;background:#fff;}
+.martbox .fistitem{display:block;padding:10px;position:relative;cursor:pointer;}
+.martbox .fistitem.on{border:2px solid #43b548;margin:-1px;}
+.martbox .fistitem .img{height:120px;text-align:center;}
+.martbox .fistitem .img img{width:100%;height:120px;}
+.martbox .fistitem .marttitle{height:30px;line-height:30px;background:rgba(0,0,0,0.6);color:#fff;padding:0 10px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.martbox .item{border-top:1px #ddd solid;position:relative;padding:10px;cursor:pointer;}
+.martbox .item .text{height:68px;overflow:hidden;padding-right:78px;}
+.martbox .item .img{position:absolute;right:10px;top:10px;width:68px;height:68px;}
+.martbox .item .img img{width:68px;height:68px;}
+.martbox .item .optbox{position:absolute;bottom:0;left:0;width:100%;height:35px;line-height:35px;background:rgba(0,0,0,0.4);display:none;}
+.martbox .item .optbox a{display:inline-block;margin:0 10px;color:#fff;}
+.martbox .item:hover .optbox{display:block;text-align:center;}
+.martbox .item.on{border:2px solid #43b548;margin:-1px;}
+
+.appmsg_add{display:block;border:2px dotted #d9dadc;line-height:60px;text-align:center;margin:0 10px 20px;color:#d9dadc;font-size:35px;}
+.appmsg_add:hover{border-color:#999;color:#666;}
+</style>
+<form action="" method="get" class="form-horizontal">
+<div class="main-content" style="right:300px;bottom:50px;">
+	<div class="padding-md m-top-sm artadd"style="padding-bottom:5px!important;">
+		<div class="input-group" style="margin-bottom:5px;">
+			<span class="input-group-addon">文章标题</span>
+		    <input type="text" name="title" id="title" value="{$info.title}" onkeyup="addarttitle($(this).val())" class="form-control">
+	    </div>
+	    <div class="input-group" style="margin-bottom:5px;">
+		    <span class="input-group-addon">文章摘要</span>
+		    <textarea name="description" id="description" class="form-control" onkeyup="strlen_verify($(this),'description_len',255);">{$info.description}</textarea>
+		    <span class="input-group-addon">还可输入<B><span id="description_len">255</span></B>个字符</span>
+		</div>
+	    <div class="input-group" style="margin-bottom:5px;">
+	    	<span class="input-group-addon">上传封面</span>
+	    	<input type="text" name="thumb" id="thumb" value="{$info.thumb}" placeholder="大图片建议尺寸：900像素 * 500像素" readonly="" class="form-control">
+    		<span class="input-group-addon">
+    			<input type="checkbox" name="showcoverpic" value="1" {if $info['showcoverpic']==1}checked=""{/if} style="margin-left:0;">显示在正文中
+    		</span>
+    		<span class="input-group-btn">
+				<button class="btn btn-default" type="button" id="upload_thumb">上传图片</button>
+			</span>
+			<input type="hidden" name="oldthumb" value="{$info.thumb}" />
+    	</div>
+		<script type="text/javascript">
+        $('#upload_thumb').click(function(){
+	        require(['bootstrap','think'], function(){
+				var parame={};
+					parame.filetype='images';//上传文件类型
+					parame.filenum=1;//允许上传文件个数
+					parame.ext='jpg,jpeg,gif,png,bmp';//允许上传扩展名
+					parame.upfilesize=1024*1024*2;//允许单个上传文件的大小2M
+					parame.ismark=1,//是否水印
+					parame.adminid={:is_login()};
+					parame.userid=0;
+				util.upfile(parame,function(img){
+					$('#thumb').val(img[0]);
+					var artid=$('#artid').val();
+					if(artid==''){
+						$('#showthumb').attr('src',img[0]);
+					}else{
+						$('#showthumb'+artid).attr('src',img[0]);
+					}
+					return false;
+				});
+			});
+		});
+        </script>
+
+    	<div class="input-group" style="margin-bottom:5px;">
+	        <span class="input-group-addon">发布作者</span>
+	        <input type="text" name="author" id="author" value="{$info.author}" class="form-control">
+	    </div>
+	    <div class="input-group" style="margin-bottom:5px;">
+	        <span class="input-group-addon">原文链接</span>
+	        <input type="text" name="url" id="url" value="{$info.url}" class="form-control">
+	    </div>
+	</div>
+	<!--编辑器-->
+	<div style="padding:5px 0;color:#FF6600;">在向内容插入图片时，有延时，请耐心等待，因为图片要先传入微信服务器，所以在插入完成后再插入下一张！</div>
+	<div class="ueditor">
+		{:tpl_ueditor_wx('content','content',$info.content,360,1,1,is_login(),0)}
+	</div>
+	<input type="hidden" name="artid" id="artid" value="{$info.artid}" />
+	<div class="artsubbtn2">
+		<input type="button" class="btn btn-info" id="submitbtn" value="确认保存">
+	</div>
+</div>
+<!--右边属性-->
+<div class="artcattree" style="width:300px;background:#f8f8f8;">
+	<div class="artadd_left">
+		<h3>图文列表：</h3>
+		<div class="martbox">
+			<div class="fistitem {if input('artid')==$groplist['artid']}on{/if}" onclick="location.href='{:url('edit',['artid'=>$groplist['artid']])}'">
+				<div class="img"><img src="{$groplist.thumb}" id="showthumb" onerror="this.src='/static/images/public/nopic.jpg';"></div>
+				<div class="marttitle">{$groplist.title}</div>
+			</div>
+			{volist name="groplist['sublist']" id="v"}
+			<div class="item {if input('artid')==$v['artid']}on{/if}">
+				<div class="text" id="showtitle{$v.artid}">{$v.title}</div>
+				<div class="img"><img src="{$v.thumb}" id="showthumb{$v.artid}" onerror="this.src='/static/images/public/nopic.jpg';"></div>
+				<div class="optbox">
+					<a href="{:url('edit',['artid'=>$v.artid])}"><i class="fa fa-pencil"></i> 编辑</a>
+					<a href="{:url('del',['artid'=>$v.artid])}"><i class="fa fa-trash-o"></i> 删除</a>
+				</div>
+			</div>
+			{/volist}
+		</div>
+		{if $subcount<8}
+		<a title="添加一篇图文" class="appmsg_add" id="js_add_appmsg" href="{:url('add',['artid'=>$groplist.artid])}">
+			<i class="yb-opt-add"></i>
+		</a>
+		{/if}
+	</div>
+</div>
+</form>
+<script type="text/javascript">
+$(document).ready(function(){
+	//提交
+	$('#submitbtn').click(function(){
+		require(['think','layer'],function(){
+			var fields = $('form').serializeArray();
+			var ll = layer.load('正在处理，请稍后...', 3);
+			$.post(Think.U('Admin/Wechatmediaart/edit'),fields,function(data){
+		        if(data.status==1) {
+		        	layer.msg(data.msg,{icon:6}, function(){
+						location.reload();
+					});
+		        } else {
+		        	layer.msg(data.msg, {icon:5});
+		        }
+		        layer.close(ll);
+		        return false;
+		    });
+	   });
+	});
+});
+function addarttitle(v){
+	var artid=$('#artid').val();
+	if(artid==''){
+		$('.marttitle').html(v);
+	}else{
+		$('#showtitle'+artid).html(v);
+	}
+}
+</script>
+<script src="__JS__admin/addart.js"></script>
+{/block}
+{block name="script"}
+{/block}

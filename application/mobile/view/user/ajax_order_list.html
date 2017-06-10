@@ -1,0 +1,28 @@
+{volist name="lists" id="list"}
+<div class="order_list">
+  	<h2>
+      <a href="javascript:void(0);">
+          <img src="__STATIC__/images/dianpu.png"><span>店铺名称:网站自营</span><strong>
+          <img src="__STATIC__/images/icojiantou1.png"></strong>
+      </a>
+  	</h2>
+ 	<a href="{:U('/Mobile/User/order_detail',array('id'=>$list['order_id']))}">
+      	{volist name="list.goods_list" id="good"}
+      	<dl>  
+          <dt><img src="{$good.goods_id|goods_thum_images=200,200}"></dt>
+          <dd class="name"><strong>{$good.goods_name}</strong>
+          <span>{$good.spec_key_name} </span></dd>
+          <dd class="pice">￥{$good['member_goods_price']}元<em>x{$good['goods_num']}</em></dd>
+      	</dl>
+      	{/volist}
+  	</a>
+  	<div class="pic">共{$list.goods_list|count}件商品<span>应付：</span><strong>￥{$list['order_amount']}元</strong></div>
+  	<div class="anniu" style="width:95%">
+        {if $list.cancel_btn==1}<span onClick="cancel_order({$list.order_id})">取消订单</span>{/if}
+        {if $list.pay_btn==1}<a href="{:url('Mobile/Cart/cart4',array('order_id'=>$list['order_id']))}">立即付款</a>{/if}
+        {if $list.receive_btn==1}<a href="{:url('Mobile/User/order_confirm',array('id'=>$list['order_id']))}">收货确认</a>{/if}
+        {if $list.comment_btn==1}<a href="{:url('/Mobile/User/comment')}">评价</a>{/if}               
+        {if $list.shipping_btn==1}<a href="{:url('User/express',array('order_id'=>$list['order_id']))}">查看物流</a>{/if}       
+   	</div>
+</div>
+{/volist}

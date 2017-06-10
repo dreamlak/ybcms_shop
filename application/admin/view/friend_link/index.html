@@ -1,0 +1,104 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>友情链接管理</h3>
+			<h5>系统站内信箱管理</h5>
+		</div>
+		<ul class="tab-base">
+	        <li class="active"><a>链接管理</a></li>
+	        <li><a href="{:url('typelist')}">分类管理</a></li>
+	    </ul>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>添加友情链接，可以和其他站长相互交换。</li>
+		</ol>
+	</div>
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 链接列表</span> 
+			<span class="tit-info">(共{$total}条记录)</span>
+		</div>
+		<div class="panel-btn">
+			<a href="{:url('add')}" class="btn btn-default"><i class="fa fa-plus"></i> 添加链接</a>
+			<a href="javascript:" url="{:url('del')}" class="btn btn-default" data="ajax"><i class="fa fa-trash-o"></i> 删除链接</a>
+			<div class="btn-group">
+			  	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">状态设置 <span class="caret"></span></button>
+			  	<ul class="dropdown-menu" role="menu">
+				    <li><a href="javascript:" url="{:url('setStatus',['status'=>1])}" data="ajax">启用链接</a></li>
+				    <li><a href="javascript:" url="{:url('setStatus',['status'=>0])}" data="ajax">禁用链接</a></li>
+			  	</ul>
+			</div>
+			<a href="javascript:" url="{:url('setSort')}" class="btn btn-default" data="ajax_sort"><i class="fa fa-sort"></i> 分类排序</a>
+		</div>
+		<div class="panel-body table-responsive ng-scope">
+			<table class="table table-hover">
+				<thead class="navbar-inner">
+					<tr>
+						<th style="width:30px;">
+							<div class="custom-checkbox">
+								<input type="checkbox" id="chkAll" class="inbox-check">
+								<label for="chkAll"></label>
+							</div>
+						</th>
+						<th style="width:50px;" class="text-center">排序</th>
+						<th style="width:85px;" class="text-center">LOGO</th>
+						<th>名称</th>
+						<th>URL</th>
+						<th>分类</th>
+						<th>状态</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+				{volist name="lists" id="v"}
+					<tr for="chk{$v.linkid}">
+						<td>
+							<div class="custom-checkbox">
+								<input type="checkbox" name="ids[]" id="chk{$v.linkid}" class="inbox-check" value="{$v.linkid}">
+								<label for="chk{$v.linkid}"></label>
+							</div>
+						</td>
+						<td class="text-center"><input type="text" name="sort[{$v.linkid}]" id="sort" class="form-control" value="{$v.sort}"></td>
+						<td class="text-center"><img src="{$v.logo}" width="80" height="33" style="background:#ddd;"/></td>
+						<td>{$v.name}</td>
+						<td><a href="{$v.url}" target="{$v['target']}">{$v.url}</a></td>
+						<td>{$v.tname}</td>
+						<td>{if $v['status']==1}启用{else}禁用{/if}</td>
+						<td>
+							<a href="{:url('edit',['linkid'=>$v['linkid']])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> 编辑</a>
+						</td>
+					</tr>
+				{/volist}
+				</tbody>
+			</table>
+		</div>
+		<div class="panel-footer">
+			{if $total>$listRows}
+			<ul class="pagination">
+				<li><a>{$total} 条记录</a></li>
+				<li><a>{$currentPage}/{$lastPage}</a></li>
+			</ul>
+			{/if}
+			{$pages}
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap']);
+})
+</script>
+{/block}
+{block name="script"}
+{/block}

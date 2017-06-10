@@ -1,0 +1,153 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>会员管理-提现申请</h3>
+			<h5>会员提现申请操作动向</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>本次操作，只产生平台内部余额相互转账记录，并没有产生银行或第三方平台在线相互转账。流程如下：</li>
+			<li>用户申请提现</li>
+			<li>管理员手动转账给用户</li>
+            <li>转账后在此确认申请(系统自动增加或扣除用户平台余额 )</li>
+		</ol>
+	</div>
+	<form action="" method="post" class="form-horizontal">
+		<input type="hidden" name="id" value="{$info.id}">
+        <input type="hidden" name="userid" value="{$info.userid}">
+        <input type="hidden" name="status" id="status" value="{$info.status}">
+    	<div class="form-group">
+		    <label class="col-xs-2 control-label">会员</label>
+		    <div class="col-xs-8">
+         		<span class="form-control" style="border:0;">{$user.username}({$user.userid})</span>
+           	</div>
+		</div>
+		<div class="form-group article">
+		    <label class="col-xs-2 control-label">用户平台余额</label>
+		    <div class="col-xs-8">
+         		<span class="form-control" style="color:red;font-weight:bold;border:0;">￥{$user.mymoney}元</span>
+           	</div>
+		</div>
+		<div class="form-group article">
+		    <label class="col-xs-2 control-label">申请提现金额</label>
+		    <div class="col-xs-8">
+         		<span class="form-control" style="color:red;font-weight:bold;border:0;">￥{$info.money}元</span>
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">申请提现银行</label>
+		    <div class="col-xs-8">
+         		<span class="form-control" style="border:0;">{$info.bank_name}</span>
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">银行账号</label>
+		    <div class="col-xs-8">
+         		<span class="form-control" style="border:0;">{$info.account_bank}</span>
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">银行账户名</label>
+		    <div class="col-xs-8">
+         		<span class="form-control" style="border:0;">{$info.account_bank}</span>
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">申请时间</label>
+		    <div class="col-xs-8">
+         		<span class="form-control" style="border:0;">{$info.create_time|date="Y-m-d H:i",###}</span>
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">状态</label>
+		    <div class="col-xs-8">
+         		<span class="form-control" style="border:0;">
+         			{if $info['status']==0}申请中{elseif $info['status']==1}申请成功{else}申请失败{/if}
+         		</span>
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label">备注</label>
+		    <div class="col-xs-8">
+         		<textarea  class="form-control" rows="4" cols="60" id="remark" name="remark">{$info.remark}</textarea>
+           	</div>
+		</div>
+		<div class="form-group">
+		    <label class="col-xs-2 control-label"></label>
+		    <div class="col-xs-8 col-sm-9 col-md-9">
+		    	{if in_array($info['status'],array(0,2))}
+		    	<input type="button" value="去生成转账记录" onclick="confirm_withdrawals();" class="btn btn-primary">
+		    	{/if}
+		    	{if $info['status']==0}
+		    	<input type="button" value="拒绝提现" onclick="cancel_withdrawals();" class="btn btn-warning">
+		    	{/if}
+		    	{if $info['status']==1}
+		    	<input type="button" value="修改备注" id="submitbtn" class="btn btn-warning">
+		    	{/if}
+		    </div>
+		</div>
+    </form>
+</div>
+
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap','think','layer']);
+});
+// 确定提现
+function confirm_withdrawals(){
+    if(!confirm("确定将从平台扣除用户余额￥{$info.money},确定吗?")){
+        return false;
+	}
+    if($.trim($('#remark').val()).length == 0){
+        layer.msg('请填写转账备注', {icon:5});
+        return false;
+    }
+
+    $('#status').val('1');
+    submitdo();
+}
+// 拒绝提现
+function cancel_withdrawals(){
+    if(!confirm('确定要拒绝用户提现吗?')){
+        return false;
+	}
+    if($.trim($('#remark').val()).length == 0){
+        layer.msg('请填写拒绝备注', {icon:5});
+        return false;
+    }
+
+    $('#status').val('2');
+    submitdo();
+}
+//提交
+$('#submitbtn').click(function(){
+	submitdo();
+});
+function submitdo(){
+	var fields = $('form').serializeArray();
+	var ll = layer.load('正在处理，请稍后...', 3);
+	$.post(Think.U('Admin/Member/withdrawalsedit'),fields,function(data){
+        if(data.status==1) {
+        	layer.msg(data.msg,{icon:6}, function(){
+        		history.go(-1);
+				location.reload();
+			});
+        } else {
+        	layer.msg(data.msg, {icon:5});
+        }
+        layer.close(ll);
+        return false;
+    });
+}
+</script>
+{/block}

@@ -1,0 +1,322 @@
+<!DOCTYPE HTML>
+<html xmlns="http://www.w3.org/1999/xhtml" >
+<head id="Head1">
+<meta charset="utf-8"/>
+<title>{$mod_name}-{$config['site_title']}</title>
+<meta name="keywords" content="{$config['site_key']}" />
+<meta name="description" content="{$config['site_desc']}" />
+<meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no" />
+<meta content="telephone=no" name="format-detection" />
+<link rel="stylesheet" href="__STATIC__/article/css/page.css"/>
+<link rel="stylesheet" href="__STATIC__/article/css/article.2.0.css"/>
+<link href="__P_CSS__/font-ybcms/style.css" rel="stylesheet">
+<script src="__STATIC__/article/js/jquery.min.js" type="text/javascript"></script>
+<script src="__STATIC__/js/layer/layer.js" type="text/javascript"></script>
+<style>
+.information-article section p img { max-width: 100%!important; height: auto!important; margin: 3px 0 3px; }
+.m-ad-item img { max-width: 100%;}
+.information-article section figure img { max-width: 100%!important; height: auto!important; margin: 3px 0 3px; }
+.to-return{position: fixed;bottom:180px;right:0;width: 60px;height: 36px;line-height: 34px; text-align: center; border-radius: 20px 0 0 20px;background-color: #fb0;color:#fff;font-size: 12px;box-shadow: 0 1px 2px 0 rgba(204, 149, 0, 0.4); z-index: 4}
+.to-return:before{margin-right:4px;content:"\56de"; font-family: "article"}
+.aaa{width:100%}
+
+.pnpage a,.pnpage p{font-size:13px;}
+.pnpage a{color:#999;}
+
+.comment_pages{text-align:center;font-size:12px;color:#999;}
+.comment_pages a{color:#999;}
+</style>
+{include file="public/think"/}
+<script>
+(function () {
+    var html = document.documentElement;
+    var H = html.getBoundingClientRect().width;
+    html.style.fontSize = H/31.25 +'px';
+})()
+</script>
+<script type="text/javascript" src="__STATIC__/js/TouchSlide.1.1.js"></script>
+<script type="text/javascript" src="__STATIC__/js/touchslider.dev.js"></script>
+<style>
+.scrollimg{position:relative; overflow:hidden; margin:0px auto; /* 设置焦点图最大宽度 */}
+.scrollimg .hd{ position: absolute;bottom:0px;text-align: center;width: 100%;}
+.scrollimg .hd li{display: inline-block;width: .4em;height: .4em;margin: 0 .4em;-webkit-border-radius: .8em;-moz-border-radius: .8em;-ms-border-radius: .8em;-o-border-radius: .8em; border-radius: .8em;background: #FFF;filter: alpha(Opacity=60);opacity: .6;box-shadow: 0 0 1px #ccc; text-indent:-100px; overflow:hidden; }
+.scrollimg .hd li.on{filter: alpha(Opacity=90);opacity: .9;background: #f8f8f8;box-shadow: 0 0 2px #ccc; }
+.scrollimg .bd{position:relative; z-index:0;}
+.scrollimg .bd li{position:relative; text-align:center;}
+.scrollimg .bd li img{background:url('__STATIC__/images/loading.gif') center center no-repeat;  vertical-align:top; width:100%;/* 图片宽度100%，达到自适应效果 */}
+.scrollimg .bd li a{-webkit-tap-highlight-color:rgba(0,0,0,0);}  /* 去掉链接触摸高亮 */
+.scrollimg .bd li .text_bg{display:block;position:absolute;bottom:0;width:100%;height:40px;filter:alpha(Opacity=40);opacity:.4;background:#fff;z-index:1;}
+.scrollimg .bd li .text{display:block;position:absolute;bottom:0px;width:100%;height:40px;line-height:40px;text-align:center;z-index:2;padding:0 15px;}
+.scrollimg .bd li .text a{text-shadow:1px 1px 3px #000;color:#fff;}
+
+#hotel_info{position:relative;line-height:18px;border-bottom:1px #ddd dotted;}
+#hotel_info p{padding:2px;font-size:12px;color:#666;}
+#hotel_info .btn{display:block;position:absolute;top:10px;right:0px;background:#FF7F00;color:#fff;padding:5px;border-radius:4px;}
+</style>
+</head>
+<body>
+<a href="javascript:history.go(-1);" class="m-to-returns">返回</a>
+<span class="m-top-go"></span>
+<div class="container">
+	<div class="m-top-bar" id="mtitle">
+		<header>
+			<a href="javascript:history.go(-1);" class="m-top-back"></a>
+		</header>
+		<a href="{:url('Mobile/User/index')}" class="signin" style="right:15px;" id="loginImg">登</a>
+	</div>
+	<script type="text/javascript">
+	var IsLogin=0;//是否登录
+	$.post(Think.U('Mobile/Api/ajax_islogin'),{},function(data){
+		IsLogin=data.status;
+	    if (data.status == 1) {
+	        $("#loginImg").text('');
+	        $('#loginImg').append("<img src='"+ data.avatar +"'>"); 
+	    }
+	    return false;
+	});
+	</script>
+	
+	<div class="banner_top">
+		<div id="scrollimg" class="scrollimg">
+		  	<div class="bd">
+			 	<ul>
+			 	{notempty name="info['images']"}
+			 	{volist name="info['images']" id="cv"}
+			    	<li>
+			    		<a href="javascript:">
+			    			<img src="{$cv}" title="" width="100%"/>
+			    		</a>
+			    	</li>
+		     	{/volist}
+		     	{/notempty}
+		     	</ul>
+		  	</div>
+		  	<div class="hd">
+				<ul></ul>
+		  	</div>
+		</div>
+		<script type="text/javascript">
+			TouchSlide({ 
+				slideCell:"#scrollimg",
+				titCell:".hd ul", //开启自动分页 autoPage:true ，此时设置 titCell 为导航元素包裹层
+				mainCell:".bd ul", 
+				effect:"leftLoop", 
+				autoPage:true,//自动分页
+				autoPlay:false //自动播放
+			});
+		</script> 
+	</div>
+	
+	<article class="information-article">
+		<header>
+			<h1>{$info.name}</h1>
+			<div class="info" id="hotel_info">
+				<p>地址：{$info.address}</p>
+				<p>联系：{$info.tel}</span></p>
+				<p>{:friend_date($info.addtime)}</p>
+				<a class="btn" href="tel:{$info.tel}"><i class="yb-tel"></i>预 定</a>
+			</div>
+		</header>
+
+		<section id="contentmain" >
+			{$info.content}
+		</section>
+		
+		<div style="padding:20px 0;" class="pnpage">
+			<hr style="border:0;border-top:1px #ddd solid;">
+	    	<p>{$prevurl}</p>
+	    	<p>{$nexturl}</p>
+	    </div>
+	</article>
+	
+	<div id="mybbs" style="margin:20px 0;">
+		<a name="form" id="Myform"></a>
+		<div class="comment">
+			<header class="title">
+				<span>共有<em id="totalCount">{$comment['totalCount']}</em>个网友评论</span>
+				<h2>评论</h2>
+			</header>
+			<ul id="morediv">
+				{volist name="comment['lists']" id="v" key="k"}
+        		{include file="hotel/_lists_com"}
+        		{/volist}
+			</ul>
+		</div>
+		<div class="comment_pages" {if $comment['pagecount']==1}style="display:block"{else/}style="display:none"{/if}>
+    		<a href="javascript:nextpage(1)" id="getmore">查看更多 &raquo;</a>
+    	</div>
+	</div>
+	<!-- 公共底 -->
+	{include file="article/footer"/}
+</div>
+
+<!--底部导航-->
+<div class="m-fix-footer" >
+	<a href="{:url('Mobile/Article/index')}" class="home" target="_self"></a>
+	<!--span class="prise"><i id="zannum">0</i></span-->
+	<span class="transpond" ><i id="zhuannum"></i></span>
+	<span class="reply" id="input-btn"><i id="saynum">{$comment['totalCount']}</i></span>
+</div>
+<!--分享-->
+<div class="share-pop" style="display:none" >
+	<div class="share bdsharebuttonbox" id="share" data-tag="share_1">
+        <span class="wechat" style="display:none" >微信</span>
+        <span class="wechat circle-of-friends" style="display:none" >朋友圈</span>
+        <a href="" class="qzone"  data-cmd="qzone" onclick="adZhuan(6);">QQ空间</a>  
+        <a href="" class="sina" data-cmd="tsina" onclick="adZhuan(4);">新浪微博</a>                                      
+    </div>
+	<a href="javascript:void(0)" class="cancel" id="fenxiang">取消</a> 
+</div>
+<!-- 发帖框开始 -->
+<div class="reply-pop" style="display:none">
+	<form action=""  id="postform" method="post">
+	<input type="hidden" value="{$info.pid|default=0}" name="pid" id="pid" />	
+	<input type="hidden" value="{$info.artid}" name="artid" id="artid" />
+	<input type="hidden" value="{$user.userid}" name="userid" id="userid" />
+	<header>
+		<input type="button" class="submit-btn" id="submitbtn" value="发送" style="border:0;"/>
+		<span class="cancel">取消</span>
+	</header>
+	<textarea placeholder="我来点评一下..." name="content" id="content"></textarea>
+	</form>
+</div>
+<!-- 发帖框结束 -->
+<div class="mask" style="display:none"></div>
+
+<script type="text/javascript" language="javascript">
+var canshow=0;
+jQuery('.transpond').on('click',function(){
+	jQuery(".share-pop").show();
+	jQuery('.mask').show();
+});
+jQuery('.cancel').on('click',function(){
+	jQuery(".reply-pop").hide();
+	jQuery('.mask').hide();
+	$("#message").attr('placeholder','我来点评一下...');
+	canshow=0;
+	document.removeEventListener("touchmove", gundong);
+});
+jQuery('#fenxiang').on('click',function(){
+	jQuery(".share-pop").hide();
+	jQuery('.mask').hide();
+});
+jQuery('#input-btn').on('click',function(){
+	if (IsLogin == 0){
+   		window.location.href=Think.U('Mobile/User/index');
+   		return false;
+	}
+	canshow=1;
+	jQuery(".reply-pop").show();
+	jQuery('.mask').show();
+	jQuery("#message").focus()
+})
+//判断微信浏览器
+var ua = navigator.userAgent.toLowerCase();  
+if(ua.match(/MicroMessenger/i)=="micromessenger"){  
+	jQuery(".wechat").css("width","24%");
+	jQuery(".qzone").css("width","24%"); 
+	jQuery(".sina").css("width","24%");
+	jQuery(".wechat").show();
+}else{
+	jQuery(".qzone").css("width","48%"); 
+	jQuery(".sina").css("width","48%");
+}
+function gundong(e){
+ 	e.preventDefault();  
+}
+
+//提交评论
+$('#submitbtn').click(function(){
+	if($('#content').val()==''){
+    	alert('内容不能为空！');return false;
+    }
+	var fields = $('form#postform').serializeArray();
+	//var ll = layer.load('正在处理，请稍后...', 3);
+	$.post(Think.U('Mobile/Hotel/comment'),fields,function(data){
+        if(data.status==1) {
+			var params={};
+				params.hotel_id="{$info['hotel_id']}";
+				params.page=1;
+			loadpageone(params);
+			$('#username').val('');
+			$('#content').val('');
+			jQuery('.cancel').click();
+        } else {
+        	alert(data.msg);return false;
+        }
+        //layer.close(ll);
+        return false;
+    });
+});
+function Archor(pid, artid, userid, answer){
+	//alert(IsLogin+'_'+userid);return false;
+    if(userid==0){
+        window.location.href=Think.U('Mobile/User/index');
+        return false;
+    }else{
+        document.getElementById("content").value = "";
+    }
+    document.getElementById("pid").value = pid;
+    document.getElementById("artid").value = artid;
+    document.getElementById("userid").value = userid;
+    $("#content").attr('placeholder',answer);
+    jQuery("#input-btn").click();
+}
+
+/* 返回顶部的交互*/
+document.querySelector('.container').addEventListener("scroll",function(){
+	if(document.querySelector('.container').scrollTop > 100){
+		document.querySelector('.m-top-go').setAttribute("class","m-top-go m-top-visible")
+	} else {
+		document.querySelector('.m-top-go').setAttribute("class","m-top-go")
+	}
+})
+document.querySelector('.m-top-go').addEventListener("click",function(){
+	document.querySelector('.container').scrollTop = 0
+})
+//加载列表
+function loadpageone(params){
+	//检测参数
+    if (params == null && params.constructor != Array) {
+        return false;
+    }
+    
+	var ll = layer.open({type:2,content:'加载中'});
+	$.post(Think.U('Mobile/Hotel/ajaxComMore'),params,function(data){
+		if (data.status) {
+			$("#morediv").html(data.html);
+			$("#totalCount").html(data.totalCount);
+			if(data.pagecount==1){
+				$(".comment_pages").show();
+				$(".comment_pages").html('<a href="javascript:nextpage(1)" id="getmore">查看更多 &raquo;</a>');
+			}
+		}else{
+			$(".comment_pages").hide();
+			var str='<p class="nocoent"><span class="mui-icon-extra mui-icon-extra-order"></span><em>暂无评论...</em></p>';
+			$("#comment_con").html(str);
+		}
+		layer.close(ll);
+	});
+}
+//查看更多
+function nextpage(page) {
+	var params={};
+    	params.page=page + 1;
+    	params.hotel_id="{$info['hotel_id']}";
+    var ll = layer.open({type:2,content:'加载中'});
+    $.post(Think.U('Mobile/Hotel/ajaxComMore'),params,function(data){
+        if (data.status=='1') {
+            $("#morediv").append(data.html);
+            page++;
+            $(".comment_pages").html('<a href="javascript:nextpage('+page+')" id="getmore">查看更多 &raquo;</a>');
+        } else {
+            $(".comment_pages #getmore").html("已全部加载完了！");
+            $(".comment_pages").delay(3000).hide(0);
+        }
+        layer.close(ll);
+    });
+}
+</script>  
+
+</body>
+</html>

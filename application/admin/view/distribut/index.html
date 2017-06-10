@@ -1,0 +1,118 @@
+{extend name="public/base" /}
+{block name="style"}{/block}
+{block name="main"}
+
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>会员管理-分销商</h3>
+			<h5>系统会员管理</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>会员列表管理, 会员审核编辑，及密码等修改。</li>
+		</ol>
+	</div>
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 会员管理</span> 
+			<span class="tit-info">(共{$total}条记录)</span>
+			<div class="head-right">
+				<form action="" method="get" class="form-inline">
+		          	<input type="text" name="keys" value="" placeholder="账号/手机/邮箱" class="form-control"/>
+		          	<select name="status" id="status" class="form-control">
+        				<option value="" selected="">全部状态</option>
+                       	<option value="1" {if input('status')=='1'}selected{/if}>正常状态</option>
+                       	<option value="0" {if input('status')=='0'}selected{/if}>禁用状态</option>
+                    </select>
+		          	<button type="submit" class="btn btn-default">搜索</button>
+				</form>
+			</div>
+		</div>
+		<div class="panel-btn">
+			<div class="btn-group">
+			  	<button type="button" class="btn btn-default dropdown-toggle" data-toggle="dropdown">状态设置 <span class="caret"></span></button>
+			  	<ul class="dropdown-menu" role="menu">
+				    <li><a href="javascript:" url="{:url('setStatus',['status'=>1])}" data="ajax">启用会员</a></li>
+					<li><a href="javascript:" url="{:url('setStatus',['status'=>0])}" data="ajax">禁用会员</a></li>
+			  	</ul>
+			</div>
+			<a url="{:url('admin/message/sendmessage')}" id="sendmessage" class="btn btn-default"><i class="fa fa-plus"></i> 发送消息</a>
+		</div>
+		<div class="panel-body table-responsive ng-scope">
+			<table class="table table-hover">
+				<thead class="navbar-inner">
+					<tr>
+						<th style="width:30px;">
+							<div class="custom-checkbox">
+								<input type="checkbox" id="chkAll" class="inbox-check">
+								<label for="chkAll"></label>
+							</div>
+						</th>
+						<th>ID</th>
+						<th>登录账号</th>
+						<th>会员昵称</th>
+						<th>余额</th>
+						<th>冻结资金</th>
+						<th>总分成金额</th>
+						<th>一级会员数</th>
+						<th>二级会员数</th>
+						<th>三级会员数</th>
+						<th>状态</th>
+						<th>操作</th>
+					</tr>
+				</thead>
+				<tbody>
+					{volist name="lists" id="v"}
+					<tr for="chk{$v.userid}">
+						<td>
+							<div class="custom-checkbox">
+								<input type="checkbox" name="ids[]" id="chk{$v.userid}" class="inbox-check" value="{$v.userid}">
+								<label for="chk{$v.userid}"></label>
+							</div>
+						</td>
+						<td>{$v.userid}</td>
+						<td>{$v.username}</td>
+						<td>{:deal_emoji($v.nickname)}</td>
+						<td>{$v.mymoney}</td>
+						<td>{$v.stopmoney}</td>
+						<td>{$v.getmoney}</td>
+						<td>{$v.first_total}</td>
+						<td>{$v.second_total}</td>
+						<td>{$v.third_total}</td>
+						<td>{if $v['status']==1}正常{else/}禁用{/if}</td>
+						<td>
+							<a href="{:url('member/edit',['userid'=>$v['userid']])}" class="btn btn-default btn-xs"><i class="fa fa-edit"></i> 查看</a>
+						</td>
+					</tr>
+					{/volist}
+				</tbody>
+			</table>
+		</div>
+		{if $total>$listRows}
+		<div class="panel-footer">
+			<ul class="pagination">
+				<li><a>{$total} 条记录</a></li>
+				<li><a>{$currentPage}/{$lastPage}</a></li>
+			</ul>
+			{$pages}
+		</div>
+		{/if}
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap']);
+})
+</script>
+{/block}
+{block name="script"}
+{/block}

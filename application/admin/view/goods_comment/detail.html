@@ -1,0 +1,125 @@
+{extend name="public/base" /}
+{block name="style"}
+<style type="text/css">
+.comment_reply{display:block;padding:20px 40px;position:relative;overflow:scroll;overflow-x:hidden;overflow-y:auto;max-height:700px;}
+.msg_info{margin-bottom:20px;float:left;}
+.msg_info .msg_user{display:block;margin-bottom:2px;font-size:12px;overflow:hidden;}
+.msg_info .msg_user .info_name{float:left;}
+.msg_info .msg_user .info_time{float:right;padding-left:25px;}
+.msg_info .user_img{border-radius:50%;float:left;width:40px;height:40px;}
+.msg_info .msg_text{border-radius:5px;float:left;position:relative;padding:5px 10px;background:#e2e6ee;border:1px solid #d2d6de;margin:5px 0 0 20px;color:#444;}
+.msg_info .msg_text .imglist{padding:5px 0;}
+.msg_info .msg_text .imglist a{display:inline-block;padding-right:6px;}
+.msg_info .msg_text .imglist a img{border-radius:4px;}
+
+.msg_info.right{float:right;}
+.msg_info.right .user_img{float:right;}
+.msg_info.right .msg_text{margin-right:20px;min-width:200px;}
+.msg_info.right .msg_user .info_name{float:right;}
+.msg_info.right .msg_user .info_time{float:right;padding-right:25px;}
+
+.clearFloat{height:1px;font-size:1px;clear:both;}
+
+</style>
+{/block}
+{block name="main"}
+<div class="main-content">
+	<div class="main-content-bar">
+		<div class="item-title">
+			<h3>评价管理-详情</h3>
+			<h5>商品交易评价管理</h5>
+		</div>
+	</div>
+	<!--操作提示-->
+	<div id="explanation" class="explanation">
+		<div id="checkZoom" class="title">
+			<i class="fa fa-lightbulb-o"></i>
+			<h4 title="操作要点提示">操作提示</h4>
+			<span title="收起提示" id="explanationZoom"></span>
+		</div>
+		<ol id="listZoom">
+			<li>买家可在订单完成后对订单商品进行评价操作，评价信息将显示在对应的商品页面</li>
+		</ol>
+	</div>
+	<!--列表-->
+	<div class="panel panel-list">
+		<div class="panel-heading">
+			<span class="tit-name"><i class="fa fa-folder-open-o"></i> 评论回复 </span> 
+			<span class="tit-info">(共{:count($reply)}条记录)</span>
+		</div>
+		<div class="panel-body table-responsive ng-scope">
+			<div class="comment_reply">
+				<div class="msg_info">
+                    <div class="msg_user clearfix">
+                        <span class="info_name">用户名</span>
+                        <span class="info_time">{$info.add_time|date="Y-m-d H:i",###}</span>
+                    </div>
+                    <img alt="" src="" onerror="this.src='__IMG__public/no-photo.png'" class="user_img"><!-- /.direct-chat-img -->
+                    <div class="msg_text">
+                    	{$info.content}
+                    	<p class="imglist">
+                    		{volist name="info['img']" id="v"}
+                    		<a class="img_group" href="{$v}"><img width="55" height="55" src="{$v}"></a>
+                    		{/volist}
+                    	</p>
+                    </div>
+                </div>
+                <div class="clearFloat"></div>
+                {volist name="reply" id="v"}
+                <div class="msg_info right">
+                    <div class="msg_user clearfix">
+                        <span class="info_name">{$v.username}</span>
+                        <span class="info_time">{$v.add_time|date="Y-m-d H:i",###}</span>
+                    </div>
+                    <img alt="" src="" onerror="this.src='__IMG__public/no-photo.png'" class="user_img"><!-- /.direct-chat-img -->
+                    <div class="msg_text">{$v.content}</div>
+                </div>
+                <div class="clearFloat"></div>
+                {/volist}
+			</div>
+		</div>
+		<div class="panel-footer">
+			<form action="" method="post" class="form-horizontal">
+			<div class="form-group">
+				<textarea class="form-control" rows="3" placeholder="请输入回复内容" name="content" id="content"></textarea>
+				<input type="hidden" value="{$info.comment_id}" name="id" />
+			</div>
+			<div class="form-group">
+				<input type="button" value="回复" id="submitbtn" class="btn btn-primary col-lg-1 right">
+			</div>
+			</form>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$(document).ready(function(){
+	require(['bootstrap','layer','think']);
+	//提交
+	$('#submitbtn').click(function(){
+		if($('#content').val()==''){
+			layer.msg('回复内容不能为空！', {icon:5});
+			return false;
+		}
+		var fields = $('form').serializeArray();
+		var ll = layer.load('正在处理，请稍后...', 3);
+		$.post(Think.U('Admin/GoodsComment/detail'),fields,function(data){
+	        if(data.status==1) {
+	        	layer.msg(data.msg,{icon:6,time:1000}, function(){
+					location.reload();
+				});
+	        } else {
+	        	layer.msg(data.msg, {icon:5});
+	        }
+	        layer.close(ll);
+	        return false;
+	    });
+	});
+	
+	require(['jquery-colorbox'],function(){
+		$(".img_group").colorbox({rel:'img_group'});
+	});
+})
+</script>
+{/block}
+{block name="script"}
+{/block}

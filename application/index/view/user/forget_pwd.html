@@ -1,0 +1,163 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>用户中心-{$config['site_name']}</title>
+<meta http-equiv="keywords" content="{$config['site_key']}" />
+<meta name="description" content="{$config['site_desc']}" />
+<link rel="stylesheet" href="__P_CSS__/user/style.css" type="text/css">
+<link href="__P_CSS__/font-awesome/font-awesome.min.css" rel="stylesheet">
+<script src="__P_JS__/jquery/jquery-1.11.1.min.js"></script>
+<script src="__P_JS__/layer/layer.js"></script>
+{include file="public/think" /}
+</head>
+<body>
+<div class="headers">
+	<div class="w1000 clearfix">
+		<div class="logo">
+			<span class="td"><a href="/"><img src="{$config['site_logo']}" alt="logo"></a></span>
+			<span class="td"><img src="__P_IMG__/user/split.png" /></span>
+			<span class="td text">{$config['site_name']}</span>
+		</div>
+	</div>
+</div>
+<div class="forget_pwd">
+	<div class="w640">
+		<div class="steps_nav clearfix">
+			<p class="step_1 on"><i></i><s>1</s><b>填写账户名</b></p>
+			<p class="step_2"><i></i><s>2</s><b>验证身份</b></p>
+			<p class="step_3"><i></i><s>3</s><b>设置新密码</b></p>
+			<p class="step_4"><i></i><s>4</s><b>完成</b></p>
+		</div>
+		<div class="pwdForm clearfix">
+			<form id="forget_pwd" action="" method="post">
+				<ul class="pub_ul">
+					<li><span class="title">账户名：</span>
+						<div class="con verify-group">
+							<input type="text" class="it-01 form-control verify-ctrl" name="username" id="username" onblur="chkuser()" placeholder="填写手机号或邮箱">
+							<input type="hidden" name="type" value="forget">
+							<span class="v-tips verify-tips" data-tips-for="username">
+								<i class="fa"></i> <span class="txt"></span>
+							</span>
+						</div>
+					</li>
+					<li class="li-02 captcha_row"><span class="title">验证码：</span>
+						<div class="con verify-group">
+							<input type="text" class="msg-code ie-01 verify-ctrl left" name="verify_code" id="captcha"> 
+							<img id="captchaImg" src="{:captcha_src()}" onclick="verify()" alt="captcha" class="ie-02 left"/> 
+							<span class="a0066cc left">看不清？<a class="reloadCaptcha target_no" onclick="verify()" href="javascript:void(0);">换一张</a></span>
+							<span class="v-tips verify-tips" data-tips-for="captcha">
+								<i class="fa"></i> <span class="txt"></span>
+							</span>
+						</div>
+					</li>
+					<li>
+						<button id="fx_next" type="button" class="btn_120 verify-ctrl" onclick="chkcaptcha()">下一步</button>
+					</li>
+				</ul>
+			</form>
+		</div>
+	</div>
+</div>
+<div class="footer">
+    <p>Copyright © 2016-2025 {$config['site_name']}  版权所有 保留一切权利 备案号:{$config['site_icp']}</p>
+</div>
+<script>
+function verify(){
+   	$('#verify_code').val('');
+	$('#captchaImg').attr('src','{:captcha_src()}?t='+Math.random());
+}
+
+var uflag = false;
+var cflag = false;
+//检验用户名
+function chkuser(){
+	$('span[data-tips-for="username"]').find('.txt').empty();
+	var username = $('#username').val();
+	if(username == ''){
+		show_error('username','用户名不能为空');
+		return false;
+	}else{
+		$.ajax({
+			url:Think.U('Home/User/check_username','t='+Math.random()),
+			type:'post',
+			dataType:'json',
+			data:{username:username},
+			success:function(t){
+				if(t==1){
+					$('span[data-tips-for="username"]').css('display','inline');
+					$('span[data-tips-for="username"]').find('i').removeClass('fa-minus-circle');
+					$('span[data-tips-for="username"]').find('i').addClass('fa-check-circle');
+					$('span[data-tips-for="username"]').find('.txt').empty();
+					uflag = true;
+				}else{
+					show_error('username','用户名错误');
+				}
+			}
+		})
+	}
+}
+//提交时检验验证码或用户名
+function chkcaptcha(){
+	gonext();
+	$('span[data-tips-for="captcha"]').find('.txt').empty();
+	var captcha = $('#captcha').val();
+	if(captcha == ''){
+		show_error('captcha','验证码不能为空');
+		return false;
+	}else if(captcha.length!=4){
+		show_error('captcha','验证码错误');
+		return false;
+	}else{
+		$.ajax({
+			url:Think.U('Home/User/check_captcha','t='+Math.random()),
+			type:'post',
+			dataType:'json',
+			data:{verify_code:captcha},
+			success:function(t){
+				console.log(t);
+				if(t==1){
+					$('span[data-tips-for="captcha"]').css('display','inline');
+					$('span[data-tips-for="captcha"]').find('i').removeClass('fa-minus-circle');
+					$('span[data-tips-for="captcha"]').find('i').removeClass('fa-check-circle');
+					$('span[data-tips-for="captcha"]').find('.txt').empty();
+					cflag = true;
+					if(uflag && cflag){
+						$('#forget_pwd').submit();
+					}
+				}else{
+					show_error('captcha','验证码不正确');
+					return false;
+				}
+			}
+		})
+	}
+}
+//检测
+function gonext(){
+	if($('#username').val() == ''){
+		show_error('username','用户名不能为空');
+		return;
+	}
+	if($('#captcha').val() == ''){
+		show_error('captcha','验证码不能为空');
+		return;
+	}
+	if(!uflag){
+		show_error('username','用户名验证有误');
+		return;
+	}else if(!cflag){
+		show_error('captcha','图形验证码有误');
+		return;
+	}
+}
+//错误输出
+function show_error(type,msg){
+	$('span[data-tips-for="'+type+'"]').css('display','inline');
+	$('span[data-tips-for="'+type+'"]').find('i').removeClass('fa-check-circle');
+	$('span[data-tips-for="'+type+'"]').find('i').addClass('fa-minus-circle');
+	$('span[data-tips-for="'+type+'"]').find('.txt').empty().html(msg);
+}
+</script>
+</body>
+</html>	
