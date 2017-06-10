@@ -1,7 +1,7 @@
 Ybmall 4.0.6
 ===============
 
-[![官网地址](https://www.ybcms.com/)](https://www.ybcms.com/)
+[官网地址](https://www.ybcms.com/)
 [![ThinkPHP5 Downloads](https://img.shields.io/github/downloads/top-think/think/latest/total.svg)](https://github.com/top-think/think/releases/latest)
 
 Ybmall开源商城，完全开源 （100%开源）， 采用ThinkPHP5.0 + MySQL 开发语言，完全面向对象的技术架构设计开发。适合企业及个人 二次开发非常方便，代码清晰简洁,通俗易懂，操作简单,安全稳定,是广大用户二次开发的最佳选择。
@@ -28,7 +28,7 @@ Ybmall开源商城，完全开源 （100%开源）， 采用ThinkPHP5.0 + MySQL 
  + 附件管理模块
  + 地区管理模块
 
-> ThinkPHP5详细开发文档参考 [ThinkPHP5完全开发手册](http://www.kancloud.cn/manual/thinkphp5)
+> 具体参照ThinkPHP5详细开发文档参考 [ThinkPHP5完全开发手册](http://www.kancloud.cn/manual/thinkphp5)
 
 ## 目录结构
 
